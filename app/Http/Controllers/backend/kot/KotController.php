@@ -242,4 +242,8 @@ class KotController extends Controller
             return response()->json(['error_success'=>'Payment not added']);
         }
     }
+
+    public function callNishaSecond(){
+        //this is for git
+    }
 }
