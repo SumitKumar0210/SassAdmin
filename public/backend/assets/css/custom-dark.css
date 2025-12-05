@@ -1,0 +1,515 @@
+body.dark-only .login-dark {
+    background-blend-mode: color-burn !important;
+}
+.dark-only .room-type-toggle .icofont{
+    color: #ffffffcc !important;
+}
+
+.dark-only .room-type-toggle:before{
+    background-color:#31322d;
+}
+.dark-only .room-type-description{
+    border-left: 1px solid #ffffff1a !important;
+}
+.dark-only .room-type-toggle-container{
+    background-color:#31322d;  
+}
+
+.dark-only .room-type-toggle-container .table tr th {
+    color: #ffffffcc !important;
+}
+.dark-only .room-type-toggle-container .table tr td {
+    color: #ffffffcc !important;
+}
+
+.dark-only .dropdown-toggle{
+    color: #ffffffcc !important;
+}
+.dark-only .filter-option-inner-inner{
+    color: #ffffffcc !important;
+}
+.dark-only .bootstrap-select>.dropdown-toggle{
+    border: 1px solid #ffffff1a !important;
+}
+/* .dark-only .bootstrap-select:active{
+    border: 1px solid #ffffff1a !important;
+} */
+ .dark-only .dropdown-toggle::after {
+    color: #ffffffcc !important;
+} 
+
+.dark-only .dropdown-menu li .dropdown-item:hover{
+    background-color:#ffffffcc !important ;
+    color: #31322d;
+}
+/* add room model start */
+.dark-only .vertical-timeline{
+     border-right:none !important ; 
+}
+.dark-only .vertical-timeline .step span{
+    color: #31322d;
+}
+ /* .dark-only .vertical-timeline .step h4{
+    color: #31322d;
+}  */
+ .dark-only .vertical-timeline .step.active h4{
+    color: #ffffffcc !important;
+} 
+.dark-only .vertical-scroll{
+    background-color: #31322d !important;
+}
+.dark-only .form-container .form-content .form-step div{
+    color: #ffffffcc;
+}
+.dark-only .form-container .form-content .form-step .form-input-wrapper div .form-select{
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dark-only .form-step h3{
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffffcc !important;
+}
+.dark-only .form-step p{
+    color: #ffffffcc !important;
+}
+.dark-only .touchspin-wrapper .btn-touchspin{
+    color: #ffffffcc !important;
+}
+.dark-only #basic-addon2{
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .selection-box input[type=radio]:checked ~ .custom--mega-checkbox {
+    color: #31322d !important;
+}
+.dark-only .variation-box{
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .selection-box{
+    border: 1px solid #ffffff1a !important;
+}
+/* .dark-only .selection-box input[type=radio]{
+    color: #31322d !important;
+} */
+.dark-only .bedtype-container .bg-white{
+    background-color:#31322d !important ;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .bedroom-container .bg-white{
+    background-color:#31322d !important ;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .bedsize-container .rounded-touchspin div a{
+    color: #ffffffcc !important;
+} 
+.dark-only #bedroom_numbers a{
+    color: #ffffffcc !important;
+} 
+.dark-only button.btn.dropdown-toggle.bs-placeholder{
+    border: 1px solid #ffffff1a !important;
+}
+body.dark-only .form-control{
+    background-color:#31322d !important ;
+}
+.dark-only .card .card-header{
+    background-color: transparent !important;
+}
+.dark-only .room-review tbody tr td h4{
+    color: #ffffffcc !important;
+}
+.dark-only .room-review tbody tr td{
+    color: #ffffffcc !important;
+}
+.dark-only .room-review tbody tr .text-muted{
+    color: #ffffff5e !important;
+}
+/* add room model end */
+
+/* edit room canvas start */
+.dark-only #offcanvasRight{
+    background-color:#31322d !important ;
+}
+.dark-only #offcanvasRight .offcanvas-header{
+    border-bottom: 1px solid #ffffff1a !important;
+}
+.dark-only .edit-bedtype-containers .bg-white{
+    background-color:#31322d !important ;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .edit-bedroom-containers .bg-white{
+    background-color:#31322d !important ;
+    border: 1px solid #ffffff1a !important;
+}
+/* .dark-only #edit-bedType{
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only #room-category{
+    border: 1px solid #ffffff1a !important;
+} */
+.dark-only .edit-bedsize-container .rounded-touchspin div a{
+    color: #ffffffcc !important;
+} 
+.dark-only #bedSizeContainer a{
+    color: #ffffffcc !important;
+} 
+/* edit room canvas end */
+
+/* reservation page start */
+.dark-only .reservation-head button{
+    border: 1px solid #ffffff1a !important;
+}
+/* .dark-only .reservation-head button:hover{
+    background-color:#ffffffcc !important ;
+} */
+.dark-only .customer-d-close .icon-close{
+    color: #ffffffcc !important;
+} 
+
+.dark-only .customer-details{
+    background-color:#31322d !important ;
+    color: #ffffffcc !important;
+} 
+.dark-only .table tr td{
+    color: #ffffffcc !important;
+}
+.dark-only .table tr th{
+    color: #ffffffcc !important;
+}
+.dark-only .btn-muted{
+    color: #ffffffcc !important;
+}
+.dark-only .ui-droppable-hover{
+    background-color:#00000075 !important ;
+    border: none !important;
+}
+/* reservation page end */
+/* reservation modal start */
+.dark-only .nav-tabs .nav-link:hover{
+    background-color:#31322d !important ;
+    color: #ffffffcc !important;
+}
+.dark-only .addReservation{
+    background-color: transparent !important;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .addReservation .form-label{
+    color: #ffffffcc !important;
+}
+.dark-only .element{
+    background-color: transparent !important;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .element div .form-label{
+    color: #ffffffcc !important;
+}
+
+
+.dark-only .reservation-summary{
+    background-color: transparent !important;
+    color: #ffffffcc !important;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .reservation-summary div .border-bottom{
+    border-bottom: 1px solid #ffffff1a !important;
+}
+body.dark-only .alert-secondary{
+    background-color: transparent !important;
+    color: #ffffffcc !important;
+    border-color: rgb(255 97 80 / 39%) !important;
+}
+.dark-only .d-tab-element{
+    background-color: transparent !important;
+    border: 1px solid #ffffff1a;
+}
+.dark-only .d-tab-element .form-label{
+    color: #ffffffcc !important;
+}
+.dark-only .paymentRec-Dtab{
+    background-color:#31322d !important ;
+    color: #ffffffcc !important;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .border-top{
+    border-top: 1px solid #ffffff1a !important;
+}
+.dark-only .form-check-input[type=checkbox]{
+    border: 1px solid #ffffff1a !important;
+}
+body.dark-only .form-select{
+    border: 1px solid #ffffff1a;
+}
+
+.dark-only .form-control{
+    color: #ffffffcc !important;
+}
+.dark-only .g-tab-element{
+    background-color: transparent !important;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .g-tab-element .form-label{
+    color: #ffffffcc !important;
+}
+.dark-only .paymentRec-Paytab{
+    background-color:#31322d !important ;
+    color: #ffffffcc !important;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .paymentRec-Notetab{
+    background-color:#31322d !important ;
+    color: #ffffffcc !important;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .invoiceHistory .modal-body .alert-danger{
+    background-color: transparent !important;
+    color: #ffffffcc !important;
+    border-color: rgb(255 97 80 / 39%) !important;
+}
+.dark-only .modal-footer .btn-group .dropdown-menu .dropdown-item:hover{
+    background-color: #ffffffcc !important;
+    color: #31322d !important;
+}
+/* reservation modal end */
+.dark-only .room-located-status{
+    background-color: #f1f8f10f;
+}
+.dark-only .payments-table tr{
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .payments-table tr td{
+    border: none !important;
+}
+.dark-only .payments-table .bg-light{
+    background-color: transparent !important;
+}
+.dark-only .notes-form label{
+    color: #ffffffcc !important;
+}
+.dark-only .invoice-genrated .bg-light{
+   background-color: transparent !important;
+   color: #ffffffcc !important;
+   border: 1px solid #ffffff1a !important;
+}
+.dark-only .invice-table{
+    background-color: #f1f8f10f !important;
+}
+
+.dark-only .sub-charge{
+    background-color: #f1f8f10f !important;
+    color: #ffffffcc !important;
+}
+
+/* -------------- */
+.dark-only .outstanding-detail{
+    color: #ffffffcc !important;
+}
+.dark-only .flatpicker-calender{
+    background-color: #f1f8f10f !important;
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .calender-detail{
+    background-color: transparent !important;
+    border: none !important;
+}
+.dark-only .date_change_class {
+    background-color: transparent !important;
+    border: none !important;
+}
+/* ---------- */
+.dark-only .fixed-column{
+    background-color: transparent !important;
+    border-right: 1px solid #ffffff1a !important;
+}
+.dark-only .room-capacity h5{
+    color: #ffffffcc !important;
+}
+
+.dark-only .availability-calender{
+    border: none !important;
+}
+/* .dark-only .bootstrap-select>.dropdown-toggle{
+    border: 1px solid #ffffff1a !important;
+} */
+/* .dark-only .vertical-scroll{
+    scrollbar-width: none !important;
+}
+.dark-only .custom-scrollbar{
+    scrollbar-color:#ffffffcc !important;
+} */
+
+.dark-only .custom-scrollbar{
+    scrollbar-color:#f1f8f10f transparent;
+}
+.vertical-scroll{
+    scrollbar-color:#f1f8f10f transparent;
+}
+ .dark-only li{
+    border-color: #ffffff1a !important;
+} 
+.dark-only .ui-state-highlight { height: 40px; line-height: 23px; border: 1px dashed #f1b84e !important;}
+/* select.form-select option:hover{
+    background-color: orange !important;
+} */
+.dark-only .border-bottom{
+    border-color: #ffffff1a !important;
+}
+.dark-only div#addReservation {
+    background-color: transparent !important;
+    border: 1px solid #ffffff1a !important;
+}
+
+.dark-only label.form-label {
+    color: #ffffffcc;
+}
+.dark-only .invoice-genrated {
+    background-color: transparent !important;
+    border: 1px solid #ffffff1a !important;
+    color: #ffffffcc !important;
+}
+.dark-only .invoice-genrated p{
+    color: #ffffffcc !important;
+}
+.dark-only .payments-table tr th {
+    border: 1px solid #ffffff1a !important;
+}
+.dark-only .activity-table tbody tr td {
+    border-bottom: 1px solid #ffffff1a !important;
+}
+
+.dark-only .activity-head th{
+    border-bottom: 1px solid #ffffff1a !important;
+}
+.dark-only .sub-charge {
+    background-color: #f1f8f10f !important;
+    color: #ffffffcc !important;
+}
+.dark-only .field_border{
+    border: 1px solid red !important;
+}
+ /* for dark mode reservation add select and input box border red on validation fails */
+.dark-only .form-control.is_field_invalid {
+    border: 1px solid #f1523d !important;
+}
+.dark-only .form-select.is_field_invalid {
+    border: 1px solid #f1523d !important;
+}
+ /* for dark mode room settting input box border red on validation fails */
+.dark-only .was-validated .form-control:invalid{
+    border: 1px solid #f1523d !important;
+}
+.dark-only .checkout_amt_dtl{
+    color: #98a6ad !important;
+}
+.dark-only .fulldate{
+    background-color: #333 !important;
+    background-color: #f3f3f3;
+}
+.dark-only .custom-dropdown{
+    border: 1px solid #0000000f;
+    background-color: #0000000f;
+    z-index: 999;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 5px;
+    position: absolute;
+    width: calc(100% - 20px);
+    z-index: 999;
+    /* box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); */
+}
+.dark-only .custom-dropdown-item:hover{
+    background-color: #1a6699;
+}
+.dark-only .custom-dropdown-item {
+    background-color: #161616;
+    padding: 8px;
+    cursor: pointer;
+}
+.dark-only .accordion-item{
+    border-color: #ffffff1a !important;
+}
+.dark-only .accordion-body{
+    background-color: transparent !important;
+   
+}
+.dark-only .accordion-body .form-label{
+    color: #ffffffcc !important;
+}
+
+.dark-only .accordion-item .separator{
+    border-color: #ffffff1a !important;
+}
+.dark-only .discount-tick{
+    background-color:#31322d;
+}
+/* ---kot--- */
+body.dark-only .kot-item {
+    background-color: #222;
+    border: 1px dashed #666;
+}
+body.dark-only .kot-item.booked {
+    background: rgba(255, 235, 59, 0.50);
+}
+body.dark-only .kot-item.completed {
+    background: rgba(113, 219, 117, 0.35);
+    margin-bottom: 0;
+}
+body.dark-only .kot-item .badge {
+    background: #222 !important;
+    color: #fff;
+}
+
+body.dark-only .order-items .kot-title {
+    color: #333 !important;
+}
+body.dark-only .order-items table td a, body.dark-only .order-items table th a {
+    color: #e3e3e3;
+}
+body.dark-only .order-items thead, body.dark-only .order-items tbody, 
+body.dark-only .order-items tfoot, body.dark-only .order-items tr, 
+body.dark-only .order-items td, body.dark-only .order-items th {
+    border-color: #474747;
+}
+body.dark-only .order-section {
+    background: #222222;
+}
+body.dark-only .border-start, body.dark-only .border-end, body.dark-only .order-type {
+    border-color: #474747 !important;
+}
+body.dark-only .order-items table td .touchspin-wrapper input[type=number].spin-outline-primary {
+    outline: 1px solid #474747;
+}
+body.dark-only .order-items table td .touchspin-wrapper .btn-touchspin.spin-border-primary {
+    border: 1px solid #474747;
+}
+body.dark-only .kot-item-header-top p{
+    color: #e3e3e3;
+}
+body.dark-only .kot-item-header-top {
+    background: #31322d;
+}
+body.dark-only .kot-itemlist-wrapper{
+    background: #222222;
+}
+body.dark-only .kot-food-item {
+    background-color: #31322d;
+}
+
+body.dark-only .kot-item-menu .menu-item li {
+    background: #272821;
+}
+body.dark-only .kot-item-menu .menu-item li .submenu li {
+    background: #31322d;
+}
+
+body.dark-only .order-item-offer.bg-dark {
+    background: #222 !important;
+}
+
+.dark-only.border {
+    border: 1px solid #3e3f39 !important;
+}
+
+.dark-only.kot-title {
+  background: #000;
+  border-bottom: none
+}
+body.dark-only .order-items .kot-title {
+    color: #222 !important;
+}

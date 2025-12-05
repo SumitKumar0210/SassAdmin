@@ -1,0 +1,42 @@
+let transfer_table = $('#transfer-report-table').DataTable({
+    processing:true,
+    serverSide:true,
+    ajax:{
+        url:transferReportVeiw,
+        type:"POST",
+        error:function(xhr,error,thrown){
+            console.log(xhr.responseText);
+            alert("An error occured "+thrown);
+        }
+         },
+        columns:[{
+            data:'from',
+            name:'from'
+        },
+        {
+            data:'to',
+            name:'to'
+        },
+        {
+            data:'item',
+            name:'item'
+        },
+        {
+            data:'qty',
+            name:'qty'
+        },
+        {
+            data:'unit',
+            name:'unit'
+        },
+        {
+            data:'request_date',
+            name:'request_date'
+        },
+        {
+            data:'transfer_date',
+            name:'transfer_date'
+        }
+    ]
+   
+});

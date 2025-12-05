@@ -1,0 +1,1 @@
+ALTER TABLE `reservations` ADD `company_id` VARCHAR(25) NULL AFTER `arrival_time`, ADD `company_name` VARCHAR(30) NULL AFTER `company_id`, ADD `company_gst` VARCHAR(30) NULL AFTER `company_name`, ADD `company_address` VARCHAR(50) NULL AFTER `company_gst`;

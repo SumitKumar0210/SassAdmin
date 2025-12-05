@@ -1,0 +1,185 @@
+@media (max-width: 420px) {
+	 .message-box {
+		 overflow: auto;
+	}
+}
+ .message-box li {
+	 padding: 16px 0px;
+	 margin-top: 0;
+	 position: relative;
+}
+ @media (max-width: 1600px) {
+	 .message-box li {
+		 padding: 11px 0px;
+	}
+}
+ @media (max-width: 1500px) {
+	 .message-box li {
+		 padding: 7px 0px;
+	}
+}
+ @media (max-width: 1400px) {
+	 .message-box li {
+		 padding: 9px 0px;
+	}
+}
+ @media (max-width: 1199px) {
+	 .message-box li {
+		 padding: 12px 0px;
+	}
+}
+ .message-box li:last-child:after {
+	 display: none;
+	 padding-bottom: 0px;
+}
+ .message-box li:after {
+	 content: '';
+	 position: absolute;
+	 top: 44px;
+	 left: 14px;
+	 height: 26px;
+	 width: 2px;
+	 background-color: rgba(137, 137, 137, 0.3);
+	 border-radius: 2px;
+}
+ @media (max-width: 1200px) {
+	 .message-box li:after {
+		 top: 42px;
+	}
+}
+ @media (max-width: 1199px) {
+	 .message-box li:after {
+		 top: 47px;
+	}
+}
+ [dir="rtl"] .message-box li:after {
+	 right: 14px;
+	 left: unset;
+}
+ .message-box li .d-flex {
+	 align-items: flex-start;
+}
+ .message-box li .d-flex .flex-shrink-0 {
+	 width: 30px;
+	 height: 30px;
+	 border-radius: 20px;
+	 display: flex;
+	 align-items: center;
+	 justify-content: center;
+}
+ .message-box li .d-flex .flex-shrink-0 i {
+	 font-size: 20px;
+	 height: 20px;
+}
+
+    .bar-container {
+      display: flex;
+      height: 80px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .occupied {
+      background-color: #ccf3e2;
+      flex: 286;
+    }
+
+    .reserved {
+      background-color: #f5f9c9;
+      flex: 87;
+    }
+
+    .available {
+      background-color: #eafac7;
+      flex: 32;
+    }
+
+    .not-ready {
+      background-color: #d6ea92;
+      flex: 13;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-bar {
+      width: 4px;
+      height: 40px;
+      border-radius: 2px;
+    }
+
+    .occupied-bar { background-color: #ccf3e2; }
+    .reserved-bar { background-color: #f5f9c9; }
+    .available-bar { background-color: #eafac7; }
+    .not-ready-bar { background-color: #d6ea92; }
+
+    .status-text {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .status-value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .dashboard-booking-list .dropdown-toggle::after {
+    display: none;
+}
+.dashboard-booking-list .dropdown .dropdown-toggle {
+    padding: 4px 12px;
+    width: 85px;
+}
+.default-dashboard .track-order li:after{
+  top: 38% !important;
+  height: 180px !important;
+}
+.message-box h5{
+  width: 260px;
+}
+.default-dashboard div.dataTables_wrapper table.dataTable tbody > tr > td{
+  font-weight: 500;
+}
+
+.progress-bar-container {
+      background: #e4e8f0;
+      height: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex: 1;
+      margin-right: 15px;
+    }
+    .progress-bar {
+      height: 100%;
+      transition: width 1s ease-in-out;
+    }
+    .progress-bar.available {
+      background: #f37e3b;
+    }
+    .progress-bar.soldout {
+      background: #3ec3b4;
+    }
+    .count {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1a1a1a;
+      min-width: 40px;
+    }
+    .total {
+      font-size: 14px;
+      color: #777;
+      margin-top: 5px;
+    }
+
+    .widget-1{
+      border-radius: 10px !important;
+    }

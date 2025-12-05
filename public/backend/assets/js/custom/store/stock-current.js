@@ -1,0 +1,34 @@
+let stock_current_table = $('#stock-current-table').DataTable({
+    processing:true,
+    serverSide:true,
+    ajax:{
+        url:stockCurrentView,
+        type:"POST",
+        error:function(xhr,error,thrown){
+            console.log(xhr.responseText);
+            alert("An error occured "+thrown);
+        }
+         },
+        columns:[
+        {
+            data:'name',
+            name:'name'
+        },
+        {
+            data:'code',
+            name:'code'
+        },
+        {
+            data:'expiry',
+            name:'expiry'
+        },
+        {
+            data:'uom',
+            name:'uom'
+        },
+        {
+            data:'qty',
+            name:'qty'
+        }
+    ]
+});

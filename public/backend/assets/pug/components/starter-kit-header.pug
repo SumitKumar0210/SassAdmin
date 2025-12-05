@@ -1,0 +1,355 @@
+// Page Header Start
+.page-header
+  .header-wrapper.row.m-0
+    .header-logo-wrapper.col-auto.p-0
+      .logo-wrapper
+        a(href='index.html')
+          img.img-fluid(src='../assets/images/logo/logo-w.png', alt='')
+      .toggle-sidebar
+        i(data-feather='align-center')
+        .status_toggle.middle.sidebar-toggle
+          .header-left
+            form.search-form.mb-0
+              .input-group
+                span.input-group-text.pe-0
+                  svg.search-bg.svg-color
+                input.form-control(type='search' placeholder='Search anything...')
+    form(action='#', method='get').form-inline.search-full
+      .form-group.w-100
+        .Typeahead.Typeahead--twitterUsers
+          .u-posRelative
+            input.demo-input.Typeahead-input.form-control-plaintext.w-100(type='text' placeholder='Search Boho ..' name='q' title='' autofocus)
+            svg.search-bg.svg-color
+              use(href='../assets/svg/icon-sprite.svg#search')
+          .Typeahead-menu
+    .nav-right.col-auto.pull-right.right-header.p-0.ms-auto
+      ul.nav-menus
+        li.onhover-dropdown.search-box
+          .search.header-search
+            svg
+              use(href='../assets/svg/icon-sprite.svg#search')
+          div.search-input
+            input.Typeahead-input.form-control-plaintext.w-100(type='text' placeholder='Search Boho ..' name='q' title='')
+        li.onhover-dropdown
+          .notification-box.animated
+            svg
+              use(href='../assets/svg/icon-sprite.svg#notification')
+          .onhover-show-div.notification-dropdown
+            h3.f-18.mb-0.dropdown-title Notitications                               
+            ul
+              li.b-t-primary.border-4
+                p
+                  a(href="../template/product.html")
+                    | Delivery processing  
+                  span.font-danger 10 min.
+              li.b-t-success.border-4
+                p
+                  a(href="../template/order-history.html")
+                    | Order Complete
+                  span.font-success 1 hr
+              li.b-t-secondary.border-4
+                p
+                  a(href="../template/checkout.html")
+                    | Tickets Generated
+                  span.font-secondary 3 hr
+              li.b-t-warning.border-4
+                p
+                  a(href="../template/list-products.html")
+                    | Delivery Complete
+                  span.font-warning 6 hr
+              li.check-button.p-0
+                a.f-w-500(href="#") Check all
+        li
+          .mode
+            svg
+              use(href='../assets/svg/icon-sprite.svg#moon')
+        li.onhover-dropdown
+          svg
+            use(href='../assets/svg/icon-sprite.svg#star')
+          .onhover-show-div.bookmark-flip
+            .flip-card
+              .flip-card-inner
+                .front
+                  h3.f-18.mb-0.dropdown-title Bookmark
+                  ul.bookmark-dropdown
+                    li
+                      .row
+                        .col-4.text-center
+                          a(href="../template/form-validation.html") 
+                            .bookmark-content
+                              .bookmark-icon
+                                i(data-feather='file-text')
+                              span.f-w-700.mt-2 Forms
+                        .col-4.text-center
+                          a(href="../template/email-application.html")
+                            .bookmark-content
+                              .bookmark-icon
+                                i(data-feather='user')
+                              span.f-w-700.mt-2 Profile
+                        .col-4.text-center
+                          a(href="../template/email-application.html")
+                            .bookmark-content
+                              .bookmark-icon
+                                i(data-feather='server')
+                              span.f-w-700.mt-2 Tables
+                    li.text-centermedia-body.check-button.mt-0 
+                      a.flip-btn#flip-btn.f-w-500(href="javascript:void(0)") Add New Bookmark
+                .back
+                  ul
+                    li
+                      .bookmark-dropdown.flip-back-content
+                        input(type='text' placeholder='search...')
+                    li.check-button
+                      a.f-w-500.d-block.flip-back#flip-back(href="javascript:void(0)")
+                        | Back
+        li.onhover-dropdown
+          .notification-box
+            svg
+              use(href='../assets/svg/icon-sprite.svg#Message')
+            span.badge.rounded-pill.badge-secondary  
+          .onhover-show-div
+            h3.f-18.mb-0.dropdown-title Message
+            ul.message-box
+              li
+                .d-flex
+                  .flex-shrink-0.bg-primary
+                    i.fa.fa-check-circle
+                  .flex-grow-1 
+                    a(href="../template/chat.html") 
+                      h4 Helen Walter
+                      p Hi , Helen
+                  span 10 min.
+              li
+                .d-flex
+                  .flex-shrink-0.bg-secondary
+                    i.fa.fa-exclamation-circle
+                  .flex-grow-1 
+                    a(href="../template/chat.html")
+                      h4 Vincent Porter
+                      p Change for anyone.
+                  span 35 min.
+              li
+                .d-flex
+                  .flex-shrink-0.bg-success
+                    i.fa.fa-times-circle
+                  .flex-grow-1 
+                    a(href="../template/chat.html")
+                      h4 Ginger Johnston
+                      p Hello Name
+                  span 50 min.
+              li
+                .d-flex
+                  .flex-shrink-0.bg-warning
+                    i.fa.fa-check-circle
+                  .flex-grow-1 
+                    a(href="../template/chat.html")
+                      h4 Kori Thomas
+                      p Well I am not sure.
+                  span 27 min.
+              li.pb-0.mt-3.check-button
+                a.f-w-500(href="#") Check all
+        li.cart-nav.onhover-dropdown
+          .cart-box
+            svg
+              use(href='../assets/svg/icon-sprite.svg#stroke-ecommerce')
+          .cart-dropdown.onhover-show-div
+            h3.f-18.mb-0.dropdown-title Cart
+            ul
+              li
+                .d-flex
+                  img.img-fluid.b-r-5.me-3.img-60(src='../assets/images/dashboard-2/product/1.png', alt='')
+                  .flex-grow-1
+                    a(href="../template/product.html") 
+                      span Furniture Chair for Home
+                    .qty-box
+                      .input-group
+                        span.input-group-prepend
+                          button.btn.quantity-left-minus(type='button' data-type='minus' data-field='')
+                            | -
+                        input.form-control.input-number.f-14.f-w-500(type='text' name='quantity' value='1')
+                        span.input-group-prepend
+                          button.btn.quantity-right-plus(type='button' data-type='plus' data-field='')
+                            | +
+                    h5.font-primary $500
+                  .close-circle
+                    a.bg-danger(href='#')
+                      i(data-feather='x')
+              li
+                .d-flex
+                  img.img-fluid.b-r-5.me-3.img-60(src='../assets/images/dashboard-2/product/2.png', alt='')
+                  .flex-grow-1
+                    a(href="../template/product.html") 
+                      span The best office table
+                    .qty-box
+                      .input-group  
+                        span.input-group-prepend
+                          button.btn.quantity-left-minus(type='button' data-type='minus' data-field='')
+                            | -
+                        input.form-control.input-number.f-14.f-w-500(type='text' name='quantity' value='1')
+                        span.input-group-prepend
+                          button.btn.quantity-right-plus(type='button' data-type='plus' data-field='')
+                            | +
+                    h5.font-primary $500.00
+                  .close-circle
+                    a.bg-danger(href='#')
+                      i(data-feather='x')
+              li.total
+                h6.mb-0
+                  | Order Total : 
+                  span.f-right.f-w-700 $1000.00
+              li 
+                a.d-block.view-cart.text-center.f-w-700(href='../template/cart.html')
+                  | Go to your cart
+              li.text-center.check-button
+                a.btn.btn-primary.view-checkout(href='../template/checkout.html')
+                  | Checkout  
+        li.language-nav
+          .translate_wrapper
+            .current_lang
+              .lang
+                i.flag-icon.flag-icon-gb
+                span.lang-txt EN                               
+            .more_lang
+              .lang.selected(data-value='en')
+                i.flag-icon.flag-icon-us
+                span.lang-txt
+                  | English
+                  span  (US)
+              .lang(data-value='de')
+                i.flag-icon.flag-icon-de
+                span.lang-txt Deutsch
+              .lang(data-value='es')
+                i.flag-icon.flag-icon-es
+                span.lang-txt Español
+              .lang(data-value='fr')
+                i.flag-icon.flag-icon-fr
+                span.lang-txt Français
+              .lang(data-value='pt')
+                i.flag-icon.flag-icon-pt
+                span.lang-txt
+                  | Português
+                  span  (BR)
+              .lang(data-value='cn')
+                i.flag-icon.flag-icon-cn
+                span.lang-txt 简体中文
+              .lang(data-value='am')
+                i.flag-icon.flag-icon-am
+                span.lang-txt
+                  | لعربية 
+                  span  (ae)
+        li.profile-nav.onhover-dropdown.pe-0.py-0
+          .d-flex.profile-media
+            img(src='../assets/images/profile.png', alt='')
+            .flex-grow-1
+              span Helen Walter
+              p.mb-0.font-roboto Admin 
+                i.middle.fa.fa-angle-down
+          ul.profile-dropdown.onhover-show-div
+            li
+              a(href='../template/user-profile.html')
+                i(data-feather='user')
+                span Account 
+            li
+              a(href='../template/email-application.html')
+                i(data-feather='mail')
+                span Inbox
+            li
+              a(href='../template/task.html')
+                i(data-feather='file-text')
+                span Taskboard
+            li
+              a(href='../template/edit-profile.html')
+                i(data-feather='settings')
+                span Settings
+            li
+              a(href='../template/login.html')
+                i(data-feather='log-in') 
+                span Log in
+    script.result-template(type='text/x-handlebars-template').
+      <div class="ProfileCard u-cf">                        
+      <div class="ProfileCard-avatar"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay m-0"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path><polygon points="12 15 17 21 7 21 12 15"></polygon></svg></div>
+      <div class="ProfileCard-details">
+      <div class="ProfileCard-realName">{{name}}</div>
+      </div>
+      </div>
+    script.empty-template(type='text/x-handlebars-template').
+      <div class="EmptyMessage">Your search turned up 0 results. This most likely means the backend is down, yikes!</div>
+//- sub header
+.page-sub-header(data-layout="stroke-svg") 
+  .body-header
+    ul.sidebar-body-menu
+      li
+        div 
+          a(href="../template/index.html" target="_blank") 
+            h3.lan-1 Black Quality
+            span.lan-2 Dashboards,widgets.
+        
+      li
+        div 
+          h3 Starter kit
+          span.lan-4 Ready To Use Apps
+        ul.sidebar-body-mainmenu 
+          li 
+            a(href="#") 
+              svg.stroke-icon
+                use(href='../assets/svg/icon-sprite.svg#stroke-animation')
+              svg.fill-icon
+                use(href='../assets/svg/icon-sprite.svg#fill-animation')
+              | Color version 
+            span.sub-body-arrow
+              i.fa.fa-angle-right
+            ul.sidebar-body-submenu.custom-scrollbar  
+              li
+                a(href='index.html') Layout Light
+              li
+                a(href='layout-dark.html') Layout Dark
+          li 
+            a(href="#") 
+              svg.stroke-icon
+                use(href='../assets/svg/icon-sprite.svg#stroke-layout')
+              svg.fill-icon
+                use(href='../assets/svg/icon-sprite.svg#fill-layout') 
+              | Page layout
+            span.sub-body-arrow
+              i.fa.fa-angle-right
+            ul.sidebar-body-submenu.custom-scrollbar  
+              li
+                a(href='boxed.html') Boxed
+              li
+                a(href='layout-rtl.html') RTL
+          li 
+            a(href="hide-on-scroll.html") 
+              svg.stroke-icon
+                use(href='../assets/svg/icon-sprite.svg#stroke-project')
+              svg.fill-icon
+                use(href='../assets/svg/icon-sprite.svg#fill-project')
+              | Hide menu on Scroll
+          li 
+            a(href="#") 
+              svg.stroke-icon
+                use(href='../assets/svg/icon-sprite.svg#stroke-knowledgebase')
+              svg.fill-icon
+                use(href='../assets/svg/icon-sprite.svg#fill-knowledgebase')
+              | Footers
+            span.sub-body-arrow
+              i.fa.fa-angle-right
+            ul.sidebar-body-submenu.custom-scrollbar  
+              li
+                a(href='footer-light.html') Footer Light
+              li
+                a(href='footer-dark.html') Footer Dark
+              li
+                a(href='footer-fixed.html') Footer Fixed
+      li
+        div 
+          a(href='https://support.pixelstrap.com/portal/en/signin', target='_blank') 
+            h3 Raise Support
+            span Customer Support
+      li
+        div 
+          a(href='https://docs.pixelstrap.com/Boho/html/document/', target='_blank') 
+            h3 Documentation 
+            span For Better Experience
+            
+            
+// Page Header Ends                               

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Night Audit Dashboard Print View</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 32px;
+      color: #23272f;
+      font-size: 15px;
+    }
+    h1, h2 {
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 28px;
+      margin-top: 0;
+      margin-bottom: 24px;
+      color: #3378d5;
+    }
+    .section {
+      background: #f9fafc;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #e2e8f0;
+      padding: 24px;
+      margin-bottom: 32px;
+      page-break-inside: avoid;
+    }
+    .cards-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px #dde7f5;
+      padding: 20px 18px;
+      text-align: center;
+      min-width: 170px;
+      flex: 1 1 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 2px solid #f0f4fa;
+    }
+    .card .big {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 7px;
+      color: #3366cc;
+    }
+    .card .label {
+      font-size: 13px;
+      color: #687882;
+    }
+    .card.gold .big { color: #e6b400; }
+    .card.green .big { color: #34a853; }
+    .card.red .big { color: #e4572e; }
+    .card.blue .big { color: #3378d5; }
+
+    table {
+      font-size: 15px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 10px 6px;
+      border: 1px solid #e3e7ed;
+      text-align: center;
+    }
+    th {
+      background: #eaf4ff;
+      font-weight: 600;
+      color: #486081;
+    }
+    td.status-paid {
+      color: #34a853;
+      font-weight: 500;
+    }
+    td.status-unpaid {
+      color: #e4572e;
+      font-weight: 500;
+    }
+    td.status-comp {
+      color: #e6b400;
+      font-weight: 500;
+    }
+    td.action {
+      color: #3378d5;
+      font-weight: 500;
+    }
+    /* Progress Bar */
+    .progress-bar-bg {
+      background: #e3e7ed;
+      border-radius: 8px;
+      width: 100%;
+      height: 16px;
+      margin: 10px 0 4px;
+      position: relative;
+    }
+    .progress-bar {
+      background: #34a853;
+      height: 100%;
+      border-radius: 8px;
+      width: 70%;
+    }
+    /* Checklist */
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+      margin: 12px 0 0 0;
+      font-size: 16px;
+      column-count: 2;
+      column-gap: 50px;
+    }
+    .checklist li {
+      margin-bottom: 10px;
+      padding-left: 0;
+      position: relative;
+    }
+    .checkmark {
+      color: #34a853;
+      font-size: 18px;
+      font-weight: bold;
+      margin-right: 9px;
+      vertical-align: middle;
+    }
+    @media print {
+      body { padding: 0; }
+      .section { box-shadow: none; border: 1px solid #e3e7ed; }
+      .card { box-shadow: none; border: 1px solid #dce3ea; }
+      h1, h2 { color: #222; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Night Audit Dashboard</h1>
+
+  <!-- KOT Audit Section -->
+  <div class="section">
+    <h2>KOT Audit</h2>
+    <div class="cards-row">
+      <div class="card blue">
+        <span class="big">10,000</span>
+        <div class="label">Total Revenue</div>
+      </div>
+      <div class="card green">
+        <span class="big">4,200</span>
+        <div class="label">Total KOT's</div>
+      </div>
+      <div class="card gold">
+        <span class="big">7,000</span>
+        <div class="label">Total Item Orders</div>
+      </div>
+      <div class="card red">
+        <span class="big">57</span>
+        <div class="label">Cancelled KOT</div>
+      </div>
+    </div>
+    <div class="cards-row">
+      <div class="card green">
+        <span class="big">1,10,000</span>
+        <div class="label">Cash Payment <span style="color:#687882;">(56%)</span></div>
+      </div>
+      <div class="card blue">
+        <span class="big">40,000</span>
+        <div class="label">Card Payment <span style="color:#687882;">(25%)</span></div>
+      </div>
+      <div class="card gold">
+        <span class="big">20,000</span>
+        <div class="label">UPI <span style="color:#687882;">(12%)</span></div>
+      </div>
+    </div>
+    <div class="cards-row">
+      <div class="card red">
+        <span class="big">20</span>
+        <div class="label">Cancelled KOT (Today)</div>
+      </div>
+      <div class="card gold">
+        <span class="big">30</span>
+        <div class="label">Complimentary KOT (Today)</div>
+      </div>
+    </div>
+    <table>
+      <tr>
+        <th>Room No.</th>
+        <th>Guest Name</th>
+        <th>Status</th>
+        <th>Amount</th>
+        <th>Pending</th>
+        <th>Action</th>
+      </tr>
+      <tr>
+        <td>101</td><td>Sumit</td>
+        <td class="status-paid">Paid</td>
+        <td>4000</td><td>00</td>
+        <td class="action">View</td>
+      </tr>
+      <tr>
+        <td>201</td><td>Raman</td>
+        <td class="status-unpaid">Unpaid</td>
+        <td>4000</td><td>00</td>
+        <td class="action">View</td>
+      </tr>
+      <tr>
+        <td>301</td><td>Raman</td>
+        <td class="status-comp">Complimentary</td>
+        <td>4000</td><td>00</td>
+        <td class="action">View</td>
+      </tr>
+      <tr>
+        <td>303</td><td>Sumit</td>
+        <td class="status-paid">Paid</td>
+        <td>4000</td><td>00</td>
+        <td class="action">View</td>
+      </tr>
+      <tr>
+        <td>304</td><td>Satyam</td>
+        <td class="status-unpaid">Unpaid</td>
+        <td>4000</td><td>00</td>
+        <td class="action">View</td>
+      </tr>
+      <tr>
+        <td>306</td><td>Satyam</td>
+        <td class="status-comp">Complimentary</td>
+        <td>4000</td><td>00</td>
+        <td class="action">View</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Revenue Audit Section -->
+  <div class="section">
+    <h2>Revenue Audit</h2>
+    <table>
+      <tr>
+        <th>Mode</th>
+        <th>Amount</th>
+        <th>Department</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>Cash</td>
+        <td>2,000,000</td>
+        <td>Rooms</td>
+        <td class="status-paid">Reconciled</td>
+      </tr>
+      <tr>
+        <td>Cash</td>
+        <td>2,000,000</td>
+        <td>Rooms</td>
+        <td class="status-paid">Reconciled</td>
+      </tr>
+      <tr>
+        <td>Card</td>
+        <td>2,000,000</td>
+        <td>Restaurant</td>
+        <td class="status-paid">Reconciled</td>
+      </tr>
+      <tr>
+        <td>Cash</td>
+        <td>2,000,000</td>
+        <td>Rooms</td>
+        <td class="status-paid">Reconciled</td>
+      </tr>
+      <tr>
+        <td>Cash</td>
+        <td>2,000,000</td>
+        <td>Rooms</td>
+        <td class="status-paid">Reconciled</td>
+      </tr>
+      <tr>
+        <td>Cash</td>
+        <td>2,000,000</td>
+        <td>Rooms</td>
+        <td class="status-paid">Reconciled</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div class="section">
+    <h2>Dashboard</h2>
+    <div style="margin-bottom:10px;">
+      <b>Audit Progress Overview</b>
+      <div class="progress-bar-bg">
+        <div class="progress-bar"></div>
+      </div>
+      <span>70% Completed &nbsp;|&nbsp; Remaining Time: <span style="color:#e4572e;">00:45 Min</span></span>
+    </div>
+    <div class="cards-row" style="margin-top:18px;">
+      <div class="card blue">
+        <span class="big">110/200</span>
+        <div class="label">Occupancy (55%)</div>
+      </div>
+      <div class="card green">
+        <span class="big">4,00,000</span>
+        <div class="label">Room Revenue</div>
+      </div>
+      <div class="card gold">
+        <span class="big">65</span>
+        <div class="label">Arrival (Tomorrow)</div>
+      </div>
+      <div class="card red">
+        <span class="big">60</span>
+        <div class="label">Departure (Today)</div>
+      </div>
+      <div class="card green">
+        <span class="big">2,00,000</span>
+        <div class="label">F&B Revenue</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Check List Section -->
+  <div class="section">
+    <h2>Audit Check List</h2>
+    <ul class="checklist">
+      <li><span class="checkmark">&#10003;</span>Financial Reconciliation</li>
+      <li><span class="checkmark">&#10003;</span>Guest Folio Review</li>
+      <li><span class="checkmark">&#10003;</span>Rooms/Inventory Review</li>
+      <li><span class="checkmark">&#10003;</span>Revenue Audit</li>
+      <li><span class="checkmark">&#10003;</span>Closure/House Keeping Review</li>
+      <li><span class="checkmark">&#10003;</span>F&B Audit</li>
+    </ul>
+  </div>
+</body>
+</html>

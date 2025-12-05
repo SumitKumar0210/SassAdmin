@@ -1,0 +1,1 @@
+ALTER TABLE `reservations` CHANGE `advance_amount` `advance_amount` DOUBLE NULL DEFAULT '0';

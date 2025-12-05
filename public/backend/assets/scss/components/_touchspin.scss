@@ -1,0 +1,224 @@
+/**=====================
+  2.32 Touchspin CSS Start
+==========================**/
+.bootstrap-touchspin {
+  input {
+    &.touchspin {
+      padding: 0 12px;
+    }
+  }
+
+  .input-group .btn {
+    padding: 0.5rem 1.75rem;
+  }
+
+  .touchspin-vertical-tab {
+    .input-group {
+      .input-group-btn-vertical {
+        position: relative;
+        white-space: nowrap;
+        width: 1%;
+        vertical-align: middle;
+        display: table-cell;
+
+        .bootstrap-touchspin-down {
+          margin-top: -2px;
+        }
+
+        i {
+          position: absolute;
+          top: 4px;
+          left: 7px;
+          font-size: 10px;
+          font-weight: normal;
+        }
+
+        >.btn {
+          display: block;
+          float: none;
+          width: 100%;
+          max-width: 100%;
+          padding: 9px;
+          margin-left: -1px;
+          position: relative;
+        }
+      }
+    }
+  }
+
+  .input-group {
+    font-family: $font-secular;
+
+    .btn {
+      border-radius: 0 !important;
+    }
+  }
+
+  .dropdown-basic {
+    .dropdown {
+      .dropbtn {
+        padding: 9px 30px;
+      }
+
+      .dropdown-content {
+        z-index: 9999;
+      }
+    }
+  }
+}
+
+// Custom touchspin arrows
+.touchspin-wrapper {
+  .btn-touchspin {
+    border-radius: 5px;
+    width: 32px;
+    height: 32px;
+  }
+
+  input[type='number'] {
+    width: 85px;
+    padding: 3px;
+    text-align: center;
+    height: 30px;
+    background-color: transparent;
+
+    [class="dark-only"] & {
+      color: $white;
+    }
+  }
+}
+
+.hover-touchspin {
+  .btn-touchspin {
+    &.spin-border-dark {
+      &:hover {
+        background-color: $dark-color;
+        color: $white;
+      }
+    }
+  }
+}
+
+
+.pre-post-touchspin {
+
+  .decrement-touchspin,
+  .increment-touchspin,
+  .input-group-text {
+    padding: 7px 14px;
+    border: 0;
+  }
+
+  .input-group-text {
+    background-color: var(--light-bg);
+  }
+
+  .input-touchspin {
+    border: 1px solid var(--course-light-btn);
+    border-width: 2px;
+    text-align: center;
+    background-color: transparent;
+  }
+
+  .input-group {
+    width: auto;
+
+    .input-touchspin {
+      @media (max-width:768px) {
+        width: 100px;
+      }
+    }
+  }
+
+  &.bg-touchspin {
+    button[type='button'] {
+      border: 1px solid var(--course-light-btn);
+      border-width: 2px;
+      text-align: center;
+    }
+  }
+
+  .input-group> :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.rounded-touchspin {
+  .btn-touchspin {
+    border-radius: 50%;
+  }
+
+  .touchspin-wrapper {
+    input[type="number"] {
+      &.input-touchspin {
+        border-radius: 15px;
+      }
+
+    }
+  }
+}
+
+// touchspin 
+$stroke: (
+  primary: $primary-color,
+  secondary: $secondary-color,
+
+  warning: $warning-color,
+  info: $info-color,
+  success: $success-color,
+  danger: $danger-color,
+  light: $light-color,
+  dark: $dark-color
+);
+
+@each $key,
+$val in $stroke {
+  .touchspin-#{$key} {
+    background-color: $val;
+    border: 1px solid $val;
+    color: $white;
+  }
+
+  .touchspin-wrapper {
+    .btn-touchspin {
+      &.spin-border-#{$key} {
+        background-color: unset;
+        border: 1px solid $val;
+        color: $theme-body-font-color;
+
+        [class="dark-only"] & {
+          color: $white;
+        }
+      }
+    }
+
+    input[type='number'] {
+      &.spin-outline-#{$key} {
+        outline: 1px solid $val;
+        border: none;
+        border-radius: 3px;
+
+        [class="dark-only"] & {
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/**=====================
+    2.32 Touchspin CSS Ends
+==========================**/

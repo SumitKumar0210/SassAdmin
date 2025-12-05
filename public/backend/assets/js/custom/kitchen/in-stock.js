@@ -1,0 +1,34 @@
+let in_stock_table = $('#in-stock-table').DataTable({
+    processing:true,
+    serverSide:true,
+    ajax:{
+        url:inStockView,
+        type:"POST",
+        error:function(xhr,error,thrown){
+            console.log(xhr.responseText);
+            alert("An error occured "+thrown);
+        }
+    },
+        columns:[
+        {
+            data:'DT_RowIndex',
+            name:'DT_RowIndex'
+        },
+        {
+            data:'item_code',
+            name:'item_code'
+        },
+        {
+            data:'item_name',
+            name:'item_name'
+        },
+        {
+            data:'uom',
+            name:'uom'
+        },
+        {
+            data:'qty',
+            name:'qty'
+        }
+    ]
+});

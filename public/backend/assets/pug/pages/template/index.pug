@@ -1,0 +1,613 @@
+- var theme_customizer      = true;
+- var datatable             = true;
+- var page_datatable        = true;
+- var page_datatable_select = true;
+- var datatable_select      = true;
+- var apex                  = true;
+- var apexmoment            = true;
+- var dashboard_default     = true;
+- var notify                = true;
+- var animate               = true;
+- var typeahead             = true;
+- var typeahead_search      = true;
+- var sidebar               = true;
+- var scrollbar             = true;
+- var wow                   = true;
+- var slick                 = true;
+- var header_slider         = true;
+- var clipboard             = true;
+- var customcard            = true;
+- var height_equal          = true;
+- var date_picker           = true;
+- var prism                 = true;
+
+
+
+doctype html
+html(lang='en')
+  include ../../components/header-files
+  body
+    include ../../components/loader
+    include ../../components/taptop
+    // page-wrapper Start
+    #pageWrapper.page-wrapper.compact-sidebar.compact-small.material-icon
+      include ../../components/header
+      // Page Body Start
+      .page-body-wrapper
+        include ../../components/sidebar
+        .page-body
+          .container-fluid         
+            .page-title
+              .row
+                .col-12.col-sm-6.p-0  
+                  h3
+                    | Ecommerce Dashboard 
+                .col-12.col-sm-6.p-0
+                  ol.breadcrumb
+                    li.breadcrumb-item
+                      a(href='index.html')                                        
+                        svg.stroke-icon
+                          use(href='../assets/svg/icon-sprite.svg#breadcrumb-home')
+                    li.breadcrumb-item Dashboard
+                    li.breadcrumb-item.active  Ecommerce Dashboard      
+          // Container-fluid starts
+          .container-fluid.default-dashboard
+            .row
+              .col-xl-6.col-sm-12.box-col-5
+                .card.p-0.profile-greeting
+                  .card-body.wadewarren 
+                    .img-overlay
+                      h3 Good Morning,
+                      |  Wade Warren 
+                      p Here’s what’s happenin with your store today. See the statistics at once
+                      a.btn(href="product.html") 
+                        i.icofont.icofont-plus 
+                        | Add Product
+                    ul.list-unstyled.confetti 
+                      li 
+                        img(src="../assets/images/dashboard-2/ribbon1.png", alt="")
+                      li 
+                        img(src="../assets/images/dashboard-2/ribbon2.png", alt="")
+                      li 
+                        img(src="../assets/images/dashboard-2/ribbon1.png", alt="")
+                      li 
+                        img(src="../assets/images/dashboard-2/ribbon2.png", alt="")
+                      li 
+                        img(src="../assets/images/dashboard-2/ribbon1.png", alt="")
+                      li 
+                        img(src="../assets/images/dashboard-2/ribbon2.png", alt="")
+                      li 
+                        img(src="../assets/images/dashboard-2/ribbon3.png", alt="")
+                      li 
+                        img(src="../assets/images/dashboard-2/ribbon4.png", alt="")
+              .col-xl-3.col-md-6.col-sm-12.box-col-4e
+                .card
+                  .card-header.card-no-border
+                    .header-top
+                      h3 Your Current Balance
+                    .card-header-right
+                      ul.list-unstyled.card-option
+                        li
+                          div
+                            i.icon-settings
+                        li
+                          i.view-html.fa.fa-code
+                        li
+                          i.icofont.icofont-maximize.full-card
+                        li
+                          i.icofont.icofont-minus.minimize-card
+                        li
+                          i.icofont.icofont-refresh.reload-card
+                        li
+                          i.icofont.icofont-error.close-card 
+                  .card-body.pt-0  
+                    ul.list-unstyled.balance-card    
+                      li 
+                        h3 $18,837
+                      li.d-flex.justify-content-between 
+                        p Your Current Balance
+                        span +3,72,900
+                      li.d-flex.justify-content-between 
+                        p Sent amount
+                        span -25,105
+                      li.border-desh
+                      li.d-flex.justify-content-between 
+                        p Your Current Balance
+                        span +3,72,900
+                      li 
+                        div.d-flex.justify-content-center.gap-4  
+                          a.transfer.btn(href="checkout.html") Transfer  
+                          a.receive.btn(href="invoice-template.html") Receive 
+                    .code-box-copy
+                      button.code-box-copy__btn.btn-clipboard(data-clipboard-target='#balance-card' title='' data-bs-original-title='Copy' aria-label='Copy')
+                        i.icofont.icofont-copy-alt
+                      pre
+                        code.language-html#balance-card   
+                          |  &lt;ul class="list-unstyled balance-card"&gt;
+                          |   &lt;li&gt;
+                          |     &lt;h3&gt; $18,837 &lt;/h3&gt;
+                          |   &lt;/li&gt;
+                          |   &lt;li class="d-flex justify-content-between "&gt;
+                          |     &lt;p&gt; Your Current Balance &lt;/p&gt;
+                          |     &lt;span&gt; +3,72,900 &lt;/span&gt;
+                          |   &lt;/li&gt;
+                          |   &lt;li class="d-flex justify-content-between "&gt;
+                          |     &lt;p&gt; Sent amount &lt;/p&gt;
+                          |     &lt;span&gt; -25,105 &lt;/span&gt;
+                          |   &lt;/li&gt;
+                          |   &lt;li&gt;
+                          |     &lt;div&gt;
+                          |       &lt;a (href="checkout.html")&gt;  
+                          |         &lt;button class="transfer btn"&gt;Transfer &lt;/button&gt;
+                          |       &lt;/a&gt;
+                          |       &lt;a (href="checkout.html")&gt;  
+                          |         &lt;button class="receive btn"&gt;Receive &lt;/button&gt;
+                          |       &lt;/a&gt;
+                          |     &lt;/div&gt;
+                          |   &lt;/li&gt;
+                          |  &lt;/ul&gt;
+              .col-xl-3.col-md-6.col-sm-12.box-col-4e
+                .card
+                  .card-header.card-no-border
+                    .header-top
+                      h3 Weekly Visitors 
+                    .card-header-right
+                      ul.list-unstyled.card-option
+                        li
+                          div
+                            i.icon-settings
+                        li
+                          i.view-html.fa.fa-code
+                        li
+                          i.icofont.icofont-maximize.full-card
+                        li
+                          i.icofont.icofont-minus.minimize-card
+                        li
+                          i.icofont.icofont-refresh.reload-card
+                        li
+                          i.icofont.icofont-error.close-card
+                  .card-body.py-0
+                    #weekly-visitors
+                    .code-box-copy
+                        button.code-box-copy__btn.btn-clipboard(data-clipboard-target='#transaction-view' title='' data-bs-original-title='Copy' aria-label='Copy')
+                          i.icofont.icofont-copy-alt
+                        pre
+                          code.language-html#transaction-view
+                            |  &lt;div id="weekly-visitors"&gt; &lt;/div&gt;
+              .col-xl-4.col-sm-12.col-lg-4.col-md-12.box-col-4 
+                .card.profit-card
+                  .card-header.card-no-border
+                    .d-flex.justify-content-between  
+                      .flex-grow-1
+                        h4 Total Users
+                        h3 6542
+                        .progress
+                          .progress-bar.bg-primary.progress-bar-striped(role='progressbar', style='width: 35%', aria-valuenow='10', aria-valuemin='0', aria-valuemax='100')
+                      .flex-shrink-0  
+                        img(src='../assets/images/dashboard-2/total-icon/users.png' alt="")
+                  .card-body  
+                    .d-flex.justify-content-between   
+                      div 
+                        .d-flex.gap-1.align-items-center
+                          .user-box.down-icon
+                            i.fa.fa-sort-desc  
+                          span.f-w-500 
+                            strong.font-secondary.f-w-600 - 12.32% 
+                          | Last 6 Month
+                      div   
+                        .dropdown.icon-dropdown
+                          button#userdropdown.btn.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
+                            i(data-feather="more-vertical")
+                          .dropdown-menu.dropdown-menu-end(aria-labelledby='userdropdown')
+                            a.dropdown-item(href='#') Weekly
+                            a.dropdown-item(href='#') Monthly
+                            a.dropdown-item(href='#') Yearly
+              .col-xl-4.col-sm-12.col-lg-4.col-md-6.box-col-4 
+                .card.orders-card
+                  .card-header.card-no-border
+                    .d-flex.justify-content-between  
+                      .flex-grow-1
+                        h4 Total Orders
+                        h3 659
+                        .progress
+                          .progress-bar.bg-secondary.progress-bar-striped(role='progressbar', style='width: 45%', aria-valuenow='10', aria-valuemin='0', aria-valuemax='100')
+                      .flex-shrink-0  
+                        img(src='../assets/images/dashboard-2/total-icon/order.png' alt="")
+                  .card-body  
+                    .d-flex.justify-content-between   
+                      div 
+                        .d-flex.gap-1.align-items-center
+                          .user-box.up-icon
+                            i.fa.fa-sort-up  
+                          span.f-w-500 
+                            strong.font-primary.f-w-600 + 12.32% 
+                          | Last 6 Month
+                      div   
+                        .dropdown.icon-dropdown
+                          button#userdropdown2.btn.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
+                            i(data-feather="more-vertical")
+                          .dropdown-menu.dropdown-menu-end(aria-labelledby='userdropdown2')
+                            a.dropdown-item(href='#') Weekly
+                            a.dropdown-item(href='#') Monthly
+                            a.dropdown-item(href='#') Yearly
+              .col-xl-4.col-sm-12.col-lg-4.col-md-6.box-col-4 
+                .card.products-card
+                  .card-header.card-no-border
+                    .d-flex.justify-content-between  
+                      .flex-grow-1
+                        h4 Total Products
+                        h3 719
+                        .progress
+                          .progress-bar.bg-dark.progress-bar-striped(role='progressbar', style='width: 65%', aria-valuenow='10', aria-valuemin='0', aria-valuemax='100')
+                      .flex-shrink-0  
+                        img(src='../assets/images/dashboard-2/total-icon/product.png' alt="")
+                  .card-body  
+                    .d-flex.justify-content-between   
+                      div 
+                        .d-flex.gap-1.align-items-center
+                          .user-box.up-icon
+                            i.fa.fa-sort-up  
+                          span.f-w-500 
+                            strong.font-dark.f-w-600 + 12.32% 
+                          | Last 6 Month
+                      div   
+                        .dropdown.icon-dropdown
+                          button#userdropdown3.btn.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
+                            i(data-feather="more-vertical")
+                          .dropdown-menu.dropdown-menu-end(aria-labelledby='userdropdown3')
+                            a.dropdown-item(href='#') Weekly
+                            a.dropdown-item(href='#') Monthly
+                            a.dropdown-item(href='#') Yearly
+              .col-12 
+                .card
+                  .card-header.card-no-border.pb-0 
+                    .header-top
+                      h3 Best Selling Product
+                      .card-header-right-icon
+                        .dropdown
+                          button#dropdownMenuButton4.btn.dropdown-toggle(type='button', data-bs-toggle='dropdown', aria-expanded='false')
+                            | Yearly
+                          .dropdown-menu.dropdown-menu-end(aria-labelledby='dropdownMenuButton4')
+                            a.dropdown-item(href='#') Today
+                            a.dropdown-item(href='#') Tomorrow
+                            a.dropdown-item(href='#') Yesterday
+                  .card-body.pt-0.sellingproduct
+                    .table-responsive.theme-scrollbar
+                      table#selling-product.table.display(style='width:100%')
+                        thead
+                          tr
+                            th
+                              .form-check
+                                input.form-check-input(type='checkbox' value='')
+                                label.form-check-label(for='flexCheckDefault')
+                            th UID
+                            th Product
+                            th Catagory
+                            th Brand
+                            th Price   
+                            th Stock
+                            th Rating
+                            th Order
+                            th Sales
+                            th Action
+                        tbody
+                          tr
+                            td
+                              .form-check
+                                input#flexCheckDefault.form-check-input(type='checkbox' value='')
+                                label.form-check-label(for='flexCheckDefault')
+                            td 
+                              p #1
+                            td
+                              .d-flex.align-items-center
+                                .flex-shrink-0
+                                  img.img-50(src='../assets/images/dashboard-2/selling/01.png' alt="")
+                                .flex-grow-1.ms-2
+                                  a(href="product-page.html")
+                                    h5 Samsung TV
+                            td  Women’s
+                            td  Richman
+                            td  $20.00  
+                            td 265
+                            td 
+                              p
+                                i.fa.fa-star.font-warning
+                                | 2.5 (16)
+                            td 165
+                            td 35K
+                            td.text-center  
+                              span.edit-option  
+                                a(href="#") 
+                                  i(data-feather="edit")
+                              span.delete-option 
+                                a(href="#")
+                                  i.remove(data-feather="trash-2")
+                          tr
+                            td
+                              .form-check
+                                input#flexCheckDefault1.form-check-input(type='checkbox' value='')
+                                label.form-check-label(for='flexCheckDefault1')
+                            td 
+                              p #2
+                            td
+                              .d-flex.align-items-center
+                                .flex-shrink-0
+                                  img.img-50(src='../assets/images/dashboard-2/selling/02.png' alt="")
+                                .flex-grow-1.ms-2
+                                  a(href="product-page.html")
+                                    h5 Leather Belt
+                            td Men’s
+                            td Lubhauo
+                            td $16.00
+                            td 954
+                            td 
+                              p
+                                i.fa.fa-star.font-warning
+                                | 4.5 (16)
+                            td 789
+                            td 95K
+                            td.text-center  
+                              span.edit-option  
+                                a(href="#") 
+                                  i(data-feather="edit")
+                              span.delete-option 
+                                a(href="#")
+                                  i.remove(data-feather="trash-2") 
+                          tr
+                            td
+                              .form-check
+                                input#flexCheckDefault2.form-check-input(type='checkbox' value='')
+                                label.form-check-label(for='flexCheckDefault2')
+                            td 
+                              p #3
+                            td
+                              .d-flex.align-items-center
+                                .flex-shrink-0
+                                  img.img-50(src='../assets/images/dashboard-2/selling/03.png' alt="")
+                                .flex-grow-1.ms-2
+                                  a(href="product-page.html")
+                                    h5 Male Suit
+                            td Women’s
+                            td Cameron
+                            td $34.00
+                            td 123
+                            td 
+                              p
+                                i.fa.fa-star.font-warning
+                                | 2.5 (16)
+                            td 348
+                            td 19K
+                            td.text-center  
+                              span.edit-option  
+                                a(href="#") 
+                                  i(data-feather="edit")
+                              span.delete-option 
+                                a(href="#")
+                                  i.remove(data-feather="trash-2")
+                          tr
+                            td
+                              .form-check
+                                input#flexCheckDefault3.form-check-input(type='checkbox' value='')
+                                label.form-check-label(for='flexCheckDefault3')
+                            td 
+                              p #4
+                            td
+                              .d-flex.align-items-center
+                                .flex-shrink-0
+                                  img.img-50(src='../assets/images/dashboard-2/selling/04.png' alt="")
+                                .flex-grow-1.ms-2
+                                  a(href="product-page.html")
+                                    h5 Female Dress
+                            td Women’s
+                            td Wilson
+                            td $34.00
+                            td 756
+                            td 
+                              p
+                                i.fa.fa-star.font-warning
+                                | 2.5 (16)
+                            td 956
+                            td 20K
+                            td.text-center  
+                              span.edit-option  
+                                a(href="#") 
+                                  i(data-feather="edit")
+                              span.delete-option 
+                                a(href="#")
+                                  i.remove(data-feather="trash-2")  
+              .col-xl-7.col-md-12.col-lg-6.box-col-6
+                .card
+                  .card-header.card-no-border.relative
+                    .header-top
+                      h3.m-0 Sales Summary ( Jun 2023)
+                    div.d-flex.sales-summary.gap-2 
+                        div.d-flex.align-items-center.gap-1
+                          span
+                          p Orders
+                        div.d-flex.align-items-center.gap-1 
+                          span
+                          p Orders
+                    .card-header-right
+                      ul.list-unstyled.card-option
+                        li
+                          div
+                            i.icon-settings
+                        li
+                          i.view-html.fa.fa-code
+                        li
+                          i.icofont.icofont-maximize.full-card
+                        li
+                          i.icofont.icofont-minus.minimize-card
+                        li
+                          i.icofont.icofont-refresh.reload-card
+                        li
+                          i.icofont.icofont-error.close-card
+                  .card-body.py-0
+                    #salessummary
+                    .code-box-copy
+                        button.code-box-copy__btn.btn-clipboard(data-clipboard-target='#sales-summary' title='' data-bs-original-title='Copy' aria-label='Copy')
+                          i.icofont.icofont-copy-alt
+                        pre
+                          code.language-html#sales-summary
+                            |  &lt;div id="salessummary"&gt; &lt;/div&gt;
+              .col-xl-5.col-md-12.col-lg-6.box-col-6
+                .card
+                  .card-header.card-no-border
+                    .header-top
+                      h3.m-0 Track Order
+                    .card-header-right
+                      ul.list-unstyled.card-option
+                        li
+                          div
+                            i.icon-settings
+                        li
+                          i.view-html.fa.fa-code
+                        li
+                          i.icofont.icofont-maximize.full-card
+                        li
+                          i.icofont.icofont-minus.minimize-card
+                        li
+                          i.icofont.icofont-refresh.reload-card
+                        li
+                          i.icofont.icofont-error.close-card
+                  .card-body.pt-0
+                    .order-box 
+                        .d-flex
+                          .flex-shrink-0
+                            img(src='../assets/images/dashboard-2/total-icon/headphones.png' alt="")
+                          .flex-grow-1 
+                            a(href="chat.html") 
+                              h3 Old Reis Telephone
+                              p Sold by Vingate Techies
+                              p #BK739200
+                          span $30
+                    ul.track-order
+                      li 
+                        .d-flex
+                          .flex-shrink-0.bg-dark
+                            img(src='../assets/images/dashboard-2/total-icon/1.png' alt="")
+                          .flex-grow-1 
+                            div.d-flex.justify-content-between 
+                              a(href="chat.html") 
+                                h5 Order Placed
+                                p.text-truncate We have received Your Order
+                              span.font-primary.f-w-600 Jun20 05:40PM
+                      li 
+                        .d-flex
+                          .flex-shrink-0.bg-dark
+                            img(src='../assets/images/dashboard-2/total-icon/2.png' alt="")
+                          .flex-grow-1 
+                            div.d-flex.justify-content-between 
+                              a(href="chat.html") 
+                                h5 Order Packed
+                                p.text-truncate Your Product Packed and ready to shipped
+                              span.font-primary.f-w-600 Jun22 06:30PM
+                      li  
+                        .d-flex
+                          .flex-shrink-0
+                            img(src='../assets/images/dashboard-2/total-icon/3.png' alt="")
+                          .flex-grow-1 
+                            div.d-flex.justify-content-between 
+                              a(href="chat.html") 
+                                h5 On the way
+                                p.text-truncate Your Ordeis placed successfully.
+                              span.f-w-600 July 20
+                      li 
+                        .d-flex
+                          .flex-shrink-0
+                            img(src='../assets/images/dashboard-2/total-icon/4.png' alt="")
+                          .flex-grow-1 
+                            div.d-flex.justify-content-between 
+                              a(href="chat.html") 
+                                h5 Product Deliverd
+                                p.text-truncate Our courier partner will deliver our stuff on July 3, 2023...
+                    .code-box-copy
+                      button.code-box-copy__btn.btn-clipboard(data-clipboard-target='#track-order' title='' data-bs-original-title='Copy' aria-label='Copy')
+                        i.icofont.icofont-copy-alt
+                      pre
+                        code.language-html#track-order  
+                          |  &lt;ul class="track-order"&gt;
+                          |   &lt;div class="order-box"&gt;
+                          |     &lt;div class="d-flex"&gt;
+                          |       &lt;div class="flex-shrink-0"&gt;
+                          |         &lt;img (src='../assets/images/dashboard-2/total-icon/headphones.png')&gt;&lt;/img&gt;
+                          |       &lt;/div&gt;
+                          |       &lt;div class="flex-shrink-0"&gt;
+                          |         &lt;a (href="checkout.html")&gt; 
+                          |           &lt;h3&gt; Old Reis Telephone &lt;/h3&gt;
+                          |            &lt;p&gt; We have received Your Order &lt;/p&gt;
+                          |            &lt;p&gt; #BK739200 &lt;/p&gt;
+                          |         &lt;/a&gt;
+                          |         &lt;span&gt; $30 &lt;/span&gt; 
+                          |       &lt;/div&gt;
+                          |     &lt;/div&gt;
+                          |   &lt;/div&gt;
+                          |   &lt;li&gt;
+                          |     &lt;div class="d-flex"&gt;
+                          |       &lt;div class="flex-shrink-0 bg-dark"&gt;
+                          |         &lt;img (src='../assets/images/dashboard-2/total-icon/headphones.png')&gt;&lt;/img&gt;
+                          |       &lt;/div&gt;
+                          |       &lt;div class="flex-shrink-0"&gt;
+                          |         &lt;div class="flex-shrink-0"&gt;
+                          |           &lt;a (href="checkout.html")&gt; 
+                          |             &lt;h5&gt; Order Placed &lt;/h5&gt;
+                          |             &lt;p&gt; Your Product Packed and ready to shipped &lt;/p&gt;
+                          |           &lt;/a&gt;
+                          |          &lt;span class="font-primary.f-w-600"&gt; Jun20 05:40PM &lt;/span&gt; 
+                          |         &lt;/div&gt;
+                          |       &lt;/div&gt;
+                          |     &lt;/div&gt;
+                          |   &lt;/li&gt;
+                          |   &lt;li&gt;
+                          |     &lt;div class="d-flex"&gt;
+                          |       &lt;div class="flex-shrink-0 bg-dark"&gt;
+                          |         &lt;img (src='../assets/images/dashboard-2/total-icon/headphones.png')&gt;&lt;/img&gt;
+                          |       &lt;/div&gt;
+                          |       &lt;div class="flex-shrink-0"&gt;
+                          |         &lt;div class="flex-shrink-0"&gt;
+                          |           &lt;a (href="checkout.html")&gt; 
+                          |             &lt;h5&gt; Order Packed &lt;/h5&gt;
+                          |             &lt;p&gt; Sold by Vingate Techies &lt;/p&gt;
+                          |           &lt;/a&gt;
+                          |          &lt;span class="font-primary.f-w-600"&gt; Jun22 06:30PM &lt;/span&gt; 
+                          |         &lt;/div&gt;
+                          |       &lt;/div&gt;
+                          |     &lt;/div&gt;
+                          |   &lt;/li&gt;
+                          |   &lt;li&gt;
+                          |     &lt;div class="d-flex"&gt;
+                          |       &lt;div class="flex-shrink-0 bg-dark"&gt;
+                          |         &lt;img (src='../assets/images/dashboard-2/total-icon/headphones.png')&gt;&lt;/img&gt;
+                          |       &lt;/div&gt;
+                          |       &lt;div class="flex-shrink-0"&gt;
+                          |         &lt;div class="flex-shrink-0"&gt;
+                          |           &lt;a (href="checkout.html")&gt; 
+                          |             &lt;h5&gt; On the way &lt;/h5&gt;
+                          |             &lt;p&gt; Your Ordeis placed successfully. &lt;/p&gt;
+                          |           &lt;/a&gt;
+                          |          &lt;span class="font-primary.f-w-600"&gt; July 20 &lt;/span&gt; 
+                          |         &lt;/div&gt;
+                          |       &lt;/div&gt;
+                          |     &lt;/div&gt;
+                          |   &lt;/li&gt;
+                          |   &lt;li&gt;
+                          |     &lt;div class="d-flex"&gt;
+                          |       &lt;div class="flex-shrink-0 bg-dark"&gt;
+                          |         &lt;img (src='../assets/images/dashboard-2/total-icon/headphones.png')&gt;&lt;/img&gt;
+                          |       &lt;/div&gt;
+                          |       &lt;div class="flex-shrink-0"&gt;
+                          |         &lt;div class="flex-shrink-0"&gt;
+                          |           &lt;a (href="checkout.html")&gt; 
+                          |             &lt;h5&gt; Product Deliverd &lt;/h5&gt;
+                          |             &lt;p&gt; Our courier partner will deliver our stuff on July 3, 2023... &lt;/p&gt;
+                          |           &lt;/a&gt;
+                          |         &lt;/div&gt;
+                          |       &lt;/div&gt;
+                          |     &lt;/div&gt;
+                          |   &lt;/li&gt;
+                          |  &lt;/ul&gt;
+          // Container-fluid Ends
+        include ../../components/footer        
+    include ../../components/footer-files
+    script. 
+      new WOW().init();

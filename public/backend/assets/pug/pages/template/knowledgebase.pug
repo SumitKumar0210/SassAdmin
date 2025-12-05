@@ -1,0 +1,561 @@
+- var theme_customizer      = true;
+- var sidebar               = true;
+- var slick                 = true;
+- var header_slider         = true;
+- var animate               = true;
+- var scrollbar             = true;
+doctype html
+html(lang='en')
+  include ../../components/header-files
+  body
+    include ../../components/loader
+    include ../../components/taptop
+    // page-wrapper Start
+    #pageWrapper.page-wrapper.compact-sidebar.compact-small.material-icon
+      include ../../components/header
+      // Page Body Start
+      .page-body-wrapper
+        include ../../components/sidebar
+        .page-body
+          .container-fluid
+            .page-title
+              .row
+                .col-12.col-sm-6.p-0
+                  h3
+                    | Knowledgebase
+
+                .col-12.col-sm-6.p-0
+                  ol.breadcrumb
+                    li.breadcrumb-item
+                      a(href='index.html')                                        
+                        svg.stroke-icon
+                          use(href='../assets/svg/icon-sprite.svg#breadcrumb-home')
+                    li.breadcrumb-item Knowledgebase
+                    li.breadcrumb-item.active Knowledgebase
+          // Container-fluid starts
+          .container-fluid
+            .row
+              .col-12
+                .knowledgebase-bg
+                  img.bg-img-cover.bg-center(src="../assets/images/knowledgebase/bg_1.jpg" alt="looginpage" )
+                .knowledgebase-search
+                  div
+                    h3.f-28 How Can I help you?
+                    form.form-inline(action="#" method="get")
+                      .form-group.w-100
+                        i(data-feather='search')
+                        input.form-control-plaintext.w-100(type="text" placeholder="Type question here" title="")  
+              .col-xl-4.col-sm-6
+                .card.bg-subheader
+                  .card-body
+                    .d-flex.faq-widgets
+                      .flex-grow-1
+                        h3 Articles
+                        p
+                          | How little experience or technical knowledge you currently have. The web is a very big place, and if you are the typical internet user, you probably visit several websites every day.
+                      i(data-feather='book-open')
+              .col-xl-4.col-sm-6
+                .card.bg-subheader
+                  .card-body
+                    .d-flex.faq-widgets
+                      .flex-grow-1
+                        h3 Knowledgebase
+                        p
+                          | A Website Designing course enables learners to use essential and designing and programming tools required to do the job. The curriculum is a blend of various themes.
+                      i(data-feather='aperture')
+              .col-xl-4
+                .card.bg-subheader
+                  .card-body
+                    .d-flex.faq-widgets
+                      .flex-grow-1
+                        h3 Support
+                        p
+                          | The customer support industry is renaissance. Customer support as a specialty is coming into its own, offering companies a competitive advantage that’s difficult to copy.
+                      i(data-feather='file-text')
+              .col-sm-12
+                .header-faq
+                  h3.mb-0 Browse articles by category
+                .row
+                  .col-sm-12
+                    .card
+                      .card-header.card-no-border.pb-0
+                        h3 Browse Articles
+                      .card-body
+                        .row.browse.g-sm-4.g-3
+                          .col-xl-4.xl-50.col-md-6
+                            .browse-articles
+                              h4
+                                span
+                                  i(data-feather='archive')
+                                | Quick Questions are answered
+                              ul
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Lorem Ipsum is simply dummy text of the printing
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Lorem Ipsum has been the industry's standard dummy 
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span When an unknown printer took a galley 
+                                    span.badge.badge-primary.pull-right New
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span But also the leap into electronic typesetting, 
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='arrow-right')
+                                    span See More (40)
+                          .col-xl-4.xl-50.col-md-6
+                            .browse-articles
+                              h4
+                                span
+                                  i(data-feather='archive')
+                                |  Integrating WordPress with Your Website
+                              ul
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span It was popularised in the 1960s with the release
+                                    span.badge.badge-primary.pull-right Review
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Etraset sheets containing Lorem Ipsum passages
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Desktop publishing software like Aldus PageMaker 
+                                    span.badge.badge-primary.pull-right Articles
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Making this the first true generator on the Internet.
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='arrow-right')
+                                    span See More (90)
+                          .col-xl-4.xl-50.col-md-6
+                            .browse-articles
+                              h4
+                                span
+                                  i(data-feather='archive')
+                                | WordPress Site Maintenance
+                              ul
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Lorem, ipsum dolor sit amet consectetur adipisicing
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Normal distribution of letters, as opposed to using 
+                                    span.badge.badge-primary.pull-right Closed
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Lorem Ipsum, you need to be sure there isn't anything  
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Repetition, injected humour, or non words etc
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='arrow-right')
+                                    span See More (50)
+                          .col-xl-4.xl-50.col-md-6
+                            .browse-articles.browse-bottom
+                              h4
+                                span
+                                  i(data-feather='archive')
+                                  |  Meta Tags in WordPress
+                              ul
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Nemo enim ipsam voluptatem quia voluptas sit  
+                                    span.badge.badge-primary.pull-right Popular
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Ipsum quia dolor sit amet, consectetur
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Sed quia non numquam eius modi tempora incidunt
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Lorem eum fugiat quo voluptas nulla pariatu
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='arrow-right')
+                                    span See More (90)
+                          .col-xl-4.xl-50.col-md-6
+                            .browse-articles.browse-bottom
+                              h4
+                                span
+                                  i(data-feather='archive')
+                                | WordPress in Your Language
+                              ul
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Desktop publishing software like Aldus PageMaker
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Etraset sheets containing Lorem Ipsum passages
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span It was popularised in the 1960s with the release
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Making this the first true generator on the Internet
+                                    span.badge.badge-primary.pull-right Closed
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='arrow-right')
+                                    span See More (50)
+                          .col-xl-4.xl-50.col-md-6
+                            .browse-articles.browse-bottom
+                              h4
+                                span
+                                  i(data-feather='archive')
+                                | Know Your Sources
+                              ul
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span The point of using Lorem Ipsum 
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span It has a more-or-less normal distribution of letters
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Et harum quidem rerum facilis est et expedita
+                                    span.badge.badge-primary.pull-right Article
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Nam libero tempore, cum soluta nobis est eligendi 
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='arrow-right')
+                                    span See More (26)
+                          .col-xl-4.xl-50.col-md-6
+                            .browse-articles.browse-bottom
+                              h4
+                                span
+                                  i(data-feather='archive')
+                                | Validating a Website
+                              ul
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span When our power of choice is untrammelled 
+                                    span.badge.badge-primary.pull-right Review
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span It will frequently occur that pleasures  
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span who fail in their duty through weakness 
+                                    span.badge.badge-primary.pull-right Closed
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span  At vero eos et accusamus et iusto 
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='arrow-right')
+                                    span See More (10)
+                          .col-xl-4.xl-50.col-md-6
+                            .browse-articles.browse-bottom
+                              h4
+                                span
+                                  i(data-feather='archive')
+                                | Quick Questions are answered
+                              ul
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Quis autem vel eum iure reprehenderit  
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Ducimus  blanditiis praesentium voluptatum
+                                    span.badge.badge-primary.pull-right Popular
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Omnis voluptas assumenda est
+                                    span.badge.badge-primary.pull-right Review
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Produces no resultant pleasure
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='arrow-right')
+                                    span See More (21)
+                          .col-xl-4.xl-100
+                            .browse-articles.browse-bottom
+                              h4
+                                span
+                                  i(data-feather='archive')
+                                | Integrating WordPress with Your Website
+                              ul
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Lorem Ipsum passage, and going through
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span The first line of Lorem Ipsum,  Lorem ipsum 
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span Thus comes from a line in section
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='file-text')
+                                    span First true generator on the Internet
+                                    span.badge.badge-primary.pull-right On hold
+                                li
+                                  a(href='#')
+                                    span
+                                      i(data-feather='arrow-right')
+                                    span See More (34)
+              .col-lg-12
+                .header-faq
+                  h3.mb-0 Featured Tutorials
+                .row
+                  .col-xl-3.xl-50.col-md-6.box-col-3
+                    .card.features-faq.product-box
+                      .faq-image.product-img
+                        img.img-fluid(src='../assets/images/faq/1.jpg', alt='')
+                        .product-hover
+                          ul
+                            li
+                              i.icon-link
+                            li
+                              i.icon-import
+                      .card-body
+                        h3  Web Design
+                        p
+                          | A Web Designing course belongs to the field of Computer It enables students to learn various techniques.
+                      .card-footer
+                        span Dec 15, 2022
+                        span.pull-right
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                  .col-xl-3.xl-50.col-md-6.box-col-3
+                    .card.features-faq.product-box
+                      .faq-image.product-img
+                        img.img-fluid(src='../assets/images/faq/2.jpg', alt='')
+                        .product-hover
+                          ul
+                            li
+                              i.icon-link
+                            li
+                              i.icon-import
+                      .card-body
+                        h3 Web Development
+                        p
+                          | A Web Development course belongs to the field of Computer It enables students to learn various techniques.
+                      .card-footer
+                        span Dec 15, 2022
+                        span.pull-right
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star-o.font-primary
+                  .col-xl-3.xl-50.col-md-6.box-col-3
+                    .card.features-faq.product-box
+                      .faq-image.product-img
+                        img.img-fluid(src='../assets/images/faq/3.jpg', alt='')
+                        .product-hover
+                          ul
+                            li
+                              i.icon-link
+                            li
+                              i.icon-import
+                      .card-body
+                        h3 UI Design
+                        p
+                          | User interface design (UI) is the design for machines and software, such as mobile devices, computers.
+                      .card-footer
+                        span Dec 15, 2022
+                        span.pull-right
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                  .col-xl-3.xl-50.col-md-6.box-col-3
+                    .card.features-faq.product-box
+                      .faq-image.product-img
+                        img.img-fluid(src='../assets/images/faq/4.jpg', alt='')
+                        .product-hover
+                          ul
+                            li
+                              i.icon-link
+                            li
+                              i.icon-import
+                      .card-body
+                        h3  UX Design
+                        p
+                          | User Experience design (UX) is the design for machines and software, such as mobile devices, computers.
+                      .card-footer
+                        span Dec 15, 2022
+                        span.pull-right
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star.font-primary
+                          i.fa.fa-star-half-o.font-primary
+              .col-lg-12
+                .header-faq
+                  h3.mb-0 Latest articles and videos
+                .row
+                  .col-xl-4.col-md-6
+                    .row
+                      .col-sm-12
+                        .card
+                          .card-body
+                            .d-flex
+                              i.m-r-30(data-feather='codepen')
+                              .flex-grow-1
+                                h4.f-w-700.f-18.mb-1 Article Base Video
+                                p The web is a very big place, and if you are the typical internet base user.
+                      .col-sm-12
+                        .card
+                          .card-body
+                            .d-flex
+                              i.m-r-30(data-feather='codepen')
+                              .flex-grow-1
+                                h4.f-w-700.f-18.mb-1.mb-1 Knows your sources
+                                p A book giving information on many subjects or on many aspects of one subject.
+                      .col-sm-12
+                        .card
+                          .card-body
+                            .d-flex
+                              i.m-r-30(data-feather='codepen')
+                              .flex-grow-1
+                                h4.f-w-700.f-18.mb-1  Sources credible/reliable
+                                p Simple demos of frequently asked questions about using the information resources 
+                  .col-xl-4.col-md-6
+                    .row
+                      .col-sm-12
+                        .card
+                          .card-body
+                            .d-flex
+                              i.m-r-30(data-feather='file-text')
+                              .flex-grow-1
+                                h4.f-w-700.f-18.mb-1  Validate website
+                                p  Website is the process of ensuring that the pages on the website conform.
+                      .col-sm-12
+                        .card
+                          .card-body
+                            .d-flex
+                              i.m-r-30(data-feather='file-text')
+                              .flex-grow-1
+                                h4.f-w-700.f-18.mb-1  Tailwind Design
+                                p  Tailwind is so low-level, it never encourages you to design the same site twice.
+                      .col-sm-12
+                        .card
+                          .card-body
+                            .d-flex
+                              i.m-r-30(data-feather='file-text')
+                              .flex-grow-1
+                                h4.f-w-700.f-18.mb-1 Knows your sources
+                                p A book giving information on many subjects or on many aspects of one subject.
+                  .col-xl-4
+                    .row
+                      .col-xl-12.col-md-6
+                        .card
+                          .card-body
+                            .d-flex
+                              i.m-r-30(data-feather='youtube')
+                              .flex-grow-1
+                                h4.f-w-700.f-18.mb-1 Sources Demos
+                                p Simple demos of frequently asked questions about using the information resources
+                      .col-xl-12.col-md-6
+                        .card
+                          .card-body
+                            .d-flex
+                              i.m-r-30(data-feather='youtube')
+                              .flex-grow-1
+                                h4.f-w-700.f-18.mb-1  Validate Html
+                                p Website is the process of ensuring that the pages on the website conform.
+                      .col-xl-12
+                        .card
+                          .card-body
+                            .d-flex
+                              i.m-r-30(data-feather='youtube')
+                              .flex-grow-1
+                                h4.f-w-700.f-18.mb-1  Web Design
+                                p Web is so high-level, it never encourages you to design the same site twiceCras dapibus.
+          // Container-fluid Ends
+        include ../../components/footer
+    include ../../components/footer-files

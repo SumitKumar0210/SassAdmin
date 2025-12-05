@@ -1,0 +1,246 @@
+.login-card .logo img {
+    max-height: 60px;
+}
+.reservation.card {
+    box-shadow: none !important;
+    border-color: transparent;
+}
+.reservation .table-responsive {
+    overflow-y: hidden;
+}
+.reservation table th,
+.availability table th {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    padding: 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+.reservation .full-screen-icon svg {
+    width: 16px;
+    height: 16px;
+    font-weight: 500;
+    color: #747474;
+}
+.reservation .full-screen-icon {
+    border-radius: 4px;
+    line-height: 1;
+}
+.table-hover tbody tr td svg {
+    width: 30px;
+    height: 28px;
+    padding: 0;
+    border-radius: 4px;
+    margin-right: 5px;
+    line-height: 1;
+    padding-top: 8px;
+}
+.hidden {
+    display: none;
+}
+.reservation .expand-icon {
+    font-size: 20px;
+    vertical-align: top;
+}
+.reservation .room-title {
+    background-color: rgba(51, 191, 191, 0.1);
+}
+.reservation .unallocated-room {
+    background-color: rgba(255, 97, 80, 0.1);
+}
+.reservation table th:first-child,
+.reservation table td:first-child {
+    width: 100px;
+}
+.availability table th:first-child,
+.availability table td:first-child {
+    width: 270px;
+    max-width: 270px;
+}
+.availability table .room-capacity {
+    width: 50px;
+    margin: 0 auto;
+    text-align: center;
+}
+.availability table .room-capacity h5 {
+    font-weight: 400;
+}
+.availability .table th,
+.availability .table td {
+    padding: 0.35rem 0.35rem;
+    width: 100px;
+}
+.availability table {
+    width: auto;
+}
+.page-sub-header .body-header .sidebar-body-menu {
+    display: flex;
+    justify-content: flex-start !important;
+}
+.alert-light-danger {
+    background-color: rgba(241, 82, 61, 0.2) !important;
+    border-color: rgba(241, 82, 61, 0.2) !important;
+    color: #fff;
+}
+.fixed-column {
+    position: sticky;
+    left: 0;
+    background-color: #fff !important;
+    z-index: 9;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1) !important;
+    border-right: 1px solid #dee2e6 !important;
+}
+@media only screen and (min-width: 768px) {
+    .page-wrapper.material-icon .page-body-wrapper .page-body {
+        max-width: 1920px;
+    }
+    .page-wrapper.material-icon .page-header {
+        padding-left: 20px;
+        padding-right: 20px;
+        max-width: 1920px;
+    }
+    .page-sub-header .body-header {
+        padding: 0 20px;
+    }
+}
+.page-sub-header .body-header .sidebar-body-menu > li {
+    padding: 18px 0px;
+}
+.reservation-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.reservation-head .btn-icon svg,
+.add-extra-room .btn-icon svg {
+    width: 14px;
+    margin-right: 4px;
+    height: 14px;
+    vertical-align: middle;
+}
+
+.reservation-head .btn-light {
+    color: #444444;
+    background-color: transparent !important;
+    border-color: #ced4da !important;
+}
+.reservation-head .btn-light:hover {
+    color: var(--theme-default) !important;
+}
+.reservation-head .btn-group .btn {
+    padding: 3px 12px;
+}
+.reservation-head .btn-group .btn span {
+    font-size: 18px;
+    font-weight: 700;
+}
+.reservation-head .btn-group .btn span i {
+    font-size: 13px;
+}
+.reservation-head .btn-group .btn-light:hover {
+    color: #444444 !important;
+}
+.reservation-head .flatpickr-input {
+    font-size: 14px;
+    line-height: 1;
+}
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--theme-default);
+}
+.form-select-sm,
+.form-control-sm {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.border-radius-4 {
+    border-radius: 4px;
+}
+.room-type-bar label,
+.reservation-summary {
+    color: #31322d;
+}
+.w-120 {
+    width: 120px !important;
+}
+#reservation
+    .input-group
+    > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(
+        .valid-feedback
+    ):not(.invalid-tooltip):not(.invalid-feedback) {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+.bs-actionsbox .btn-group button {
+    padding: 5px;
+    font-size: 14px;
+    background: transparent !important;
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+}
+.bootstrap-select > .dropdown-toggle.bs-placeholder,
+.bootstrap-select > .dropdown-toggle.bs-placeholder:active,
+.bootstrap-select > .dropdown-toggle.bs-placeholder:focus,
+.bootstrap-select > .dropdown-toggle.bs-placeholder:hover {
+    color: #31322d !important;
+    outline: 0 !important;
+    padding: 0.5rem;
+}
+.bootstrap-select > .dropdown-toggle {
+    background: transparent !important;
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+    padding: 0.5rem !important;
+}
+.bootstrap-select .bs-ok-default:after {
+    border-width: 0 0.16em 0.16em 0 !important;
+}
+.bootstrap-select .dropdown-toggle:focus,
+.bootstrap-select > select.mobile-device:focus + .dropdown-toggle {
+    outline: 0 !important;
+    padding: 0.5rem !important;
+}
+.dropdown-menu .dropdown-item {
+    color: #31322d;
+    opacity: 1;
+    border-top: 0 !important;
+}
+.dropdown-menu .dropdown-item:hover,
+.dropdown-item.selected {
+    /* background-color: #83dbe678; */
+    background-color: var(--theme-default);
+    color: #fff;
+}
+.bootstrap-select .dropdown-menu li a {
+    font-size: 14px !important;
+}
+.highlight {
+    border: 2px dashed rgb(75, 73, 230) !important;
+}
+@media (min-width: 576px) {
+    .modal-sm {
+        --bs-modal-width: 350px;
+    }
+}
+.booked-details {
+    width: 100%;
+    /* position: absolute; */
+    /* top: 0; */
+    /* left: 70px; */
+    padding: 4px;
+    background-color: #90e2ed;
+    display: block;
+    margin-bottom: 5px;
+    /* width: 70%; */
+}
+
+
+.draggableTable td {
+    width: 70px; /* Adjust as needed */
+    max-width: 70px; /* Ensure columns do not exceed this width */
+    overflow: hidden; /* Hide content that overflows */
+    white-space: nowrap; /* Prevent text from wrapping */
+    text-overflow: ellipsis; /* Add ellipsis if text overflows */
+}
+.reservation table th:first-child, .reservation table td:first-child {
+     width: 0 !important; 
+}

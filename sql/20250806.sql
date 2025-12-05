@@ -1,0 +1,2 @@
+ALTER TABLE `hotlr_configurations` ADD `audit_start` VARCHAR(10) NULL AFTER `email`, ADD `audit_end` VARCHAR(10) NULL AFTER `audit_start`, ADD `duration` INT NULL DEFAULT '0' AFTER `audit_end`;
+ALTER TABLE `invoices` ADD `type` VARCHAR(30) NULL AFTER `invoice_id`;

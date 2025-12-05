@@ -1,0 +1,1 @@
+ALTER TABLE `room_numbers` ADD `room_specification_id` INT NULL AFTER `roomtype_name`;

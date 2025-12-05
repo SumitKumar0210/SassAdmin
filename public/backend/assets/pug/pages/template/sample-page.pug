@@ -1,0 +1,50 @@
+- var theme_customizer      = true;
+- var sidebar               = true;
+- var slick                 = true;
+- var header_slider         = true;
+- var animate               = true;
+- var scrollbar             = true;
+
+doctype html
+html(lang='en')
+  include ../../components/header-files
+  body
+    include ../../components/loader
+    include ../../components/taptop
+    // page-wrapper Start
+    #pageWrapper.page-wrapper.compact-sidebar.compact-small.material-icon
+      include ../../components/header
+      // Page Body Start
+      .page-body-wrapper
+        include ../../components/sidebar
+        .page-body
+          .container-fluid
+            .page-title
+              .row
+                .col-12.col-sm-6.p-0
+                  h3
+                    | Sample Page
+
+                .col-12.col-sm-6.p-0
+                  ol.breadcrumb
+                    li.breadcrumb-item
+                      a(href='index.html')                                        
+                        svg.stroke-icon
+                          use(href='../assets/svg/icon-sprite.svg#breadcrumb-home')
+                    li.breadcrumb-item Pages
+                    li.breadcrumb-item.active Sample Page
+          // Container-fluid starts
+          .container-fluid
+            .row
+              .col-sm-12
+                .card
+                  .card-header.card-no-border.pb-0
+                    h3 Sample Card
+                    span Prior to publishing content on social media
+                  .card-body
+                    p
+                      | "While written content continues to reign supreme as the cornerstone of every brand's digital marketing strategy, video and image-based content are becoming more and more prominent in the world of content marketing. The regular blog, social media posts, and a wide range of other written content formats are just a few examples."
+
+          // Container-fluid Ends
+        include ../../components/footer
+    include ../../components/footer-files

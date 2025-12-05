@@ -1,0 +1,200 @@
+.booked-details {
+    background-color: #90e2edc9 !important;
+    display: flex;
+    /*text-wrap: nowrap;*/
+    cursor: move;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    /*z-index:1;*/
+    position:relative;
+    align-items:center;
+}
+.booked-details_alt{
+    background-color: #ffc4bdcf;
+    display: flex;
+    /*text-wrap: nowrap;*/
+    cursor: move;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    /*z-index:1;*/
+    position:relative;
+    align-items:center;
+}
+.booked-details_checkout{
+    background-color: #cbcbcba6;
+    display: flex;
+    /*text-wrap: nowrap;*/
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    /*z-index:1;*/
+    position:relative;
+    align-items:center;
+}
+.remove-res-space {
+    padding: 0.25rem !important;
+}
+
+.draggableTable td {
+    width: 70px; 
+    max-width: 70px; /* Ensure columns do not exceed this width */
+}
+
+.invalid-feedback {
+    color: #dc3545 !important;
+}
+.bookedbysearch:hover {
+    color: aquamarine;
+}
+/* .bg-dark {
+    background-color: #00000078 !important;
+} */
+.bg_alloted {
+    background-color: #dbbaa4 !important;
+}
+.opacity-25 {
+    opacity: 0.25;
+}
+.bookedbysearch,
+.edit_res,
+.room-type-toggle {
+    cursor: pointer;
+}
+#deleteBtn, .clearCacheBtn, .reset-btn, .invoice_cancel{
+    cursor: pointer;
+}
+body.dark-only .dark-sign-up .modal-body form .form-label {
+    color: #fff;
+}
+.status-checkout {
+    color: red;
+}
+
+.status-alloted {
+    color: #00adff;
+}
+
+.status-reserved {
+    color: green;
+}
+#fullscreen, #normalscreen , .removeRoomBtn{
+cursor: pointer;
+}
+
+.bg-light {
+    color: #000000c9 !important;
+}
+.btn-secondary.disabled, .btn-secondary:disabled {
+    background-color: #6d6d6d !important;
+    border-color: #797979 !important;
+    color:#c4c4c4
+}
+ /* reservation row view end */
+ .is_field_invalid{
+    border: 1px solid #f1523d  !important;
+ }
+ .is_invalid{
+    color: #f1523d !important;
+    font-size: 12px !important;
+    margin-top: 5px;
+ }
+ .main-upgrade .variation-box .selection-box input{
+    width: 100% !important;
+}
+@media (max-width: 1470px) {
+    .page-sub-header .body-header .sidebar-body-menu > li:nth-last-child(2) .sidebar-body-mainmenu > li ul.sidebar-body-submenu {
+        left: calc(100% + 2px) !important;
+    }
+}
+.clear-cache-btn {
+    padding: 5px 10px !important;
+    margin-right: 5px !important;
+}
+.clear-cache-btn i{
+    font-size:20px;
+    color: #fcfcfc;
+}
+/* ------------------------------------------------- */
+.custom-dropdown {
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 5px;
+    background-color: white;
+    position: absolute;
+    width: calc(100% - 20px);
+    z-index: 999;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-dropdown-item {
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.custom-dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* ---------------accordian---------------- */
+  .accordion-button.collapsed::after {
+    content: "+";
+    font-size: 25px;
+    position: absolute;
+    right: 3px;
+    color: var(--theme-default);
+  }
+  .accordion-button::after {
+    content: "-";
+    font-size: 25px;
+    position: absolute;
+    right: 3px;
+    color: var(--theme-default);
+  }
+  .closed-icon{
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0;
+  }
+  .accordion-item:hover .closed-icon{
+    opacity: 1;
+  }
+  .separator {
+    height: 30px;
+  }
+
+  .title-saprator p {
+    font-size: 13px;
+    line-height: 15px;
+}
+/* ---accordian end--- */
+/*.accrdn-border{*/
+/*    border-color: #3d3e39 !important;*/
+/*}  */
+.disabled:hover {
+    cursor: no-drop !important;
+ }
+ button:disabled {
+    cursor: no-drop; /* or use 'no-drop' */
+    opacity: 0.5; /* Optional: visually indicate the disabled state */
+    pointer-events: all !important;
+  }
+.discount-tick{
+    right: 14px;
+    top:2px; 
+    font-size: 18px;
+    cursor: pointer;
+    background: none !important;
+}  
+ /* sweet alert dialouge cancel btn color chhange to red */
+.swal2-cancel{
+    background-color: #b95252 !important;
+}
+.dark-only .checked-room-class{
+    border: 1px solid;
+}
+.checked-room-class{
+    border: 1px solid #dee2e6;
+}

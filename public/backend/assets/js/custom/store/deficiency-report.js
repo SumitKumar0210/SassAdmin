@@ -1,0 +1,33 @@
+let deficiency_table = $('#deficiency-report-table').DataTable({
+    processing:true,
+    serverSide:true,
+    ajax:{
+        url:deficiencyReportVeiw,
+        type:"POST",
+        error:function(xhr,error,thrown){
+            console.log(xhr.responseText);
+            alert("An error occured "+thrown);
+        }
+         },
+        columns:[{
+            data:'item',
+            name:'item'
+        },
+        {
+            data:'unit',
+            name:'unit'
+        },
+        {
+            data:'qty',
+            name:'qty'
+        },
+        {
+            data:'min_limit',
+            name:'min_limit'
+        },
+        {
+            data:'max_limit',
+            name:'max_limit'
+        }
+    ]
+});

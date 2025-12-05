@@ -1,0 +1,620 @@
+- var swiper_slider         = true;
+- var landing_sticky        = true;
+- var wow                   = false;
+- var page_wow              = false;
+- var animate               = true;
+- var jarallax_libs         = true;
+- var scrollpy_landing      = false;
+- var owlcarousel           = true;
+- var page_owlcarousel      = true;
+- var landing_font          = true;
+
+doctype html
+html(lang='en')
+    include ../../components/header-files
+    body.landing-wrraper
+        include ../../components/taptop
+        // page-wrapper Start
+        .page-wrapper.landing-page
+            // Page Body Start
+            .page-body-wrapper
+              // header start
+              header.landing-header
+                .custom-container
+                  .row
+                    .col-12
+                      nav#navbar-example2.navbar.navbar-light.p-0
+                        a.navbar-brand(href="javascript:void(0)") 
+                          img.img-fluid(src="../assets/images/logo/logo.png" alt="")
+                        ul.landing-menu.nav.nav-pills
+                          li.nav-item.menu-back
+                            | back
+                            i.fa.fa-angle-right
+                          li.nav-item
+                            a.nav-link(href='#home') Home
+                          li.nav-item
+                            a.nav-link(href='#demo') Demo
+                          li.nav-item
+                            a.nav-link(href='#framework') Framework
+                          li.nav-item
+                            form.form-inline(target='_blank' action='https://docs.google.com/forms/d/e/1FAIpQLSe6hKUXw_By-pg7yabL0FxoTM02ZPTxoXy8PE3yboRuUCuyeA/viewform')
+                              button.nav-link Hire Us
+                          li.nav-item
+                            a.nav-link(href='https://docs.pixelstrap.com/boho/document/' target='_blank') Document
+                        .buy-block
+                          a(class="btn-landing" href="https://themeforest.net/user/pixelstrap/portfolio" target="_blank") Purchase
+                          .toggle-menu
+                            i.fa.fa-bars
+              // header end
+
+              //home section start
+              section#home.landing-home 
+                img.img-fluid.bg-img-cover(src="../assets/images/landing/home-bg.jpg" alt="")
+                .custom-container
+                  .row
+                    .col-12  
+                      .landing-home-contain
+                        div
+                          h2 One Stop For All Admin Template
+                          p Boho is Perfect Admin template for any business. it has all features and modules to create your amazing C-panel. this template for selling Default, Ecommerce etc......
+                          div.landing-home-button.d-flex.text-center
+                            a(class="btn bg-primary" href="index.html" target='_blank')
+                              img(src="../assets/images/landing/icon/html/html.png" alt="")
+                              | View Demo 
+                            a(class="btn bg-secondary" href="https://docs.pixelstrap.com/boho/document/" target='_blank') 
+                              svg
+                                use(href='../assets/svg/icon-sprite.svg#fill-form')
+                              | Documentation
+                ul.animat-block
+                  li
+                    img.img-fluid(src="../assets/images/landing/landing-home/1.png" alt="")
+                  li
+                    img.img-fluid(src="../assets/images/landing/landing-home/3.png" alt="")
+                  li
+                    img.img-fluid(src="../assets/images/landing/landing-home/2.png" alt="")
+                  li
+                    img.img-fluid(src="../assets/images/landing/landing-home/4.png" alt="")
+                  li
+                    img.img-fluid(src="../assets/images/landing/landing-home/5.png" alt="")
+                  li
+                    img.img-fluid(src="../assets/images/landing/landing-home/6.png" alt="")
+                  li
+                    img.img-fluid(src="../assets/images/landing/landing-home/7.png" alt="")
+                  li
+                    img.img-fluid(src="../assets/images/landing/landing-home/9.png" alt="")
+                  li.b-r-0
+                    img.img-fluid(src="../assets/images/landing/landing-home/10.png" alt="")
+                div.retro-title
+                  span.sub-title Retro style
+                  img.img-fluid(src="../assets/images/landing/landing-home/8.png" alt="")
+                  
+              //home section end
+
+
+              //demo section start
+              section#demo.demo-section.section-py-space
+                .title(data-name="DASHBOARD")
+                  h2 Creative Dashboard
+                .container
+                  .row.demo-block.demo-imgs
+                    .col-lg-6.col-sm-6
+                      .demo-box
+                        .img-wrraper
+                          img.img-fluid(src="../assets/images/landing/demo/1.jpg" alt="")
+                          .overlay
+                            ul.demo-link.hover-link
+                              li
+                                a#default-demo(href="index.html" target='_blank' )
+                                  img(src="../assets/images/landing/icon/html/html.png" alt="")
+                        .demo-detail
+                          .demo-title
+                            h3 Default Dashboard
+                    .col-lg-6.col-sm-6
+                      .demo-box
+                        .img-wrraper
+                          img.img-fluid(src="../assets/images/landing/demo/2.jpg" alt="")
+                          .overlay
+                            ul.demo-link
+                              li
+                                a#compact-demo(href="dashboard-02.html" target='_blank')
+                                  img(src="../assets/images/landing/icon/html/html.png" alt="")    
+                        .demo-detail
+                          .demo-title
+                            h3 Ecommerce Dashboard
+              //demo section end
+
+              //frameworks start
+              section#framework.framework.section-py-space.light-bg
+                .container
+                  .row
+                    .col-sm-12.wow.pulse
+                      .title(data-name="FRAMEWORK")                       
+                        h2 Framework
+                    .col-sm-12.framworks
+                      #pills-tabContent.tab-content
+                        #pills-home.tab-pane.fade.show.active(role='tabpanel')
+                          ul.framworks-list
+                            li.box.wow.fadeInUp
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/bootstrap.png' alt='')
+                              h6.mb-0.mt-3 Bootstrap 5X
+                            li.box.wow.fadeInUp
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/css.png' alt='')
+                              h6.mb-0.mt-3 CSS
+                            li.box.wow.fadeInUp
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/sass.png' alt='')
+                              h6.mb-0.mt-3 Sass
+                            li.box.wow.fadeInUp
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/pug.png' alt='')
+                              h6.mb-0.mt-3 Pug
+                            li.box.wow.fadeInUp
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/npm.png' alt='')
+                              h6.mb-0.mt-3 NPM
+                            li.box.wow.fadeInUp
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/gulp.png' alt='')
+                              h6.mb-0.mt-3 Gulp
+                            li.box.wow.bounceIn
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/kit.png' alt='')
+                              h6.mb-0.mt-3 Starter Kit
+                            li.box.wow.bounceIn
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/uikits.png' alt='')
+                              h6.mb-0.mt-3 40+ UI Kits
+                            li.box.wow.bounceIn
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/layout.png' alt='')
+                              h6.mb-0.mt-3 8+ Layout
+                            li.box.wow.bounceIn
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/builders.png' alt='')
+                              h6.mb-0.mt-3 Builders
+                            li.box.wow.bounceIn
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/iconset.png' alt='')
+                              h6.mb-0.mt-3 11 Icon Sets
+                            li.box.wow.bounceIn
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/forms.png' alt='')
+                              h6.mb-0.mt-3 Forms
+                            li.box.wow.bounceIn
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/table.png' alt='')
+                              h6.mb-0.mt-3 Tables
+                            li.box.wow.bounceIn
+                              div
+                                img.img-50(src='../assets/images/landing/icon/html/apps.png' alt='')
+                              h6.mb-0.mt-3 17+ Apps
+                            
+              //frameworks end
+              
+              //Applications start
+              section#Applications.applications-section.section-py-space.application-section
+                .title(data-name="USEFULL APPLICATION")                       
+                  h2 Usefull application
+                .container
+                  .row.demo-block
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="projects.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/10.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="projects.html" target="_blank") Project
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="kanban.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/8.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="kanban.html" target="_blank") Kanban
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="social-app.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/1.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="social-app.html" target="_blank") Social App
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href='to-do.html' target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/5.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="to-do.html" target="_blank") To-Do
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="knowledgebase.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/2.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="knowledgebase.html" target="_blank") Knowledgebase
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="file-manager.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/9.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="file-manager.html" target="_blank") File Manager
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="product-page.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/7.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="product-page.html" target="_blank") Ecommerce
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="contacts.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/11.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="contacts.html" target="_blank") Contacts
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="chat.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/12.jpg" alt="")
+                        .demo-detail 
+                          .demo-title
+                            a.btn(href="chat.html" target="_blank") Chat
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href='support-ticket.html' target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/3.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="support-ticket.html" target="_blank") Support Ticket
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="email_inbox.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/4.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="email-application.html" target="_blank") Email Application
+                    .col-lg-4.col-sm-6.wow.pulse
+                      .demo-box
+                        .img-wrraper
+                          a(href="job-cards-view.html" target="_blank")
+                            img.img-fluid(src="../assets/images/landing/application/6.jpg" alt="")
+                        .demo-detail
+                          .demo-title
+                            a.btn(href="job-cards-view.html" target="_blank") Job Search                           
+              //Applications end
+
+            
+
+              //ecommerce pages start
+              section.ecommerce-pages.section-py-space.light-bg
+                .title(data-name="ECOMMERCE PAGES")
+                  h2 Ecommerce Pages
+                .custom-container
+                  .row
+                    .col-12
+                      #owl-carousel-2.owl-carousel.owl-theme
+                        .item
+                          .pages-box
+                            a(href="product.html" target="blank")
+                              .img-wrraper
+                                img.img-fluid(src='../assets/images/landing/inner-pages/1.jpg', alt='')
+                              .page-detail
+                                h3 Filters product
+                        .item
+                          .pages-box
+                            a(href="payment-details.html" target="blank")
+                              .img-wrraper
+                                img.img-fluid(src='../assets/images/landing/inner-pages/2.jpg', alt='')
+                              .page-detail
+                                h3 payment details
+                        .item
+                          .pages-box
+                            a(href="order-history.html" target="blank")
+                              .img-wrraper
+                                img.img-fluid(src='../assets/images/landing/inner-pages/3.jpg', alt='')
+                              .page-detail
+                                h3 order history
+                        .item
+                          .pages-box
+                            a(href="invoice-template.html" target="blank")
+                              .img-wrraper
+                                img.img-fluid(src='../assets/images/landing/inner-pages/4.jpg', alt='')
+                              .page-detail
+                                h3 invoice
+                        .item
+                          .pages-box
+                            a(href="cart.html" target="blank")
+                              .img-wrraper
+                                img.img-fluid(src='../assets/images/landing/inner-pages/5.jpg', alt='')
+                              .page-detail
+                                h3 cart
+                        .item
+                          .pages-box
+                            a(href="list-wish.html" target="blank")
+                              .img-wrraper
+                                img.img-fluid(src='../assets/images/landing/inner-pages/6.jpg', alt='')
+                              .page-detail
+                                h3 wishlist
+                        .item
+                          .pages-box
+                            a(href="checkout.html" target="blank")
+                              .img-wrraper
+                                img.img-fluid(src='../assets/images/landing/inner-pages/7.jpg', alt='')
+                              .page-detail
+                                h3 checkout
+                        .item
+                          .pages-box
+                            a(href="pricing.html" target="blank")
+                              .img-wrraper
+                                img.img-fluid(src='../assets/images/landing/inner-pages/8.jpg', alt='')
+                              .page-detail
+                                h3 pricing
+
+              //Ecommerce pages end
+              
+              
+              
+              //Core Feature start
+              section#core-feature.core-feature.section-py-space
+                .title(data-name="CORE FEATURE")
+                  h2 Core Feature
+                .custom-container
+                  .row.feature-block
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="alert-octagon")
+                          h6 SweetAlert2
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="users")
+                          h6 Avatar
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="thermometer")
+                          h6 Scrollable
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="command")
+                          h6 Tree view
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="bold")                         
+                          h6 Bootstrap notify
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="star")
+                          h6 Rating 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="droplet")
+                          h6 Dropzone
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="map-pin")
+                          h6 Tour
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="codepen")
+                          h6 Animated modal
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="book-open")
+                          h6 Owl Carousel
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="tag")
+                          h6 Ribbons 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="more-horizontal")
+                          h6 Pagination 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="skip-forward")
+                          h6 Steps 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="bookmark")
+                          h6 Breadcrumb  
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="sliders")
+                          h6 Range Slider 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="crop")
+                          h6 image cropper 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="file")
+                          h6 Sticky 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="loader")
+                          h6 Progress 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="feather")
+                          h6 Tooltip 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="target")
+                          h6 Spinners 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="chevron-down")
+                          h6 Dropdown 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="copy")
+                          h6 Tabs 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="map")
+                          h6 Accordion  
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="align-justify")
+                          h6 Navs
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="airplay")
+                          h6 Shadow
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="gitlab")
+                          h6 state color
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="list")
+                          h6 List  
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="grid")
+                          h6 Grid 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="help-circle")
+                          h6 Helper classes 
+                    .col-xl-2.col-md-4.col-6
+                      .feature-box
+                        div
+                          .icon-wrraper
+                            i(data-feather="type")
+                          h6 Typography
+              //Core Feature end
+              
+              //unic-cards start
+              section.unique-cards.section-py-space.light-bg
+                .title(data-name="PREMIUM SUPPORT")
+                  h2 Premium Support
+                section.pricing-section.section-space.pt-0
+                  ul.decoration
+                  .container
+                    .row.align-items-center
+                      .col-lg-7.support-img 
+                        img.img-fluid.b-r-10(src='../assets/images/landing/unique.png' alt='')  
+                      .col-lg-5
+                        .landing-title.text-start
+                          h5.sub-title Our license
+                          h2 We give it as we think that
+                            span.gradient-12 excellent support is needed
+                          p.mx-0
+                            | Check our reviews for fast and accurate support to ensure support. We offer premium assistance around-the-clock for any bugs you encounter, and we'll do our best to help you out with any future updates for free.
+                          a(href='https://support.pixelstrap.com/portal/en/signin' target="_blank").btn.bg-primary.f-w-700.support-button
+                            | Support 
+                        
+              //unic-cards end
+
+
+
+
+              //footer start
+              section#footer.landing-footer.section-py-space
+                .custom-container
+                  .row
+                    .col-12
+                      .footer-contain
+                        .rating-wrraper
+                          img.img-fluid(src="../assets/images/logo/logo.png" alt="")
+                        h2 The Boho Bootstrap Admin Theme Trusted By Many Developers World Wide.
+                        p If You like Our Theme So Please Rate Us.
+                        ul.star-rate
+                          li
+                            i.fa.fa-star.font-warning
+                          li
+                            i.fa.fa-star.font-warning
+                          li
+                            i.fa.fa-star.font-warning
+                          li
+                            i.fa.fa-star.font-warning
+                          li
+                            i.fa.fa-star.font-warning
+                        .btn-footer
+                          a(class="btn btn-lg btn-primary" target="_blank" href="index.html" data-bs-original-title="" title="") Check Now
+                          a(class="btn btn-lg btn-secondary" target="_blank" href="https://1.envato.market/6bB5Jq" data-bs-original-title="" title="") Buy Now
+                          a(class="btn btn-lg btn-success" target="_blank" href="https://themeforest.net/user/pixelstrap/portfolio" data-bs-original-title="" title="") Rate Us
+              .sub-footer
+                .custom-container
+                    .row
+                      .col-md-6.col-sm-2
+                        .footer-contain
+                          img.img-fluid(src="../assets/images/logo/logo_dark.png" alt="")
+                      .col-md-6.col-sm-10.d-flex.align-items-center.justify-content-end
+                        .footer-contain
+                          p.mb-0 Copyright 2023-24 © Boho All rights reserved.                       
+              //footer end
+               
+        include ../../components/footer-files
