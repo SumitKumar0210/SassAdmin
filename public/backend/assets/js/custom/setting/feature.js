@@ -18,6 +18,10 @@ let table = $('#feature_table').DataTable({
             name: 'DT_RowIndex'
         },
         {
+            data: 'icon',
+            name: 'icon'
+        },
+        {
             data: 'name',
             name: 'name'
         },
@@ -42,21 +46,25 @@ $('.feature_Add').on('click',function(e){
         $('.feature_update').addClass('d-none');
         $('.feature_submit').removeClass('d-none');
         $('.needs-validation').removeClass('was-validated');
+        $('#feature_icon').val('');
 });
- $('#feature_form').on('submit', function(e) {
+
+$('#feature_form').on('submit', function(e) {
     e.preventDefault();
     let id = $('#feature_id').val();
+    let icon = $('#feature_icon').val();
     let name = $('#feature').val();
     if (name == '') {
         $('needs-validation').addClass('was-validated');
     } else {
         if ($('.feature_update').is(':visible')) {
-                feature_update(id); // Trigger update function when update btn is active
+            feature_update(id); // Trigger update function when update btn is active
         } else {
+
             $.ajax({
                     url: featureAdd,
                     type: "POST",
-                    data: { name:name },
+                    data: { name:name,icon:icon },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
@@ -73,6 +81,7 @@ $('.feature_Add').on('click',function(e){
             }
         }   
 });
+
 function featureSwitch(id){
     $.ajax({
         url: featureSwitchStatus,
@@ -97,6 +106,7 @@ function featureSwitch(id){
         }
     });
 }
+
 function featureEdit(id){
     $.ajax({
         url:getFeatureData,
@@ -106,6 +116,7 @@ function featureEdit(id){
             let getData = response.data;
             $('#feature_id').val(getData[0].id);
             $('#feature').val(getData[0].name);
+            $('#feature_icon').val(getData[0].icon);
             $('.featureTitle').html('Update Feature');
             $('.feature_submit').addClass('d-none');
             $('.feature_update').removeClass('d-none');
@@ -119,13 +130,14 @@ function featureEdit(id){
 }
 function feature_update(id){
     let name = $('#feature').val();
+    let icon = $('#feature_icon').val();
     if (name == '') {
         $('.needs-validation').addClass('was-validated');
     } else {
         $.ajax({
                 url: featureUpdate,
                 type: "POST",
-                data: { id:id,name:name },
+                data: { id:id,name:name,icon:icon },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend\settings;
 use App\Http\Controllers\Controller;
 use App\Models\Feature;
 use App\Models\HotlrConfiguration;
+use App\Models\Icon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -12,7 +13,8 @@ class FeatureController extends Controller
 {
     public function index(){
         $hotlr = HotlrConfiguration::get(['logo','name']);
-        return view('backend.modules.settings.feature',compact('hotlr'));
+        $icons = Icon::get(['name']);
+        return view('backend.modules.settings.feature',compact('hotlr','icons'));
     }
 
     public function view(Request $request){
@@ -20,6 +22,9 @@ class FeatureController extends Controller
             $features = Feature::get();
             return DataTables::of($features)
             ->addIndexColumn()
+            ->addColumn('icon',function($row){
+                return '<i class="'.$row->icon.'"></i>';
+            })
             ->addColumn('name',function($row){
                 return $row->name;
             })
@@ -36,7 +41,7 @@ class FeatureController extends Controller
                         <li class="edit"> <a href="#"><i class="icon-pencil-alt" onclick="featureEdit('.$row->id.')"></i></a></li>
                         </ul>';
             })
-            ->rawColumns(['status','action'])
+            ->rawColumns(['status','action','icon'])
             ->make(true);
         }
     }
@@ -45,12 +50,15 @@ class FeatureController extends Controller
         $check_feature_exist = Feature::where('name',$request->name)->exists();
         if($check_feature_exist == false){
             $validator = Validator::make($request->all(),[
+                'icon' => 'required',
                 'name' => 'required',
             ]);
             if($validator->fails()){
                 return response()->json(['error_validation'=> $validator->errors()->all(),],422);
             }
+
             $features = new Feature();
+            $features->icon = $request->icon;
             $features->name = $request->name;
             if ($features->save()){
                 $response = response()->json(['success'=>'Data added successfully'],200);
@@ -60,9 +68,11 @@ class FeatureController extends Controller
         }else{
             $response = response()->json(['alreadyfound' => 'Event details already found!']);
         }
+
         return $response;
     }
-     public function switch(Request $request){
+
+    public function switch(Request $request){
         $rc_status = Feature::where('id',$request->id)->get(['status']);
         $status = $rc_status[0]->status;
         if($status == 1){
@@ -76,18 +86,21 @@ class FeatureController extends Controller
         ]);
         return response()->json(['success' => 'Status Updated Successfully'],200);
     }
-     public function getData(Request $request){
+
+    public function getData(Request $request){
         $getData = Feature::where('id',$request->id)->get();
         return response()->json(['success'=>'Feature data fetched','data'=>$getData],200);
     }
+
     public function update(Request $request){
         $update = Feature::where('id',$request->id)->update([
-            'name'=> $request->name
+            'icon'=> $request->icon,
+            'name'=> $request->name,
         ]);
         if($update){
-               return response()->json(['success'=>'Feature updated successfully'],200);
-            } else{
-                return response()->json(['error'=>'Feature not updated'],400);
-            }
+            return response()->json(['success'=>'Feature updated successfully'],200);
+        } else{
+            return response()->json(['error'=>'Feature not updated'],400);
+        }
     }
 }

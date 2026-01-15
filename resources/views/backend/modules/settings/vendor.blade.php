@@ -5,56 +5,58 @@
         <div class="container-fluid py-3">
             <div class="email-wrap bookmark-wrap">
                 <div class="row">
-                    <div class="col-xl-2 box-col-6">
-                        @include('backend.layouts.sidebar_master')
-                    </div>
-                    <div class="col-xl-10 col-md-12 box-col-12">
-                        <div class="container-fluid">
-                            <div class="page-title mt-2">
-                                <div class="row gx-0">
-                                    <div class="col-12 col-sm-6">
-                                        <h3 class="d-block">Vendor</h3>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <div class="float-end">
-                                            <button class="btn btn-primary px-2 vendor_add" type="button" data-bs-toggle="modal"
-                                                data-bs-target="#vendorModel"><span class="btn-icon"><i class="ri-add-line"></i></span>
-                                                Add Vendor</button>
+                    <div class="col-xl-12 col-md-12 box-col-12">
+                        <div> 
+                            @include('backend.layouts.sidebar_master')
+                        </div>
+                        <div style=" padding-left:220px;">
+                            <div class="container-fluid">
+                                <div class="page-title mt-2">
+                                    <div class="row gx-0">
+                                        <div class="col-12 col-sm-6">
+                                            <h3 class="d-block">Vendor</h3>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="float-end">
+                                                <button class="btn btn-primary px-2 vendor_add" type="button" data-bs-toggle="modal"
+                                                    data-bs-target="#vendorModel"><span class="btn-icon"><i class="ri-add-line"></i></span>
+                                                    Add Vendor</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="container-fluid">
-                            <div class="row">
-                                <!-- Zero Configuration  Starts-->
-                                <div class="col-lg-12 col-sm-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="hover row-border stripe" id="vendor_table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Sr.No.</th>
-                                                            <th>Name</th>
-                                                            <th>Mobile</th>
-                                                            <th>Address</th>
-                                                            <th>GST</th>
-                                                            <th>Status</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <!-- Zero Configuration  Starts-->
+                                    <div class="col-lg-12 col-sm-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="hover row-border stripe" id="vendor_table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr.No.</th>
+                                                                <th>Name</th>
+                                                                <th>Mobile</th>
+                                                                <th>Address</th>
+                                                                <th>GST</th>
+                                                                <th>Status</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

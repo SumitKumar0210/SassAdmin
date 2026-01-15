@@ -8,31 +8,48 @@ use App\Http\Controllers\backend\audit\RevenueAuditController;
 use App\Http\Controllers\backend\audit\RoomAuditController;
 use App\Http\Controllers\backend\auth\HomeController;
 use App\Http\Controllers\backend\invoice\InvoiceController;
+use App\Http\Controllers\backend\kot\DashboardKotController;
 use App\Http\Controllers\backend\kot\KotController;
 use App\Http\Controllers\backend\kot\ViewKotController;
+use App\Http\Controllers\backend\kot\KotBillController;
 use App\Http\Controllers\backend\auth\LoginController;
 use App\Http\Controllers\backend\banquet\BanquetDashboardController;
 use App\Http\Controllers\backend\banquet\BookingController;
 use App\Http\Controllers\backend\banquet\HallController;
 use App\Http\Controllers\backend\kitchen\KitchenController;
+use App\Http\Controllers\backend\kot\GeneratedBillController;
 use App\Http\Controllers\backend\kot\QrMenuController;
 use App\Http\Controllers\backend\report\ComprehensiveBookingReportController;
 use App\Http\Controllers\backend\report\ComprehensiveCorporateRevenueController;
 use App\Http\Controllers\backend\report\EventTypeController;
+use App\Http\Controllers\backend\report\GuesthistoryController;
 use App\Http\Controllers\backend\report\GuestHistoryReportController;
 use App\Http\Controllers\backend\report\HallRevenueComparisonController;
 use App\Http\Controllers\backend\report\HallUtilizationReportController;
 use App\Http\Controllers\backend\report\KotReportController;
+use App\Http\Controllers\backend\report\MergeBillController;
 use App\Http\Controllers\backend\report\MonthlyRevenueBreakdownController;
 use App\Http\Controllers\backend\report\OutstandingPaymentsReportController;
 use App\Http\Controllers\backend\report\ReservationReportController;
-use App\Http\Controllers\backend\report\RoomReportController;
+use App\Http\Controllers\backend\report\BulkBookingSaleController;
+use App\Http\Controllers\backend\report\ItemwiseSalesController;
+use App\Http\Controllers\backend\report\KotItemController;
+use App\Http\Controllers\backend\report\KotListReportController;
+use App\Http\Controllers\backend\report\PaymentSummaryController;
+use App\Http\Controllers\backend\report\ReservationCheckoutController;
+use App\Http\Controllers\backend\report\ReservationCancelController;
+use App\Http\Controllers\backend\report\RestaurantSalesReportController;
+use App\Http\Controllers\backend\report\RoomRevenueController;
+use App\Http\Controllers\backend\report\RoomStatusController;
+use App\Http\Controllers\backend\report\SingleBookingSaleController;
+use App\Http\Controllers\backend\report\StayController;
 use App\Http\Controllers\backend\reservation\CheckoutController;
 use App\Http\Controllers\backend\reservation\RoomController;
 use App\Http\Controllers\backend\settings\RoomnumberController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\backend\reservation\AvailabilityController;
 use App\Http\Controllers\backend\reservation\ReservationController;
+use App\Http\Controllers\backend\reservation\ReservationActionController;
 use App\Http\Controllers\backend\reservation\ReservationLayoutController;
 use App\Http\Controllers\backend\restaurant\RestaurantCategoryController;
 use App\Http\Controllers\backend\restaurant\RestaurantItemAttributeController;
@@ -123,7 +140,8 @@ Route::group(['middleware' => ['auth'],], function () {
     Route::post('/setting-store', [SettingController::class, 'store'])->name('setting.store'); 
     Route::post('/setting-add-sound', [SettingController::class, 'addSound'])->name('setting.addSound'); 
     Route::post('/setting-store-einvoice', [SettingController::class, 'storeEInvoice'])->name('setting.storeEInvoice'); 
-    Route::post('/setting-store-time-configuration', [SettingController::class, 'storeTimeConfiguration'])->name('setting.storeTimeConfiguration'); 
+    Route::post('/setting-store-time-configuration', [SettingController::class, 'storeTimeConfiguration'])->name('setting.storeTimeConfiguration');
+    Route::post('/setting-sound-reset-mute', [SettingController::class, 'soundUpdateResetMute'])->name('setting.soundUpdateResetMute'); 
     Route::get('/profile',[ProfileController::class,'profile'])->name('profile.index');
 
     Route::prefix('invoice')->group(function(){
@@ -165,6 +183,7 @@ Route::group(['middleware' => ['auth'],], function () {
 
     Route::get('/checkout-bill/{id}', [CheckoutController::class, 'checkoutReservationPreview'])->name('checkout.checkoutReservationPreview');
     Route::get('/preview-invoice/{id}', [CheckoutController::class, 'previewInvoice'])->name('checkout.previewInvoice');
+    Route::get('/checkedout/{id}', [CheckoutController::class, 'checkedoutPreview'])->name('checkout.checkedoutPreview');
 
     Route::get('/roomcategoryview', [RoomController::class, 'roomCategory'])->name('room.roomCategory');
     Route::post('/roomcategoryadd', [RoomController::class, 'add_room_category'])->name('add_room_category');
@@ -181,6 +200,7 @@ Route::group(['middleware' => ['auth'],], function () {
     Route::post('/roomcategorydelete', [RoomController::class, 'roomCategory_delete'])->name('room.roomCategory_delete');
     Route::post('/roomtypenamedelete', [RoomController::class, 'roomtypename_delete'])->name('room.roomtypename_delete');
     Route::get('/roomclosure', [RoomController::class, 'getRoomclosuredata'])->name('room.getRoomclosuredata');
+    Route::get('/room-coocupancy-chart', [RoomController::class, 'roomOccupancy'])->name('room.roomOccupancy-chart');
 
     Route::get('/roomnum', [RoomnumberController::class, 'index'])->name('room.roomNumber');
     Route::post( '/roomnumadd', [RoomnumberController::class, 'add_roomNumber'])->name('room.add_roomNumber');
@@ -251,7 +271,20 @@ Route::group(['middleware' => ['auth'],], function () {
     Route::post('/newuseradd',[PermissionController::class,'addNewUser'])->name('permission.addNewUser');
     Route::post('/userdelete',[PermissionController::class,'deleteUser'])->name('permission.deleteUser');
 
-    Route::prefix('invoice')->group(function(){
+    Route::prefix('reservation')->group(function() {
+        Route::get('/create-reservation',[ReservationActionController::class,'index'])->name('create-reservation.index');
+        Route::get('/edit-reservation/{id}',[ReservationActionController::class,'editReservation'])->name('edit-reservation.editReservation');
+        Route::get('/print-payment-receipt/{id}', [ReservationActionController::class, 'printPaymentReceipt']);
+        Route::get('/print-payment-receipt-all/{id}', [ReservationActionController::class, 'printPaymentReceiptAll']);
+        Route::post('/reservation-guest-exit', [ReservationActionController::class, 'reservationExitGuest'])->name('reservation-guest-exit.reservationExitGuest');
+        Route::post('/reservation-tariff-update', [ReservationActionController::class, 'reservationTariffUpdate'])->name('reservation-tariff-update.reservationTariffUpdate');
+
+        Route::get('/merge-bill-report',[MergeBillController::class,'index'])->name('mergeBill.index');
+        Route::get('/mergeBillReservation',[MergeBillController::class,'mergeBillReservation'])->name('report.mergeBillReservation');
+        Route::get('/merge-bill-print/{id}', [MergeBillController::class, 'mergeBillPrint']);
+    });
+
+    Route::prefix('invoice')->group(function() {
         Route::get('/print-payment-invoice/{id}', [InvoiceController::class, 'paymentInvoice']);
         Route::get('/send-payment-invoice/{id}', [InvoiceController::class, 'send_paymentInvoice']);
         Route::get('/rp-invoice/{id}', [InvoiceController::class, 'paymentInvoice']);
@@ -320,6 +353,9 @@ Route::group(['middleware' => ['auth'],], function () {
     });
 
     Route::prefix('kot')->group(function () {
+        Route::get('/dashboard',[DashboardKotController::class,'index'])->name('dashboard-kot.index');
+        Route::post('/dashboard-occupancy',[DashboardKotController::class,'occupancyStatus'])->name('dashboard-occupancy.occupancyStatus');
+
         Route::get('/generate-kot/{id}',[KotController::class,'index'])->name('generate-kot.index');
         Route::post('/create-kot',[KotController::class,'store'])->name('create-kot.store');
         Route::get('/get-coupon-kot',[KotController::class,'checkCoupon'])->name('get-coupon-kot.checkCoupon');
@@ -331,14 +367,29 @@ Route::group(['middleware' => ['auth'],], function () {
         Route::get('/view-kot',[ViewKotController::class,'index'])->name('view-kot.index');
         Route::get('/get-all-kot-detail',[ViewKotController::class,'allDetail'])->name('get-all-kot-detail.allDetail');
         Route::post('/get-kot-detail',[ViewKotController::class,'getKotDetail'])->name('get-kot-detail.getKotDetail');
+        Route::get('/running-kot',[ViewKotController::class,'runningKot'])->name('kot.runningKot');
+        Route::post('/running-kot-data',[ViewKotController::class,'runningKotData'])->name('kot.runningKotData');
         Route::post('/get-kot-detail-qr',[ViewKotController::class,'getQrKotDetail'])->name('get-qr-kot-detail.getQrKotDetail');
         Route::post('/update-kot',[ViewKotController::class,'update'])->name('update-kot.update');
         Route::get('/print-kot-invoice/{id}', [ViewKotController::class, 'printKotInvoice']);
         Route::post('/cancel-kot-detail', [ViewKotController::class, 'cancelKot'])->name('cancel-kot-detail.cancelKot');
         Route::get('/view-kot-print/{id}',[ViewKotController::class,'getKotPrint'])->name('view-kot-print.getKotPrint');
+
+        Route::get('/view-kot-sale',[ViewKotController::class,'getKotSaleReport'])->name('view-kot-sale.getKotSaleReport');
         
         Route::get('/qr-menu-orders', [QrMenuController::class, 'index'])->name('qr-menu-orders.index');
         Route::post('/qr-menu-orders-detail', [QrMenuController::class, 'getKotQrDetailUpdate'])->name('qr-menu-orders-detail.getKotQrDetailUpdate');
+
+        Route::get('/kot-generate-bill', [KotBillController::class, 'index'])->name('kot-generate-bill.index');
+        Route::post('/kot-generate-bill-list', [KotBillController::class, 'getBill'])->name('kot-generate-bill-list.getBill');
+        Route::get('/kot-generate-bill-show/{id}',[KotBillController::class,'showKotForBill'])->name('kot-generate-bill-show.showKotForBill');
+        Route::get('/invoice-kot-preview/{id}', [KotBillController::class, 'previewKotInvoice'])->name('invoice-kot-preview.previewKotInvoice');
+        Route::post('/generate-kot-invoice',[KotBillController::class,'generateInvoiceKot'])->name('invoice-kot.generateInvoiceKot');
+
+        Route::get('/kot-generated-bill', [GeneratedBillController::class, 'index'])->name('kot-generated-bill.index');
+        Route::post('/kot-generated-bill-list', [GeneratedBillController::class, 'getBillPaid'])->name('kot-generated-bill-list.getBillPaid');
+        Route::post('/kot-generated-bill-cancel', [GeneratedBillController::class, 'cancelGeneratedBill'])->name('kot-generated-bill-cancel.cancelGeneratedBill');
+        Route::get('/kot-generated-bill-invoice/{id}', [GeneratedBillController::class, 'invoiceGeneratedBill'])->name('kot-generated-bill-invoice.invoiceGeneratedBill');
     });
 
     Route::prefix('tax')->group(function(){
@@ -375,6 +426,7 @@ Route::group(['middleware' => ['auth'],], function () {
         Route::post('/company-detail', [CompanyController::class, 'getDetails'])->name('company.getDetails');
         Route::post('/company-update', [CompanyController::class, 'update'])->name('company.update');
         Route::post('/company-verify-gst', [CompanyController::class, 'verifyGst'])->name('company.verifyGst');
+        Route::post('/get-company-list-gst', [CompanyController::class, 'companyList'])->name('company.companyList');
 
         Route::get('/waiter', [WaiterController::class, 'index'])->name('waiter.index');
         Route::post('/waiter-view', [WaiterController::class, 'view'])->name('waiter.view');
@@ -458,13 +510,26 @@ Route::group(['middleware' => ['auth'],], function () {
     });
 
     Route::prefix('report')->group(function(){
-        Route::get('/roomReport',[RoomReportController::class,'index'])->name('roomReport.index');
-        Route::get('/roomReportView',[RoomReportController::class,'roomReportView'])->name('report.roomReportView');
+        // Route::get('/roomReport',[RoomReportController::class,'index'])->name('roomReport.index');
+        // Route::get('/roomReportView',[RoomReportController::class,'roomReportView'])->name('report.roomReportView');
         Route::get('/guestHistoryReport',[GuestHistoryReportController::class,'index'])->name('guestHistory.index');
         Route::get('/guestHistoryReportView',[GuestHistoryReportController::class,'guestHistoryReportView'])->name('report.guestHistoryReportView');
+        
         Route::get('/reservationReportView',[ReservationReportController::class,'index'])->name('reservationReport.index');
         Route::get('/reservationReportPrint/{id}',[ReservationReportController::class,'printReservation']);
         Route::get('/reservationReport',[ReservationReportController::class,'reservationReportView'])->name('report.reservationReportView');
+        Route::post('/reservation-cancel-checkout',[ReservationReportController::class,'reservationCancelCheckout'])->name('report.reservationCancelCheckout');
+        // Route::post('/reservation-update-checkin-checkout',[ReservationReportController::class,'reservationUpdateCheckinCheckout'])->name('report.reservationUpdateCheckinCheckout');
+        Route::post('/reservation-update-checkin-checkout-update',[ReservationReportController::class,'reservationUpdateCheckinCheckoutTime'])->name('report.reservationUpdateCheckinCheckoutTime');
+        Route::post('/reservation-get-checkin-checkout',[ReservationReportController::class,'reservationGetDetail'])->name('report.reservationGetDetail');
+
+        Route::get('/reservation-checkout',[ReservationCheckoutController::class,'index'])->name('reservation-checkout.index');
+        Route::get('/reservation-checkout-detail',[ReservationCheckoutController::class,'reservationCheckoutReportView'])->name('reservation-checkout-detail.reservationCheckoutReportView');
+
+        Route::get('/reservationCancelView',[ReservationCancelController::class,'index'])->name('reservationCancel.index');
+        Route::get('/reservationCancel',[ReservationCancelController::class,'reservationCancelView'])->name('report.reservationCancelReportView');
+        Route::post('/reservation-update-checkin-checkout',[ReservationCancelController::class,'reservationUpdateTime'])->name('report.reservationUpdateTime');
+
         Route::get('/kotReport',[KotReportController::class,'index'])->name('kotReport.index');
         Route::get('/kotReportView',[KotReportController::class,'kotReportView'])->name('report.kotReportView');
         Route::get('/hall-utilization-report',[HallUtilizationReportController::class,'index'])->name('hallUtilization.index');
@@ -481,6 +546,46 @@ Route::group(['middleware' => ['auth'],], function () {
         Route::get('/outstanding-payments-report-view',[OutstandingPaymentsReportController::class,'outstandingPaymentsView'])->name('outstandingPayments.outstandingPaymentsView');
         Route::get('/comprehensive-corporate-report',[ComprehensiveCorporateRevenueController::class,'index'])->name('comprehensiveCorporate.index');
         Route::get('/comprehensive-corporate-view',[ComprehensiveCorporateRevenueController::class,'comprehensiveCorporateView'])->name('comprehensiveCorporate.comprehensiveCorporateView');
+
+        Route::get('/guest-history',[GuesthistoryController::class, 'index'])->name('guestHistory.index');
+        Route::get('/guest-history-data',[GuesthistoryController::class, 'guestHistoryData'])->name('guestHistory.data');
+        Route::get('/guest-history-details/{id}',[GuesthistoryController::class, 'guestHistoryDetails'])->name('guestHistory.details');
+        Route::post('/guest-history-details-data',[GuesthistoryController::class, 'guestHistoryListDetails'])->name('guestHistory.historyDetails');
+        Route::post('/guest-history-reservation-details',[GuesthistoryController::class, 'getReservationDetails'])->name('guestHistory.getReservationDetails');
+        Route::post('/guest-restaurant-details-data',[GuesthistoryController::class, 'guestRestaurantListDetails'])->name('guestHistory.restaurantDetails');
+        Route::post('/guest-restaurant-details',[GuesthistoryController::class, 'guestRestaurantDetails'])->name('guestHistory.getRestaurantDetails');
+        Route::post('/guest-history-get-details',[GuesthistoryController::class, 'guestHistoryGetDetails'])->name('guestHistory.getDetails');
+        Route::post('/guest-history-update-details',[GuesthistoryController::class, 'guestHistoryUpdateDetails'])->name('guestHistory.updateDetails');
+        Route::get('/guest-reservation-print/{id}',[GuesthistoryController::class, 'reservationPrintBill'])->name('guest-reservation-print.reservationPrintBill');
+
+        // new report
+        Route::get('stay-report',[StayController::class, 'index'])->name('stayReport.index');
+        // Route::get('stay-report-view',[StayController::class, 'stayReportView'])->name('stayReport.stayReportView');
+
+
+        Route::get('/stay-report/data', [StayController::class, 'stayReportView'])->name('stayReport.stayReportView');
+
+        Route::get('/stay-report/export', [StayController::class, 'export'])->name('stayReport.export');
+
+        Route::get('room-revenue-report',[RoomRevenueController::class, 'index'])->name('roomRevenueReport.index');
+        Route::get('room-revenue-report-view',[RoomRevenueController::class, 'roomRevenueReportView'])->name('roomRevenueReport.roomRevenueReportView');
+        Route::get('single-booking-sale-report',[SingleBookingSaleController::class, 'index'])->name('singleBookingSaleReport.index');
+        Route::get('single-booking-sale-report-view',[SingleBookingSaleController::class, 'singleBookingSaleReportView'])->name('singleBookingSaleReport.singleBookingSaleReportView');
+        Route::get('bulk-booking-sale',[BulkBookingSaleController::class, 'index'])->name('bulkBookingSale.index');
+        Route::get('bulk-booking-sale-view',[BulkBookingSaleController::class, 'bulkBookingSaleView'])->name('bulkBookingSale.bulkBookingSaleView');
+        Route::get('room-status',[RoomStatusController::class, 'index'])->name('roomStatus.index');
+        Route::get('room-status-view',[RoomStatusController::class, 'roomStatusView'])->name('roomStatus.roomStatusView');
+        Route::post('room-status-update',[RoomStatusController::class, 'roomStatusUpdate'])->name('roomStatus.roomStatusUpdate');
+        Route::get('kot-list-report',[KotListReportController::class, 'index'])->name('kotListReport.index');
+        Route::get('kot-list-report-view',[KotListReportController::class, 'kotListReportView'])->name('kotListReport.kotListReportView');
+        Route::get('restaurant-sales-report',[RestaurantSalesReportController::class, 'index'])->name('restaurantSaleReport.index');
+        Route::get('restaurant-sales-report-view',[RestaurantSalesReportController::class, 'restaurantSaleReportView'])->name('restaurantSaleReport.restaurantSaleReportView');
+        Route::get('kot-item-report',[KotItemController::class, 'index'])->name('kotItemReport.index');
+        Route::get('kot-item-report-view',[KotItemController::class, 'kotItemReportView'])->name('kotItemReport.kotItemReportView');
+        Route::get('item-wise-sale',[ItemwiseSalesController::class, 'index'])->name('itemWiseSale.index');
+        Route::get('item-wise-sale-view',[ItemwiseSalesController::class, 'itemWiseSaleView'])->name('itemWiseSale.itemWiseSaleView');
+        Route::get('payment-summary-report',[PaymentSummaryController::class, 'index'])->name('paymentSummary.index');
+        Route::get('payment-summary-report-view',[PaymentSummaryController::class, 'paymentSummaryView'])->name('paymentSummary.paymentSummaryView');
     });
 
     Route::prefix('nightaudit')->group(function () {

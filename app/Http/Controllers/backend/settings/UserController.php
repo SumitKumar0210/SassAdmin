@@ -39,6 +39,9 @@ class UserController extends Controller
             ->addColumn('email',function($row){
                 return $row->email;
             })
+            ->addColumn('password',function($row){
+                return $row->plain_password;
+            })
             ->addColumn('mobile',function($row){
                 return $row->mobile;
             })
@@ -104,6 +107,7 @@ class UserController extends Controller
             $item_insert->id_proof_type = $request->user_documenttype;
             $item_insert->id_proof_other = $request->user_otherdetail;
             $item_insert->id_number = $request->user_idnumber;
+            $item_insert->plain_password = $request->user_password;
             if ($request->hasFile('user_profile')) {
 
                 $image = $request->file('user_profile');

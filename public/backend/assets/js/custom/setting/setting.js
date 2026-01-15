@@ -198,3 +198,25 @@ $('#hotlr_add_time_form').on('submit', function(e) {
     }
 
 });
+
+function resetMuteSound(type,action_type){
+    
+    $.ajax({
+        url: settingTimeConfigurationResetMute,
+        type: "POST",
+        data: {type:type,action_type:action_type},
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            toastSuccessAlert(response.success);
+            setTimeout(() => {
+                location.reload();
+            }, 2500);
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+            alert("An error occurred: " + error);
+        }
+    });
+}

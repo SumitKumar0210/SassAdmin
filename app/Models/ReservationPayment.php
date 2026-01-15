@@ -11,4 +11,8 @@ class ReservationPayment extends Model
     public function payment_recorded_by(){
         return $this->hasOne('App\Models\User', 'id', 'recorded_by');
     }
+
+    public function payment_mode_type(){
+        return $this->hasOne('App\Models\PaymentMethod', 'id', 'payment_type');
+    }
 }

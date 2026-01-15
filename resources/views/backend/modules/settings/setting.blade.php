@@ -7,10 +7,10 @@
     <div class="container-fluid py-3">
         <div class="email-wrap bookmark-wrap">
             <div class="row">
-                <div class="col-xl-3 box-col-6">
+                <div class="col-xl-2 box-col-6">
                     @include('backend.layouts.sidebar_setting')
                 </div>
-                <div class="col-xl-9 col-md-12 box-col-12">
+                <div class="col-xl-10 col-md-12 box-col-12">
                     <div class="tab-content tabs-links">
                         <div class="tab-pane fade active show " id="pills-genral-setting" role="tabpanel" aria-labelledby="pills-genral-setting-tab">
                             <div class="card">
@@ -213,6 +213,8 @@
                                                     </div>
                                                     <div class="col-4">
                                                         <button class="btn btn-primary mt-4" type="submit">Update</button>
+                                                        <button class="btn btn-danger mt-4" type="button" onclick="resetMuteSound(`add_item`,`reset`)">Reset</button>
+                                                        <button class="btn btn-dark mt-4" type="button" onclick="resetMuteSound(`add_item`,`mute`)">@if($hotlr[0]->add_item_status == 1)Mute @else Unmute @endif</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -243,6 +245,8 @@
                                                     </div>
                                                     <div class="col-4">
                                                         <button class="btn btn-primary mt-4" type="submit">Update</button>
+                                                        <button class="btn btn-danger mt-4" type="button" onclick="resetMuteSound(`notification`,`reset`)">Reset</button>
+                                                        <button class="btn btn-dark mt-4" type="button" onclick="resetMuteSound(`notification``mute`)">@if($hotlr[0]->notification_status == 1)Mute @else Unmute @endif</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -347,6 +351,7 @@
     const resetInvoice = "{{ route('general-setting-invoice-reset.resetInvoiceNumber') }}";
     const updateAuditSetting = "{{ route('audit-setting-update') }}";
     const settingTimeConfiguration = "{{ route('setting.storeTimeConfiguration') }}";
+    const settingTimeConfigurationResetMute = "{{ route('setting.soundUpdateResetMute') }}";
 </script>
 <script src="{{asset('backend/assets/js/custom/setting/setting.js')}}"></script>
 <script src="{{asset('backend/assets/js/custom/setting/general_setting.js')}}"></script>

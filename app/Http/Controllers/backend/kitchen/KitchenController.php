@@ -22,7 +22,11 @@ class KitchenController extends Controller
 {   
     public function dashboard(){
         $hotlr = HotlrConfiguration::get(['logo','name']);
-        return view('backend.modules.kitchen.dashboard',compact('hotlr'));
+        $today = date('Y-m-d');
+        $complimentaryKot = Kot::where('is_complimentary',1)->where('date',$today)->count();
+        $cancelKot = Kot::where('status','Cancel')->where('date',$today)->count();
+
+        return view('backend.modules.kitchen.dashboard',compact('hotlr','complimentaryKot','cancelKot'));
     }
 
     public function getRoomKotData(Request $request){
@@ -47,7 +51,7 @@ class KitchenController extends Controller
             })
             ->addColumn('action',function($row){
                  return '<ul class="action"> 
-                        <li class="edit"> <a href="#"><i class="icon-pencil-alt" onclick="#"></i></a></li>
+                        <li class="edit"> <a href="javascript:;" onclick="printKot(`'.$row->kot_id.'`)"><i class="icofont icofont-eye-alt" ></i></a></li>
                         </ul>';
             })
             ->rawColumns(['action'])
@@ -77,7 +81,7 @@ class KitchenController extends Controller
             })
             ->addColumn('action',function($row){
                  return '<ul class="action"> 
-                        <li class="edit"> <a href="#"><i class="icon-pencil-alt" onclick="#"></i></a></li>
+                        <li class="edit"> <a href="javascript:;" onclick="printKot(`'.$row->kot_id.'`)"><i class="icofont icofont-eye-alt" ></i></a></li>
                         </ul>';
             })
             ->rawColumns(['action'])

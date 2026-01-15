@@ -1,11 +1,31 @@
+@php
+    $permission_allow = explode(',',auth()->user()->permission);
+@endphp
 <div class="modal fade" id="EditReservation" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl " role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            {{-- <div class="modal-header">
                 <h5 class="modal-title edit_reservation_id">Reservation LH24115678475 Sidhart</h5>
                 <span class="reservation_id_checkout d-none"></span> <span class="room_id_checkout d-none"></span>
                 <span class="guest_room_id d-none"></span>
                 <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> --}}
+            <div class="modal-header pb-2">
+                <div class="d-flex align-items-center justify-content-start">
+                    <div><h5 class="modal-title edit_reservation_id">Reservation LH24115678475 Sidhart</h5><span class="reservation_id_checkout d-none"></span> <span class="room_id_checkout d-none"></span>
+                <span class="guest_room_id d-none"></span></div>
+                    <div class="ms-2"><div class="form-check d-none"><input class="form-check-input room_checked-element" type="checkbox" id="new_reservation_checkin_confirmation"> Check-in </div></div>
+                </div>
+                <div class="d-flex align-items-center justify-content-end">
+                    @if(in_array('Reservation Cancel', $permission_allow))
+                        <button class="btn btn-outline-danger text-danger cancel_reservation d-none" onclick="cancelReservationData()"><i class="icon-close px-2"></i> Cancel Booking</button>
+                    @endif
+                    <button class="btn btn-info res_update_loader d-none" type="button" disabled><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait... </button>
+                    <button class="btn btn-info confirmStatusbtn update_res_Btn mx-1" onclick="updateReservation()">Update</button>
+                    <button class="btn btn-primary confirmStatusbtn checkin_res_Btn d-none" onclick="checkinBtn(document.getElementsByClassName('reservation_id_checkout')[0].innerText,document.getElementsByClassName('room_id_checkout')[0].innerText)">Checkin</button>
+                    <button class="btn btn-warning confirmStatusbtn checkout_res_Btn d-none" onclick="checkoutBtn()">Checkout</button>
+                    <button class="btn btn-danger ms-2" type="button" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
             <div class="modal-body p-0">
                 <ul class="simple-wrapper nav nav-tabs bg-secondary pt-2 px-2 reservationTab" role="tablist">
@@ -25,26 +45,27 @@
                             <div class="row">
                                 <input type="hidden" id="newresID">
                                 <div class="col-lg-3 col-sm-12 col-12">
-                                    <div class="checkinbox mb-3">
+                                    <div class="checkinbox mb-1">
                                         <label class="form-label">Checkin</label>
                                         <div class="input-group">
-                                            <input class="form-control form-control-sm" id="res_checkin_Edit" name="res_checkin_Edit" type="date" value="" onchange="staycount_checkin(1)"> <span class="input-group-text text-muted"><i class="icofont icofont-ui-calendar"></i></span>
+                                            <span class="input-group-text text-muted"><i class="icofont icofont-ui-calendar"></i></span><input class="form-control form-control-sm" id="res_checkin_Edit" name="res_checkin_Edit" type="date" value="" onchange="staycount_checkin(1)" style="background-color: #fff;"> 
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-12 col-12">
-                                    <div class="checkinbox mb-3">
+                                    <div class="checkinbox mb-1">
                                         <label class="form-label">Checkout</label>
                                         <div class="input-group">
-                                            <input class="form-control form-control-sm" id="res_checkout_Edit" name="res_checkout_Edit" type="date" value="" onchange="staycount_checkout(2)"> <span class="input-group-text text-muted"><i class="icofont icofont-ui-calendar"></i></span>
+                                            <span class="input-group-text text-muted"><i class="icofont icofont-ui-calendar"></i></span><input class="form-control form-control-sm" id="res_checkout_Edit" name="res_checkout_Edit" type="date" value="" onchange="staycount_checkout(2)" style="background-color: #fff;">
                                         </div>
                                         <div class="date_format_err"></div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-sm-12 col-12">
-                                    <div class="mt-lg-4 mt-0 pt-3">
-                                        <label>Length of stay: <strong><span class="reservation_durationEdit"><span>1 Night</strong><span class="px-1">
-                                            |</span>Booking status: <span class="text-success reservation_edit_status">New Reservation</span> </label>
+                                    <div class="mt-lg-4 mt-0 pt-2">
+                                        <label>
+                                            {{-- Length of stay: <strong><span class="reservation_durationEdit"><span>1 Night</strong><span class="px-1">|</span> --}}
+                                            Booking status: <span class="text-success reservation_edit_status">New Reservation</span> </label>
                                     </div>
                                 </div>
                                 <div class="col-md-12 d-tab-wrapper edit_room_reservation_detail">
@@ -69,29 +90,29 @@
                                     <div class="col-12">
                                         <div class="row">
                                             <div class="col-lg-4 col-sm-12">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="mobile_resvn_edit">Phone</label>
                                                     <input class="form-control form-control-sm" type="number" id="mobile_resvn_edit" name="mobile_resvn_edit" placeholder="Phone" maxlength="10" oninput="handleInput_mobile_resvn()" readonly>
-                                                    <div id="itemCodeList"></div>
-                                                    <div class="mobile_resvn_edit_class"></div>
+                                                    <div id="itemCodeList d-none"></div>
+                                                    <div class="mobile_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-12">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="first_name_resvn_edit">First Name <span class="text-danger">*</span></label>
-                                                    <input class="form-control form-control-sm" type="text" id="first_name_resvn_edit" name="first_name_resvn_edit" placeholder="First Name" oninput="handleInput_name_resvn()">
-                                                    <div class="first_name_resvn_edit_class"></div>
+                                                    <input class="form-control form-control-sm" type="text" id="first_name_resvn_edit" name="first_name_resvn_edit" placeholder="First Name" oninput="handleInput_name_resvn()" >
+                                                    <div class="first_name_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-12">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="last_name_resvn_edit">Last Name</label>
                                                     <input class="form-control form-control-sm" type="text" id="last_name_resvn_edit" name="last_name_resvn_edit" placeholder="Last Name">
-                                                    <div class="last_name_resvn_edit_class"></div>
+                                                    <div class="last_name_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="gender_resvn_edit">Gender</label>
                                                     <select class="form-select form-select-sm" id="gender_resvn_edit" name="gender_resvn_edit">
                                                         <option value="">Select</option>
@@ -101,87 +122,87 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-12">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="email_resvn_edit">Email <span class="text-danger">*</span></label>
                                                     <input class="form-control form-control-sm" type="email" id="email_resvn_edit" name="email_resvn_edit" placeholder="Email">
-                                                    <div class="email_resvn_edit_class"></div>
+                                                    <div class="email_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="guest_type_resvn_edit">Guest Type <span class="text-danger">*</span></label>
                                                     <select class="form-select form-select-sm" id="guest_type_resvn_edit" name="guest_type_resvn_edit">
                                                         <option value="Normal">Normal </option>
                                                         <option value="VIP">VIP </option>
                                                         <option value="Corporate">Corporate </option>
                                                     </select>
-                                                    <div class="guest_type_resvn_edit_class"></div>
+                                                    <div class="guest_type_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-12">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="allergic_to_resvn_edit">Allergic To</label>
                                                     <input class="form-control form-control-sm" type="text" id="allergic_to_resvn_edit" name="allergic_to_resvn_edit" placeholder="Allergic">
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-12">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="address_resvn_edit">Address <span class="text-danger">*</span></label>
                                                     <input class="form-control form-control-sm" type="text" id="address_resvn_edit" name="address_resvn_edit" placeholder="Address">
-                                                    <div class="address_resvn_edit_class"></div>
+                                                    <div class="address_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-12">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="city_resvn_edit">City</label>
                                                     <input class="form-control form-control-sm" type="text" id="city_resvn_edit" name="city_resvn_edit" placeholder="City">
-                                                    <div class="city_resvn_edit_class"></div>
+                                                    <div class="city_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="state_resvn_edit">State <span class="text-danger">*</span></label>
                                                     <input class="form-control form-control-sm" type="text" id="state_resvn_edit" name="state_resvn_edit" placeholder="State">
-                                                    <div class="state_resvn_edit_class"></div>
+                                                    <div class="state_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label" for="pin_resvn_edit">PIN / ZIP <span class="text-danger">*</span></label>
+                                                <div class="form-group mb-1">
+                                                    <label class="form-label" for="pin_resvn_edit">PIN / ZIP </label>
                                                     <input class="form-control form-control-sm" type="number" id="pin_resvn_edit" name="pin_resvn_edit" placeholder="PIN / ZIP" maxlength="6" oninput="this.value=this.value.slice(0,6)">
-                                                    <div class="pin_resvn_edit_class"></div>
+                                                    <div class="pin_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="country_resvn_edit">Country <span class="text-danger">*</span></label>
                                                     <input class="form-control form-control-sm" type="text" id="country_resvn_edit" name="country_resvn_edit" placeholder="Country" value="India">
-                                                    <div class="country_resvn_edit_class"></div>
+                                                    <div class="country_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="coming_from_resvn_edit">Coming From <span class="text-danger">*</span></label>
                                                     <input class="form-control form-control-sm" type="text" id="coming_from_resvn_edit" name="coming_from_resvn_edit" placeholder="Coming From" pattern="[A-Za-z]*" onkeyup="checkString(`coming_from_resvn_edit`,this.value)">
-                                                    <div class="coming_from_resvn_edit_class text-danger"></div>
+                                                    <div class="coming_from_resvn_edit_class text-danger validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="going_to_resvn_edit">Going To <span class="text-danger">*</span></label>
                                                     <input class="form-control form-control-sm" type="text" id="going_to_resvn_edit" name="going_to_resvn_edit" placeholder="Going To" pattern="[A-Za-z]" onkeyup="checkString(`going_to_resvn_edit`,this.value)">
-                                                    <div class="going_to_resvn_edit_class text-danger"></div>
+                                                    <div class="going_to_resvn_edit_class text-danger validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="purpose_of_visit_resvn_edit">Purpose Of Visit <span class="text-danger">*</span></label>
                                                     <input class="form-control form-control-sm" type="text" id="purpose_of_visit_resvn_edit" name="purpose_of_visit_resvn_edit" placeholder="Purpose Of Visit">
-                                                    <div class="purpose_of_visit_resvn_edit_class"></div>
+                                                    <div class="purpose_of_visit_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-1">
                                                     <label class="form-label" for="arrivaltime_resvn_edit">Arrival Time</label>
                                                     <select class="form-select form-select-sm" id="arrivaltime_resvn_edit" name="arrivaltime_resvn_edit">
                                                         <option value=""> Select Arrival Time</option>
@@ -192,8 +213,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label" for="documenttype_resvn_edit">Document type <span class="text-danger">*</span></label>
+                                                <div class="form-group mb-1">
+                                                    <label class="form-label" for="documenttype_resvn_edit">Document type </label>
                                                     <select class="form-select form-select-sm" id="documenttype_resvn_edit" name="documenttype_resvn_edit" onchange="docTypeValue(this.value)">
                                                         <option value="">Document type</option>
                                                         <option value="Aadhar Card">Aadhar Card </option>
@@ -201,43 +222,43 @@
                                                         <option value="Driving Licence">Driving Licence</option>
                                                         <option value="Other">Other</option>
                                                     </select>
-                                                    <div class="documenttype_resvn_edit_class"></div>
+                                                    <div class="documenttype_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-12" id="otherdetail_resvncc" style="display:none">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label" id="otherdetail_resvn_edit">Other Document Type <span class="text-danger">*</span></label>
+                                                <div class="form-group mb-1">
+                                                    <label class="form-label" id="otherdetail_resvn_edit">Other Document Type</label>
                                                     <input class="form-control form-control-sm" type="text" id="otherdetail_resvn_edit" name="otherdetail_resvn_edit" placeholder="Other Details">
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6" >
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label" for="idnumber_resvn_edit">ID Number <span class="text-danger">*</span></label>
+                                                <div class="form-group mb-1">
+                                                    <label class="form-label" for="idnumber_resvn_edit">ID Number </label>
                                                     <input class="form-control form-control-sm" type="text" placeholder="Document Number" maxlength="15" id="idnumber_resvn_edit" name="idnumber_resvn_edit" oninput="this.value=this.value.slice(0,15)">
-                                                    <div class="idnumber_resvn_edit_class"></div>
+                                                    <div class="idnumber_resvn_edit_class validation_error_msg"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-12">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label" for="photo_resvn_edit">ID Proof</label>
+                                                <div class="form-group mb-1">
+                                                    <label class="form-label" for="photo_resvn_edit">ID Proof <span class="text-danger">*</span></label>
                                                     <input class="form-control form-control-sm" type="file" id="photo_resvn_edit" name="photo_resvn_edit"/>
-                                                    <div class="photo_resvn_edit_class text-danger"></div>
+                                                    <div class="photo_resvn_edit_class text-danger validation_error_msg"></div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-lg-12 col-sm-12 col-12">
-                                            <div class="mb-3">
+                                            <div class="mb-1">
                                                 <label class="form-label" for="comments_resvn_edit">Guest Comments</label>
                                                 <textarea class="form-control" id="comments_resvn_edit" name="comments_resvn_edit" rows="1" ></textarea>
                                             </div>
                                         </div>
                                         <div class="col-lg-12 col-sm-12 col-12 d-none">
-                                            <div class="mb-3">
+                                            <div class="mb-1">
                                                 <label class="form-label" for="note_resvn_edit">Notes</label>
                                                 <textarea class="form-control" id="note_resvn_edit" name="note_resvn_edit" rows="1" ></textarea>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 mb-3 d-none">
+                                        <div class="col-md-12 mb-1 d-none">
                                             <input class="form-control form-control-sm" id="gstLegalName_edit" name="gstLegalName" type="text" placeholder="gstLegalName" >
                                             <input class="form-control form-control-sm" id="gstAddrBnm_edit" name="gstAddrBnm" type="text" placeholder="gstAddrBnm">
                                             <input class="form-control form-control-sm" id="gstAddrBno_edit" name="gstAddrBno" type="text" placeholder="gstAddrBno">
@@ -276,9 +297,9 @@
                                                 <div class="d-flex flex-wrap gap-3 my-4">
                                                     <div class="form-group ">
                                                         {{-- <label class="form-label">GSTIN</label> --}}
-                                                        <input class="form-control form-control-sm" type="text" placeholder="Enter GSTIN" id="companygst_resvn_edit" name="companygst_resvn_edit" maxlength="15">
+                                                        <input class="form-control form-control-sm" type="text" placeholder="Enter GSTIN" id="companygst_resvn_edit" name="companygst_resvn_edit" maxlength="15" onkeyup="checkGstCompany(this.value,1)">
                                                     </div>
-                                                    <button class="btn btn-primary" type="button" onclick="checkGstRequest(1)">Fetch</button>
+                                                    <button class="btn btn-primary gst-fetch-detail_edit" type="button" onclick="checkGstRequest(1)" disabled>Fetch</button>
                                                     <div class="gst-address_edit d-none"></div>
                                                 </div>
                                             </div>
@@ -459,14 +480,14 @@
                                                                 <div class="mb-3 mb-lg-1">
                                                                     <label class="form-label text-dark">Name</label>
                                                                     <input class="form-control form-control-sm" id="name_g_rsv_add_new" name="name_g_rsv_add[]" type="text" oninput="validateField('#name_g_rsv_add_new','input','.name_g_rsv_add_new_class')" required="">
-                                                                    <div class="name_g_rsv_add_new_class"></div>
+                                                                    <div class="name_g_rsv_add_new_class validation_error_msg"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col">
                                                                 <div class="mb-3 mb-lg-1">
                                                                     <label class="form-label text-dark">Mobile Number</label>
                                                                     <input class="form-control form-control-sm" id="mobile_g_rsv_add_new" name="mobile_g_rsv_add[]" type="number" maxlength="10" oninput="handleMobileGuestNew(this)" required="">
-                                                                    <div class="mobile_g_rsv_add_new_class"></div>
+                                                                    <div class="mobile_g_rsv_add_new_class validation_error_msg"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col">
@@ -496,7 +517,7 @@
                                                                 <div class="mb-3 mb-lg-1">
                                                                     <label class="form-label text-dark">Id Number</label>
                                                                     <input class="form-control form-control-sm" id="idnum_g_rsv_add_new" name="idnum_g_rsv_add[]" type="email" maxlength="15" oninput="this.value=this.value.slice(0,15)">
-                                                                    <div class="email_g_rsv_add_new_class"></div>
+                                                                    <div class="email_g_rsv_add_new_class validation_error_msg"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col">
@@ -679,14 +700,14 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            {{-- <div class="modal-footer">
                 <button class="btn text-primary px-1 text-danger cancel_reservation d-none" onclick="cancelReservationData()"><i class="icon-close px-2"></i> Cancel Booking</button>
                 <button class="btn btn-info res_update_loader d-none" type="button" disabled><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait... </button>
                 <button class="btn btn-info confirmStatusbtn update_res_Btn mx-1" onclick="updateReservation()">Update</button>
                 <button class="btn btn-primary confirmStatusbtn checkin_res_Btn d-none" onclick="checkinBtn(document.getElementsByClassName('reservation_id_checkout')[0].innerText,document.getElementsByClassName('room_id_checkout')[0].innerText)">Checkin</button>
                 <button class="btn btn-warning confirmStatusbtn checkout_res_Btn d-none" onclick="checkoutBtn()">Checkout</button>
                 <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Close</button>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>

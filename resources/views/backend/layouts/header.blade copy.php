@@ -764,6 +764,7 @@
                     <li><a href="{{route('eventType.index')}}">Event Type Analysis</a></li>
                     <li><a href="{{route('monthlyRevenue.index')}}">Monthly Revenue Breakdown</a></li>
                     <li><a href="{{route('outstandingPayments.index')}}">Outstanding Payments</a></li>
+                    <li><a href="{{route('outstandingPayments.index')}}">Guest History</a></li>
                   </ul>
                 </li>
                 <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="{{route('auditReport.index')}}">

@@ -22,7 +22,7 @@
         </div>
         <!-- Container-fluid starts-->
         <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center gap-4 mb-3">
+            <div class="d-flex justify-content-between gap-4 mb-3">
                 <div class="kot-leftside">
                     <div class="row mb-3">
                         <div class="col-sm-12">
@@ -75,7 +75,7 @@
                             <h3 class="text-truncate">Completed KOTS</h3>
                         </div>
                         <div class="card-body py-3 vertical-scroll scroll-kots-completed">
-                            <div class="kot-wrapper completed-kots mb-2"></div>
+                            <div class=" completed-kots mb-2"></div>
                         </div>
                     </div>
                 </div>
@@ -253,7 +253,7 @@
                                             <option value="">Select</option>
                                             @foreach($payments as $method)
                                                 @if($method['id'] > 2)
-                                                    <option value="{{$method['id']}}">{{$method['name']}}</option>
+                                                    <option value="{{$method['name']}}">{{$method['name']}}</option>
                                                 @endif
                                             @endforeach
                                         </select> 
@@ -337,12 +337,21 @@
             </div>
         </div>
         <div class="offcanvas-footer d-flex justify-content-between">
-            <button type="button" class="btn btn-danger btn-square py-2 w-33" onClick="cancelKot()">Cancel KOT</button>
-             <button class="btn btn-primary btn-footer-toggle btn-square py-2 w-33 d-flex align-items-center gap-2">
-            <input class="checkbox_animated m-0" id="record-payment" type="checkbox">
-            <span class="ms-1">Record Payment</span>
+            @php
+                $permission_allow = explode(',',auth()->user()->permission);
+                $btn_width = '50';
+            @endphp
+            @if(in_array('Kot Cancel', $permission_allow))
+                <button type="button" class="btn btn-danger btn-square py-2 w-33" onClick="cancelKot()">Cancel KOT</button>
+                @php
+                    $btn_width = '33';
+                @endphp
+            @endif
+            <button class="btn btn-primary btn-footer-toggle btn-square py-2 w-{{$btn_width}} d-flex align-items-center gap-2">
+                <input class="checkbox_animated m-0" id="record-payment" type="checkbox">
+                <span class="ms-1">Record Payment</span>
             </button>
-            <button type="button" class="btn btn-success btn-square py-2 w-33" onClick="updateKot()">Submit</button>
+            <button type="button" class="btn btn-success btn-square py-2 w-{{$btn_width}}" onClick="updateKot()">Submit</button>
         </div>
     </div>
     {{-- view kot end --}}

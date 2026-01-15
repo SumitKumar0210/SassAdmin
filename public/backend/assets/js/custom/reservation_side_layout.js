@@ -4,7 +4,8 @@ reservationLayoutStructure();
 let reservationRoomDetail = [];
 let roomCloser = [];
 let statusNameColor = [];
-
+let categorySet = 'All';
+let typeSet = '';
 
 function reservationLayoutStructure(){
 
@@ -16,8 +17,7 @@ function reservationLayoutStructure(){
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(data) {
-            console.log(data);
-            timeConfiguration.push(data.time_configuration);
+            // timeConfiguration.push(data.time_configuration);
             availableRoomDetail = [];
             tariff_data = [];
             availableRoomDetail = data.roomDetails;
@@ -27,15 +27,9 @@ function reservationLayoutStructure(){
             statusNameColor = data.statusNameColor;
             roomCloser = data.roomCloser;
             $('.filter-parameter').html('');
-            let colorArea = `<div class="d-flex align-items-center rooms-status-btn flex-column mx-4" onclick="roomDetailDesign('')">
-                            <div class="all-room w-40  bg-success border-radius-4"></div>
-                            <h5>All</h5>
-                        </div>`;
+            let colorArea = `<button class="btn btn-primary ms-2 d-flex justify-content-between" type="button" onclick="roomDetailDesign('')" style="width:200px;"> All </button>`;
             statusNameColor.forEach(reason => {
-                colorArea += `<div class="d-flex align-items-center rooms-status-btn flex-column mx-3" onclick="roomDetailDesign('${reason.id}')">
-                            <div class="vacant-room w-40 border-radius-4" style="background-color:${reason.color}" ></div>
-                            <h5> ${reason.name}</h5>
-                        </div>`;
+                colorArea += `<button class="btn ms-2 text-white d-flex justify-content-between" type="button" onclick="roomDetailDesign('${reason.id}')" style="background-color:${reason.color}; width:200px;"><span> ${reason.name} </span><span class="text-end">${reason.count}</span></button>`;
             });
             $('.filter-parameter').html(colorArea);
             roomDetailDesign();
@@ -44,14 +38,30 @@ function reservationLayoutStructure(){
 }
 
 function roomDetailDesign(type = ''){
-    
+    typeSet = type;
     $('.room_detail_views').html();
     $('#roomtype_resvn0').empty();
     let roomCategoryView = $('#roomtype_resvn0');
     roomCategoryView.append(`<option value=""> Select Type</option>`);
     let room_detail = '';
-
+    let room_category_detail = '';
+    let class_filter_all = 'btn-outline-primary';
+    if(categorySet == 'All'){
+        class_filter_all = 'btn-primary';
+    }
+    room_category_detail += `<button class="btn ${class_filter_all} ms-2 filter-category-btn" type="button" onClick="categoryFilter('All')"> All </button>`;    
     roomDetail.forEach(category => {
+        $('.filter-category-btn').removeClass('btn-primary');
+        let class_filter = 'btn-outline-primary';
+        if(category.id == categorySet){
+            class_filter = 'btn-primary';
+        }
+        room_category_detail += `<button class="btn ${class_filter} ms-2 filter-category-btn" type="button" onClick="categoryFilter(${category.id})"> ${category.name} </button>`;
+
+        // Filter category
+        if (categorySet && categorySet !== 'All' && category.id != categorySet) {
+            return; 
+        }
 
         // Filter rooms by status
         const filteredRooms = type === '' 
@@ -70,14 +80,13 @@ function roomDetailDesign(type = ''){
         // Build row
         room_detail += `
             <tr>
-                <td class="fs-5 reservation-room-type">${category.name} Room</td>
+                <td class="fs-5 reservation-room-type">${category.name}</td>
                 <td>
                     <div class="reservation-itemlist-wrapper p-3">`;
 
                         filteredRooms.forEach(room => {
                             let bg = '';
                             let hoverClass = '';
-
                             if (room.current_status != '-1') {
                                 const match = statusNameColor.find(x => x.id == room.current_status);
                                 if (match) {
@@ -104,62 +113,58 @@ function roomDetailDesign(type = ''){
                                 const reservation = category.room_reservation_detail.find(res => res.room_id == room.id);
                                 if (reservation) {
                                     room_detail +=`<div class="grid-detals border rounded p-3 customer-details onhover-show-div text-dark" style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); width:700px;">
-                                                    <div class="d-flex justify-content-between align-items-center ">
-                                                        <h4 class="modal-title">Reservation ${reservation.reservation_id} for ${reservation.first_name} ${reservation.last_name}</h4>
+                                        <div class="d-flex justify-content-between align-items-center mb-3 custom-border-hotlr">
+                                            <button class="btn-outline-primary btn" onClick="edit_reservation(${reservation.reservation_room_id}, '${reservation.reservation_id}')">View Reservation</button>`;
+                                            if(reservation.status == 'Reserved'){
+                                                room_detail +=`<button class="btn btn-outline-danger customer-d-close" type="button" onClick="cancelReservationData(${reservation.id})">Cancel Reservation</button>`;
+                                            }
+                                            room_detail +=`<div class="text-end">
+                                                <div class="fw-bold">Room No. ${reservation.room_alloted}</div>
+                                                <span class="badge bg-success" style="padding: 7px 10px;">${reservation.status}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 ">
+                                            <div class="row">
+                                            <div class="title col-md-3 mb-2">Guest Info</div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row custom-border-2-hotlr">
+                                                    <div class="col-md-6">
+                                                        <p class="mb-1">Guest Name: ${reservation.first_name} ${reservation.last_name ?? ''}</p>
+                                                        <p class="mb-1">Phone No.: ${reservation.mobile}</p>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <table class="table table-borderless ">
-                                                                <tbody class="ui-sortable" style="">
-                                                                    <tr>
-                                                                        <td colspan="4" class="px-0 py-2">
-                                                                        <h4>Primary Contact</h4>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td colspan="1" class="p-0">
-                                                                            <p class="mb-0">Guest Type </p>
-                                                                            <p class="mb-0 ">${reservation.guest_type}</p>
-                                                                        </td>
-                                                                        <td colspan="1" class="p-0">
-                                                                            <p class="mb-0">Check-in</p>
-                                                                            <p class="mb-0 ">${reservation.reservation_checkin_date} ${reservation.reservation_checkin_time}</p>
-                                                                        </td>
-                                                                        <td class="py-0">
-                                                                            <p class="mb-0 ">Phone Number</p>
-                                                                            <p class="mb-0 ">${reservation.mobile}</p>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td colspan="3" class="px-0 py-2">
-                                                                        <h4>Reservation Details</h4>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td colspan="1" class="p-0">
-                                                                            <p class="mb-0">Room Reservation  </p>
-                                                                            <p class="mb-0  text-danger">${reservation.room_alloted} </p>
-                                                                        </td>
-                                                                        <td colspan="1" class="p-0">
-                                                                            <p class="mb-0">No of Pax and Extra</p>
-                                                                            <p class="mb-0  text-danger">${reservation.adults} + ${reservation.extra_person}</p>
-                                                                        </td>
-                                                                        <td class="py-0">
-                                                                            <p class="mb-0 ">Source of reservation</p>
-                                                                            <p class="mb-0 ">By Hotel</p>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+
+                                                    <div class="company-hotlr col-md-6" style="padding-left: 60px;">
+                                                        <p class="mb-1">Company: ${reservation.company_name.substring(0, 20)}</p>
+                                                        <p class="mb-1">GST: ${reservation.company_gst}</p>
                                                     </div>
-                                                    <div class="text-end mt-2">`;
-                                                        if(reservation.status == 'Reserved'){
-                                                            room_detail +=`<button class="btn btn-danger customer-d-close" type="button" onClick="cancelReservationData(${reservation.id})">Cancel Reservation</button>`;
-                                                        }
-                                                        room_detail +=`<button class="btn btn-muted border mx-2" type="button" onClick="edit_reservation(${reservation.reservation_room_id}, '${reservation.reservation_id}')">View Reservation</button>
-                                                    </div>
-                                                </div>`;
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="title mb-2">Reservation Details</div>
+
+                                                <p class="mb-1">Reservation ID: ${reservation.reservation_id} </p>
+                                                <p class="mb-1">Room Type: ${category.name}</p>
+                                                <p class="mb-1">Room Tariff: ${reservation.tariff_cost}</p>
+                                            </div>
+
+                                            <!-- Divider for large screen -->
+                                            <div class="col-md-1 d-none d-md-flex justify-content-center">
+                                                <div style="border-right:1px solid #000; height:100%;"></div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="title mb-2">Check-In Details</div>
+
+                                                <p class="mb-1">Check-in Date: ${reservation.reservation_checkin_date} </p>
+                                                <p class="mb-1">Room Time: ${reservation.reservation_checkin_time} </p>
+                                                <p class="mb-1">Tariff Plan: ${reservation.tariff}</p>
+                                            </div>
+                                        </div>
+                                    </div>`;
                                 }
                             room_detail += `</div>`;
                         });
@@ -190,4 +195,10 @@ function roomDetailDesign(type = ''){
     });
 
     $('.room_detail_views').html(room_detail);
+    $('.category-filter-list').html(room_category_detail);
+}
+
+function categoryFilter(name){
+    categorySet = name;
+    roomDetailDesign(typeSet);
 }

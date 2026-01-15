@@ -7,17 +7,22 @@ function purchaseAddPage() {
 let i = 1;
 let items = [];
 
+$('input[name="purchase_item"]').change(function(){
+    console.log("Selected:", $(this).val());
+});
+
 function addItems(){
-    let vendor_check = validateField("#purchaseAdd-vendor","select",".purchaseAdd-vendor_class");
-    let item_check = validateField("#purchaseAdd-item","select",".purchaseAdd-item_class");
+    let vendor_check = $('input[name="puchase_vendor"]:checked').val();
+    let item_check = $('input[name="purchase_item"]:checked').val();
     let qty_check = validateField("#purchaseAdd-itemQty","select",".purchaseAdd-itemQty_class");
-    if(vendor_check == true && item_check == true && qty_check == true){
-        let itemId = $('#purchaseAdd-item').val();
-        let itemName = $('#purchaseAdd-item option:selected').text();
+    
+    if(vendor_check != '' && item_check != '' && qty_check == true){
+        let itemId = item_check;
+        let itemName = $('input[name="purchase_item"]:checked').data('showname');;
         let qty = $('#purchaseAdd-itemQty').val();
         if(qty > 0){
 
-            let unit = $('#purchaseAdd-item option:selected').data('uom');
+            let unit = $('input[name="purchase_item"]:checked').data('uom');
             let check = items.includes(parseInt(itemId));
             if(check){
                 toastErrorAlert('Item already exist');
@@ -48,7 +53,6 @@ function addItems(){
 
             toastErrorAlert('Qty cannot be 0 ');
             return;
-
         }
     }else{
        console.log('Please fill required fields');

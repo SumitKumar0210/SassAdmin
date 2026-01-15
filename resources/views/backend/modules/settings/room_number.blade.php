@@ -2,7 +2,7 @@
 @section('title','Setting Room Number')
 @section('extra-css')
 <style>
-.image-container {
+    .image-container {
       display: inline-block;
       cursor: pointer;
     }
@@ -36,40 +36,42 @@
         <div class="container-fluid py-3">
             <div class="email-wrap bookmark-wrap">
                 <div class="row">
-                    <div class="col-xl-2 box-col-6">
-                        @include('backend.layouts.sidebar_master')
-                    </div>
-                    <div class="col-xl-10 col-md-12 box-col-12">
-                        <div class="container-fluid">
-                            <div class="page-title mt-2">
-                                <div class="row gx-0">
-                                    <div class="col-12 col-sm-6">
-                                        <h3 class="d-block">Room Number</h3>
+                    <div class="col-xl-12 col-md-12 box-col-12">
+                        <div> 
+                            @include('backend.layouts.sidebar_master')
+                        </div>
+                        <div style=" padding-left:220px;">
+                            <div class="container-fluid">
+                                <div class="page-title mt-2">
+                                    <div class="row gx-0">
+                                        <div class="col-12 col-sm-6">
+                                            <h3 class="d-block">Room Number</h3>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="container-fluid">
-                            <div class="row">
-                                <!-- Zero Configuration  Starts-->
-                                <div class="col-lg-12 col-sm-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="hover row-border stripe" id="room_Number_table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>SL No.</th>
-                                                            <th>Room Specification</th>
-                                                            <th>Room Number</th>
-                                                            <th>QR Code</th>
-                                                            <th>Status</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <!-- Zero Configuration  Starts-->
+                                    <div class="col-lg-12 col-sm-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="hover row-border stripe" id="room_Number_table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>SL No.</th>
+                                                                <th>Room Specification</th>
+                                                                <th>Room Number</th>
+                                                                <th>QR Code</th>
+                                                                <th>Status</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -44,11 +44,6 @@
         .alert-icons svg {
             top: 12px !important;
         }
-        .login-card {
-            background: url(https://app.staycot.diskounto.com/backend/assets/images/login/login_bg.svg);
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
     </style>
 </head>
 

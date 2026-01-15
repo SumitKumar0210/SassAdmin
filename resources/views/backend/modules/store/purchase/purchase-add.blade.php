@@ -18,27 +18,53 @@
   {{-- Items Section --}}
   <div class="card">
     <div class="card-body">
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label fw-medium" for="purchaseAdd-vendor">Vendor</label>
-                <select id="purchaseAdd-vendor" class="form-control form-control-sm select2-cls" onchange="validateField('#purchaseAdd-vendor','select','.purchaseAdd-vendor_class')">
-                    <option value="">Select</option>
+                {{-- <select id="purchaseAdd-vendor" class="form-control form-control-sm select2-cls" onchange="validateField('#purchaseAdd-vendor','select','.purchaseAdd-vendor_class')">
+                    </select> --}}
+                
+
+                <div class="select-box select-box1">
+                  <div class="options-container options-container1">
                     @foreach ($vendors as $vendor)
-                        <option value="{{$vendor->id}}">{{$vendor->name}}</option>
+                    <div class="selection-option selection-option1">
+                      <input class="radio" id="{{$vendor->id}}" value="{{$vendor->id}}" type="radio" name="puchase_vendor">
+                      <label class="mb-0" for="{{$vendor->id}}">{{$vendor->name}}</label>
+                    </div>
                     @endforeach
-                </select>
+                  </div>
+                  <div class="selected-box selected-box1">Select Vendor</div>
+                  <div class="search-box search-box1">
+                    <input type="text" placeholder="Start Typing...">
+                  </div>
+                </div>
                 <div class="purchaseAdd-vendor_class"></div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
                 <label class="form-label fw-medium" for="purchaseAdd-item">Item Name/Code</label>
-                <select id="purchaseAdd-item" class="form-control form-control-sm select2-cls">
+                {{-- <select id="purchaseAdd-item" class="form-control form-control-sm select2-cls">
                     <option value="">Select</option>
                     @foreach ($materials as $raw_material)
                         <option value="{{$raw_material['id']}}" data-uom="{{$raw_material['uom']}}">{{$raw_material['name']}} ({{$raw_material['code']}})</option>
                     @endforeach
-                </select>
+                </select> --}}
+                <div class="select-box select-box-abcd">
+                  <div class="options-container options-container-abcd">
+                    @foreach ($materials as $raw_material)
+                    <div class="selection-option selection-option-abcd">
+                      <input class="radio" id="v2{{$raw_material['id']}}" value="{{$raw_material['id']}}" data-uom="{{$raw_material['uom']}}" data-showname="{{$raw_material['name']}} ({{$raw_material['code']}})" type="radio" name="purchase_item">
+                      <label class="mb-0" for="v2{{$raw_material['id']}}">{{$raw_material['name']}} ({{$raw_material['code']}})</label>
+                    </div>
+                    @endforeach
+                  </div>
+                  <div class="selected-box selected-box-abcd">Select Item</div>
+                  <div class="search-box search-box-abcd">
+                    <input type="text" placeholder="Start Typing...">
+                  </div>
+                </div>
                 <div class="purchaseAdd-item_class"></div>
             </div>
             <div class="col-md-2">
@@ -90,6 +116,51 @@
     const purchaseItemVeiw = "{{route('store.purchaseItemVeiw')}}";
     const purchaseAddSubmit = "{{route('store.purchaseAddSubmit')}}";
     const purchaseOrder = "{{route('store.purchaseOrder')}}";
+</script>
+<script>
+    // Custom add search option
+    const selected1 = document.querySelector(".selected-box-abcd");
+    const optionsContainer1 = document.querySelector(".options-container-abcd");
+    const searchBox1 = document.querySelector(".search-box-abcd input");
+
+    const optionsList1 = document.querySelectorAll(".selection-option-abcd");
+
+    selected1.addEventListener("click", () => {
+      console.log("optionsContainer1", optionsContainer1);
+      optionsContainer1.classList.toggle("active");
+
+      searchBox1.value = "";
+      filterList1("");
+
+      if (optionsContainer1.classList.contains("active")) {
+        searchBox1.focus();
+      }
+    });
+
+    optionsList1.forEach((o) => {
+      o.addEventListener("click", () => {
+        selected1.innerHTML = o.querySelector("label").innerHTML;
+        optionsContainer1.classList.remove("active");
+      });
+    });
+
+    searchBox1.addEventListener("keyup", function (e) {
+      filterList1(e.target.value);
+    });
+
+    const filterList1 = (searchTerm) => {
+      searchTerm = searchTerm.toLowerCase();
+      optionsList1.forEach((option) => {
+        let label =
+          option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) != -1) {
+          option.style.display = "block";
+        } else {
+          option.style.display = "none";
+        }
+      });
+    };
+
 </script>
     <script src="{{ asset('backend/assets/js/custom/store/purchase.js') }}"></script>
     <script src="{{asset('backend/assets/js/custom/custom_backend.js')}}"></script>

@@ -50,40 +50,11 @@ Reservation Room Details
                                             <th>SL No.</th>
                                             <th>Reservation Number</th>
                                             <th>Booking Date</th>
-                                            <th>Booking Time</th>
                                             <th>Primary Guest Name</th>
-                                            <th>Guest Type</th>
                                             <th>Contact Number</th>
-                                            <th>Email Address</th>
-                                            <th>Address</th>
-                                            <th>Nationality</th>
-                                            <th>ID Type</th>
-                                            <th>ID Number</th>
-                                            <th>Company Name</th>
                                             <th>Check-in Date</th>
                                             <th>Check-out Date</th>
-                                            <th>Number of Nights</th>
-                                            <th>Number of Rooms</th>
-                                            <th>Room Type Requested</th>
-                                            <th>Number of Adults</th>
-                                            <th>Number of Children</th>
-                                            <th>Extra Bed Required</th>
-                                            <th>Smoking Preference</th>
-                                            <th>Bed Type Preference</th>
-                                            <th>Rate Plan</th>
-                                            <th>Base Rate</th>
-                                            <th>Discounts Applied</th>
-                                            <th>Total Room Charges</th>
-                                            <th>Tax Amount</th>
-                                            <th>Total Amount</th>
-                                            <th>Payment Status</th>
-                                            <th>Reservation Status</th>
-                                            <th>Check-in Status</th>
-                                            <th>Check-out Status</th>
-                                            <th>Last Modified Date</th>
-                                            <th>Cancellation Date</th>
-                                            <th>Cancellation Reason</th>
-                                            <th>No-show Flag</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -96,8 +67,55 @@ Reservation Room Details
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="reservationUpdateTimeModel" tabindex="-1" role="dialog" aria-labelledby="banquetBookingPaymentModel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-toggle-wrapper  text-start dark-sign-up">
+                    <div class="modal-header">
+                        <h4 class="modal-title roomCategory_title">Update Timming</h4>
+                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="" id="reservation_update_time_form" class="needs-validation" novalidate>
+                        <div class="modal-body">
+                            <div class="row">
+                                <input type="hidden" class="reservation_room_id" name="reservation_room_id">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="reservation_checkin_date">Checkin Date</label>
+                                    <input class="form-control form-control-sm" id="reservation_checkin_date" name="reservation_checkin_date" type="date" placeholder="Enter Amount" style="background-image: none;" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="reservation_checkin_time">Checkin Time</label>
+                                    <input class="form-control form-control-sm" id="reservation_checkin_time" name="reservation_checkin_time" type="time" placeholder="Enter Amount" style="background-image: none;" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="reservation_checkout_date">Checkout Date</label>
+                                    <input class="form-control form-control-sm" id="reservation_checkout_date" name="reservation_checkout_date" type="date" placeholder="Enter Amount" style="background-image: none;" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="reservation_checkout_time">Checkout Time</label>
+                                    <input class="form-control form-control-sm" id="reservation_checkout_time" name="reservation_checkout_time" type="time" placeholder="Enter Amount" style="background-image: none;" required>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary " type="submit">Submit</button>
+                            <button class="btn btn-primary payment_processing d-none" type="button">Please Wait..</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('extra-js')
+<script>
+    const reservationCancel = "{{ route('report.reservationCancelCheckout') }}";
+    const reservationUpdateCheckinCheckout = "{{ route('report.reservationUpdateCheckinCheckoutTime') }}";
+    const getReservationRoomDetail = "{{ route('report.reservationGetDetail') }}";
+</script>
     <script>
         let table;
         
@@ -124,40 +142,11 @@ Reservation Room Details
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: true, searchable: true },
                 { data: 'reservation', name: 'reservation', orderable: false, searchable: true },
                 { data: 'booking_date', name: 'booking_date', orderable: false, searchable: true },
-                { data: 'booking_time', name: 'booking_time', orderable: false, searchable: true },
                 { data: 'primary_guest', name: 'primary_guest', orderable: false, searchable: true },
-                { data: 'guest_type', name: 'guest_type', orderable: false, searchable: true },
                 { data: 'contact_number', name: 'contact_number', orderable: false, searchable: true },
-                { data: 'email_address', name: 'email_address', orderable: false, searchable: true },
-                { data: 'address', name: 'address', orderable: false, searchable: true },
-                { data: 'nationality', name: 'nationality', orderable: false, searchable: true },
-                { data: 'id_type', name: 'id_type', orderable: false, searchable: true },
-                { data: 'id_number', name: 'id_number', orderable: false, searchable: true },
-                { data: 'company_name', name: 'company_name', orderable: false, searchable: true },
                 { data: 'check_in_date', name: 'check_in_date', orderable: false, searchable: true },
                 { data: 'check_out_date', name: 'check_out_date', orderable: false, searchable: true },
-                { data: 'no_of_nights', name: 'no_of_nights', orderable: true, searchable: true },
-                { data: 'no_of_room', name: 'no_of_room', orderable: false, searchable: true },
-                { data: 'room_type_requested', name: 'room_type_requested', orderable: false, searchable: true },
-                { data: 'adult', name: 'adult', orderable: false, searchable: true },
-                { data: 'children', name: 'children', orderable: false, searchable: true },
-                { data: 'extra_bed_required', name: 'extra_bed_required', orderable: false, searchable: true },
-                { data: 'smoking', name: 'smoking', orderable: false, searchable: true },
-                { data: 'bed_type_preference', name: 'bed_type_preference', orderable: false, searchable: true },
-                { data: 'rate_plan', name: 'rate_plan', orderable: false, searchable: true },
-                { data: 'base_rate', name: 'base_rate', orderable: false, searchable: true },
-                { data: 'discount_apply', name: 'discount_apply', orderable: false, searchable: true },
-                { data: 'total_room_charge', name: 'total_room_charge', orderable: false, searchable: true },
-                { data: 'tax_amount', name: 'tax_amount', orderable: false, searchable: true },
-                { data: 'total_amount', name: 'total_amount', orderable: false, searchable: true },
-                { data: 'payment_status', name: 'payment_status', orderable: false, searchable: true },
-                { data: 'reservation_status', name: 'reservation_status', orderable: false, searchable: true },
-                { data: 'check_in_status', name: 'check_in_status', orderable: false, searchable: true },
-                { data: 'check_out_status', name: 'check_out_status', orderable: false, searchable: true },
-                { data: 'last_modified', name: 'last_modified', orderable: false, searchable: true },
-                { data: 'cancellation_date', name: 'cancellation_date', orderable: false, searchable: true },
-                { data: 'cancellation_reason', name: 'cancellation_reason', orderable: false, searchable: true },
-                { data: 'no_show_flag', name: 'no_show_flag', orderable: false, searchable: true }
+                { data: 'action', name: 'action'},
             ],     
         });
        
@@ -171,5 +160,82 @@ Reservation Room Details
             let url = '../report/reservationReportPrint/type='+type+'&date='+date;
             window.open(url,'_blank');
         }
+
+        function cancelCheckout(id){
+             Swal.fire({
+                    text: "Are you sure to cancel Checkout?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, Do it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $.ajax({
+                            url:reservationCancel,
+                            type:"POST",
+                            data:{id:id},
+                            success:function(response){
+
+                                Swal.fire({
+                                    text: "Reservation Checkout Cancel status updated successfully",
+                                    icon: "success"
+                                });
+                                setTimeout(() => {
+                                    window.location.reload();
+                                },2500);
+                            }
+                        });
+
+                    }
+                });
+        }
+
+        function edit_reservation(id, reservationid) {
+            let res = 'reservation='+reservationid+'&reservation_room_id='+id;
+            let url = '../../reservation/edit-reservation/'+res;
+            window.location.href = url;
+        }
+
+        function getReservationData(id,reservation_id){
+            $('#reservationUpdateTimeModel').modal('show');
+            $('.reservation_room_id').val(id);
+            
+            $.ajax({
+                url:getReservationRoomDetail,
+                type:"POST",
+                data:{id:id},
+                success:function(response){
+                    // console.log(response);
+                    $('#reservation_checkin_date').val(response.checkin_date);
+                    $('#reservation_checkin_time').val(response.checkin_time);
+                    $('#reservation_checkout_date').val(response.checkout_date);
+                    $('#reservation_checkout_time').val(response.checkout_time);
+                }
+            });
+        }
+
+        $('#reservation_update_time_form').on("submit", function(event){
+            event.preventDefault();
+            let form = document.getElementById("reservation_update_time_form");
+            let formData = new FormData(form);
+            $.ajax({
+                url:reservationUpdateCheckinCheckout,
+                type:"POST",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if(response.success){
+                        toastSuccessAlert(response.success);
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 2500);
+                    }
+                }
+            });
+        })
     </script>
 @endsection

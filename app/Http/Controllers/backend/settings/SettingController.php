@@ -19,6 +19,7 @@ class SettingController extends Controller
     }
 
     public function store(Request $request){
+        
         if ($request->ajax()) {
             $validator = Validator::make($request->all(), [
                 'name' => ['required'],
@@ -184,25 +185,70 @@ class SettingController extends Controller
 
     public function storeTimeConfiguration(Request $request){
        
+        // DB::beginTransaction();
+        // try{
+        //     $timeConfiguration = [
+        //         'timezone'=> $request->timezone,
+        //         'timeslot'=> $request->timeslot,
+        //         'checkout_time'=> $request->checkout_time ?? '',
+        //         'checkout_buffer_time'=> $request->checkout_buffer_time ?? '',
+        //         'checkin_time'=> $request->checkin_time ?? '',
+        //         'checkin_early_time'=> $request->checkin_early_time ?? '',
+        //     ];
+        //     $json_string = json_encode($timeConfiguration);
+
+        //     $update = HotlrConfiguration::where('id',1)->update([
+        //         'time_configuration' => $json_string,
+        //     ]);
+        //     if($update){
+        //         return response()->json(['success' => 'Data Updated Successfully'],200);
+        //     }else{
+        //         return response()->json(['success' => 'Data not updated']);
+        //     }
+
+        //     DB::commit(); // data saved in both the table successfullt.
+        //     return response()->json(['success' => 'Data added successfully'], 200);
+        // } catch (\Exception $e) {
+        //     DB::rollBack(); // if date not saved in both table then both table rollback as before.
+        //     return response()->json(['error_success' => 'Error! Data not added', 'message' => $e->getMessage()], 500);
+        // }
+        //  dd(json_decode($json_string,true));
+    }
+
+    public function soundUpdateResetMute(Request $request){
+        
         DB::beginTransaction();
         try{
-            $timeConfiguration = [
-                'timezone'=> $request->timezone,
-                'timeslot'=> $request->timeslot,
-                'checkout_time'=> $request->checkout_time ?? '',
-                'checkout_buffer_time'=> $request->checkout_buffer_time ?? '',
-                'checkin_time'=> $request->checkin_time ?? '',
-                'checkin_early_time'=> $request->checkin_early_time ?? '',
-            ];
-            $json_string = json_encode($timeConfiguration);
+            $hotlr = HotlrConfiguration::where('id',1)->get(['add_item_status','notification_status']);
+            if($request->type == "add_item"){
+                if($request->action_type == "reset"){
+                    $update = HotlrConfiguration::where('id',1)->update([
+                        'item_add' => 'add.mp3',
+                    ]);
+                }else{
+                    $status = 0;
+                    if($hotlr[0]->add_item_status == 0){
+                        $status = 0;
+                    }
+                    $update = HotlrConfiguration::where('id',1)->update([
+                        'add_item_status' => $status,
+                    ]);
+                }
 
-            $update = HotlrConfiguration::where('id',1)->update([
-                'time_configuration' => $json_string,
-            ]);
-            if($update){
-                return response()->json(['success' => 'Data Updated Successfully'],200);
             }else{
-                return response()->json(['success' => 'Data not updated']);
+                if($request->action_type == "reset"){
+                    $update = HotlrConfiguration::where('id',1)->update([
+                        'notification' => 'notification.mp3',
+                    ]);
+                }else{
+                    $status = 0;
+                    if($hotlr[0]->notification_status == 0){
+                        $status = 0;
+                    }
+                    $update = HotlrConfiguration::where('id',1)->update([
+                        'notification_status' => $status,
+                    ]);
+                }
             }
 
             DB::commit(); // data saved in both the table successfullt.
@@ -211,6 +257,5 @@ class SettingController extends Controller
             DB::rollBack(); // if date not saved in both table then both table rollback as before.
             return response()->json(['error_success' => 'Error! Data not added', 'message' => $e->getMessage()], 500);
         }
-         dd(json_decode($json_string,true));
     }
 }

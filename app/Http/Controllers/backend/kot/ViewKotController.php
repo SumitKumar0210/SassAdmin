@@ -16,10 +16,12 @@ use App\Models\RoomType;
 use App\Models\Stock;
 use App\Models\Table;
 use App\Models\Waiter;
+use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 class ViewKotController extends Controller
 {
@@ -105,6 +107,7 @@ class ViewKotController extends Controller
                 'id' => $kot->id,
                 'kot_id' => $kot->kot_id,
                 'type' => $kot->type,
+                'is_urgent' => $kot->is_urgent,
                 'number' => str_pad($kot->type_number, 2, '0', STR_PAD_LEFT),
                 'grand_total' => round($kot->grand_total),
                 'diff' =>  $diffInMinutes,
@@ -148,6 +151,7 @@ class ViewKotController extends Controller
                 'time' => date('H:m', strtotime($kot['order_time'])),
                 'date' => $kot['date'],
                 'note' => $kot['note'],
+                'is_urgent' => $kot['is_urgent'],
                 'is_complimentary' => $kot['is_complimentary'],
                 'waiter_id' => $kot['waiter_id'],
                 'waiter_name' => optional($kot->waiterDetail)->name ?? '',
@@ -174,7 +178,59 @@ class ViewKotController extends Controller
             ];
             array_push($kotDetails,$data);
         }
-        return response()->json(['success' => 'Data Fetched Successfully','kotDetail' => $kotDetails,'kots' => $kots],200);
+        $cancel_kot_per = 0;
+        $permission_allow = explode(',',auth()->user()->permission);
+        if(in_array('Kot Cancel', $permission_allow)){
+            $cancel_kot_per = 1;
+        }
+        // dd($permission_allow);
+        return response()->json(['success' => 'Data Fetched Successfully','kotDetail' => $kotDetails,'kots' => $kots,'cancel_kot_per' => $cancel_kot_per],200);
+    }
+
+    public function runningKot(){
+        $hotlr = HotlrConfiguration::get(['logo','name']);
+        return view('backend.modules.kot.kot-running',compact('hotlr'));
+    }
+    public function runningKotData(Request $request){
+        $kots = Kot::where('order_status','Pending')->get();
+        return DataTables::of($kots)
+        ->addColumn('kot_id', function($row){
+            return $row->kot_id;
+        })
+        ->addColumn('type', function($row){
+            return $row->type;
+        })
+        ->addColumn('room_num', function($row){
+            return $row->type_number;
+        })
+        ->addColumn('order_time', function($row){
+            return Carbon::parse($row->order_time)->format('d-m-Y h:s A');
+        })
+        ->addColumn('complimentary', function($row){
+            return $row->is_complimentary;
+        })
+        ->addColumn('waiter', function($row){
+            return $row->waiterDetail->name ?? '';
+        })
+        ->addColumn('amount', function($row){
+            return $row->grand_total;
+        })
+        ->addColumn('paid', function($row){
+            return $row->total_paid;
+        })
+        ->addColumn('status', function($row){
+            return $row->order_status;
+        })
+       ->addColumn('action', function($row){
+    return '<ul class="action">
+                <li class="edit">
+                    <a href="#">
+                        <i class="icon-eye" onclick="canvasPopup();getKotDetail('.$row->id.', \''.$row->kot_id.'\')"></i>
+                    </a>
+                </li>
+            </ul>';
+})
+        ->make(true);
     }
     
     public function getQrKotDetail(Request $request){
@@ -233,6 +289,24 @@ class ViewKotController extends Controller
 
             if ($validator->fails()) {
                 return response()->json(['error_validation' => $validator->errors()->all()], 200);
+            }
+        }
+        // Handle deleteKotIds first
+        if ($request->has('deleteKotIds') && is_array($request->deleteKotIds)) {
+            foreach ($request->deleteKotIds as $deleteId) {
+                $kotItem = KotItem::find($deleteId);
+                if ($kotItem) {
+                    $kotId = $kotItem->kot_id;
+                    $kotItem->delete(); // requires SoftDeletes trait
+                    $remainingItems = KotItem::where('kot_id', $kotId)->whereNull('deleted_at')->count();
+                    // If no items left, also soft delete the Kot
+                    if ($remainingItems === 0) {
+                        $kot = Kot::find($kotId);
+                        if ($kot) {
+                            $kot->delete(); // requires SoftDeletes trait
+                        }
+                    }
+                }
             }
         }
 
@@ -330,11 +404,11 @@ class ViewKotController extends Controller
             }
         }
         
-        if($total_kot == count($kots) && $total_item == $total_item_list) {
+        // if($total_kot == count($kots) && $total_item == $total_item_list) {
             return response()->json(['success' => 'Data updated successfully'], 200);
-        } else {
-            return response()->json(['error' => 'Something Went Wrong'], 400);
-        }
+        // } else {
+        //     return response()->json(['error' => 'Something Went Wrong'], 400);
+        // }
     }
 
     public function printKotInvoice($id){
@@ -500,6 +574,39 @@ class ViewKotController extends Controller
         // dd($basic_detail);
         $hotlr = HotlrConfiguration::get(['logo','name']);
         return view('backend.modules.kot.kot-print',compact('distictItem','basic_detail','hotel','hotlr'));
+    }
+
+    public function getKotSaleReport(){
+        $today = date('Y-m-d');
+        $count_paid = 0;
+
+        // Get all active payment methods
+        $paymentMethods = PaymentMethod::where('status', 1)->pluck('name');
+
+        // Get KOT data grouped by payment_type
+        $kotData = Kot::where('date', $today)
+            ->whereIn('payment_type', $paymentMethods)
+            ->selectRaw('
+                payment_type,
+                SUM(total_paid) as amount,
+                SUM(CASE WHEN total_paid > 0 THEN 1 ELSE 0 END) as paid_count
+            ')
+            ->groupBy('payment_type')
+            ->get()
+            ->keyBy('payment_type');
+
+        $payments = [];
+
+        foreach ($paymentMethods as $method) {
+            $payments[] = [
+                'method' => $method,
+                'amount' => $kotData[$method]->amount ?? 0
+            ];
+
+            $count_paid += $kotData[$method]->paid_count ?? 0;
+        }
+        
+        return response()->json(['success' => 'Get Fetch successfully','payments' => $payments,'kots' =>$count_paid], 200);
     }
 
 }

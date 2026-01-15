@@ -267,6 +267,7 @@ function getKotOrderArea(){
     } else{
         tableRoomNumberId = $('#kot_room_number').val();
         tableRoomNumber = $('#kot_room_number').find(":selected").text();
+        $('.customer_name_display').html($('#kot_room_number option:selected').data('name'));
     }
     if($('#kot_room_number').val() == '' && $('#kot_table_number').val() == ''){
         toastErrorAlert('Select Valid Type');
@@ -282,6 +283,7 @@ function getKotOrderArea(){
         $('.table-area-room-no').html(kotType);
         $('.room_table_number_display').html(tableRoomNumber);
         $('#tableModal').modal('hide');
+        $('#waiterModal').modal('show');
     }else{
         toastErrorAlert('Select Valid Type');
         return;
@@ -297,6 +299,7 @@ function addKotCustomer(){
             name: $('#generate_kot_customer_name').val(),
             phone : $('#generate_kot_phone').val(),
         });
+        $('.customer_name_display').html(name);
         $('#customerModal').modal('hide');
     }
 }
@@ -428,10 +431,14 @@ function generateKot(x = 0){
     $('.kotgenerate').addClass('d-none');
     $('.kotprocessing').removeClass('d-none');
     
+    if($('#urgent_order').prop('checked')){
+        x = 2;
+    }
+
     $.ajax({
         url: addKot,
         type: "POST",
-        data : {cartItem:cartItem,kot_time:kot_time,total_cost:total_cost,discount_type:discount_type,discount_value:discount_value,adjustment:adjustment,grand_total:grand_total,person:person,orderNote:orderNote,basicKot:basicKot,paymentType:paymentType,waiter:waiter,payment_card:payment_card,other_type:other_type,other_ref:other_ref,coupon_code:coupon_code,coupon_value:coupon_value,complimentary:complimentary,apply_coupon:apply_coupon,gst_amount:gst_amount,total_paid:total_paid,subtotal:subtotal,narration:narration},
+        data : {cartItem:cartItem,kot_time:kot_time,total_cost:total_cost,discount_type:discount_type,discount_value:discount_value,adjustment:adjustment,grand_total:grand_total,person:person,orderNote:orderNote,basicKot:basicKot,paymentType:paymentType,waiter:waiter,payment_card:payment_card,other_type:other_type,other_ref:other_ref,coupon_code:coupon_code,coupon_value:coupon_value,complimentary:complimentary,apply_coupon:apply_coupon,gst_amount:gst_amount,total_paid:total_paid,subtotal:subtotal,narration:narration,urgent_type:x},
         success: function(response) {
             if (response.success) {
                 if(total_paid > 0){
@@ -449,7 +456,7 @@ function generateKot(x = 0){
                 }
                 var toast = new bootstrap.Toast(document.getElementById('liveToast'));
                 toast.show();
-                if(x == 1){
+                if(x >= 1){
                     // let url = '../../kot/print-kot-invoice/'+response.rnd;
                     let url = '../../kot/view-kot-print/tokenPara='+response.rnd;
                     window.open(url,'_blank');

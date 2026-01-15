@@ -11,6 +11,7 @@ use App\Models\ReservationInvoice;
 use App\Models\ReservationPayment;
 use App\Models\ReservationRoom;
 use App\Models\HotlrConfiguration;
+use App\Models\Kot;
 use App\Models\RoomNumber;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -189,168 +190,161 @@ class InvoiceController extends Controller
         $roomReservation = ReservationRoom::where('random',$request->random_number)->get(['id','reservation_id','primary_name','status','room_alloted','room_alloted_id','checkin','checkout','room_category_id','room_category','room_type_id','tariff_id','room_type','rate_plan','adults','childrens','infants','amount','extra_person','extra_person_amount','notes','checkedin_at','checkedout_at']);
         $checkin = '';
         $room_number_type = '';
+        $room_id = '';
         $reservation_room = [];
         foreach($roomReservation as $room){
            
             $checkin = $room->checkedin_at;
             $days = $this->daysCalculate($room->checkedin_at);
-            $total = $days * (($room->tariff_detail->room_tariff) + ($room->extra_person * $room->tariff_detail->extra_person_tariff));
+            $total = intval($days) * (($room->amount) + ($room->extra_person * $room->extra_person_amount));
             $reserved_room[] = [
                 'id' => $room->id,
                 'room_id' => $room->room_alloted_id,
                 'room_type' => $room->room_type_detail->room_category ?? '',
                 'room_number' => $room->room_alloted ?? '',
                 'tariff_type' => $room->tariff_detail->tariff_type ?? '',
-                'room_tariff' => round($room->tariff_detail->room_tariff ?? 0),
-                'days' => $days,
+                'room_tariff' => round($room->amount ?? 0),
+                'days' => intval($days),
+                'adult' => $room->adults,
                 'extra_person' => $room->extra_person,
                 'tariff_extra_person' => $room->tariff_detail->extra_person_tariff ?? 0,
                 'total' => round($total)
             ];
             $room_number_type .= $room->room_alloted .'/'.$room->room_type_detail->room_category;
             array_push($reservation_room,$room->id);
+            $room_id = $room->id;
         }
 
-       
-        $reservations = Reservation::where('reservation_id',$roomReservation[0]->reservation_id)->get(['id','reservation_id','status','first_name','last_name','mobile','email','address','city','state','pincode','document_type','other_document_type','id_number','guest_comment','company_name','company_gst','company_address','note','created_at']);
-        $now = Carbon::now();
-        $checkin_date = date('Y-m-d H:i:s',strtotime($checkin));
-        $checkout_date = date('Y-m-d H:i:s',strtotime($now));
-        $amount_after_discount = $request->total_amount - $request->dicount_amount;
-        $amount_after_tax =  $amount_after_discount + $request->total_igst;
+        
+        $chkDue = Kot::whereIn('payment_type',['Due','Complete with Due'])->where('kot_id',$roomReservation[0]->reservation_id)->count();
+        if($chkDue > 0){
+            return response()->json(['pending' => 'Please Clear you all Kot Amount','reservation_id' => $roomReservation[0]->reservation_id, 'room_id' => $room_id], 200);
+            dd($chkDue);
+        }else{
+            $reservations = Reservation::where('reservation_id',$roomReservation[0]->reservation_id)->get(['id','reservation_id','status','first_name','last_name','mobile','email','address','city','state','pincode','document_type','other_document_type','id_number','guest_comment','company_name','company_gst','company_address','note','created_at','booking_type']);
+            $now = Carbon::now();
+            $checkin_date = date('Y-m-d H:i:s',strtotime($checkin));
+            $checkout_date = date('Y-m-d H:i:s',strtotime($now));
+            $amount_after_discount = $request->total_amount - $request->dicount_amount;
+            $amount_after_tax =  $amount_after_discount + $request->total_igst;
 
-        $advance_amount = $request->advance_amount ?? 0;
-        $discount_percentage = $request->discount_percentage ?? 0;
-        $round_off = $request->round_off ?? 0;
+            $advance_amount = $request->advance_amount ?? 0;
+            $discount_percentage = $request->discount_percentage ?? 0;
+            $round_off = $request->round_off ?? 0;
 
-        DB::beginTransaction(); 
+            DB::beginTransaction(); 
 
-        try{
+            try{
+                $invoice_id = '';
+                $invoice = new Invoice();
+                $invoice->invoice_id = $created_invoice;
+                $invoice->type = 'Room';
+                $invoice->reservation_id = $reservations[0]->id;
+                $invoice->reservation = $roomReservation[0]->reservation_id;
+                $invoice->reserved_room_id = implode(',',$reservation_room);
+                $invoice->checkin = $checkin_date;
+                $invoice->checkout = $checkout_date;
+                $invoice->booking_type = $reservations[0]->booking_type ?? 'Single';
+                $invoice->invoice_date = date('Y-m-d H:i:s',strtotime($now));
+                $invoice->no_of_nights = $request->number_of_days;
+                $invoice->no_of_rooms = count($roomReservation);
+                $invoice->guest_id = $reservations[0]->id;
+                $invoice->guest_name = $request->guest_name;
+                $invoice->guest_phone = $reservations[0]->mobile;
+                $invoice->guest_address = $reservations[0]->address;
+                $invoice->guest_email = $reservations[0]->email;
+                $invoice->total = $request->total_amount;
+                $invoice->dis_per = $discount_percentage;
+                $invoice->dis_amount = $request->dicount_amount;
+                $invoice->amount_after_discount = $amount_after_discount;
+                $invoice->cgst_per = ($request->tax_value)/2;
+                $invoice->sgst_per = ($request->tax_value)/2;
+                $invoice->igst_per = $request->tax_value;
+                $invoice->cgst_amount = $request->total_cgst;
+                $invoice->sgst_amount = $request->total_sgst;
+                $invoice->igst_amount = $request->total_igst;
+                $invoice->amount_after_tax = $amount_after_tax;
+                $invoice->round_off = $round_off;
+                $invoice->advance_amount = $advance_amount;
+                $invoice->pay_amount = $request->remaining_amount;
+                $invoice->payment_mode = $request->payment_mode;
+                $invoice->reference = $request->reference_code;
+                $invoice->note = $request->notes;
+                $invoice->received_by = Auth::user()->id;
 
-            $invoice = new Invoice();
-            $invoice->invoice_id = $created_invoice;
-            $invoice->type = 'Room';
-            $invoice->reservation_id = $reservations[0]->id;
-            $invoice->reservation = $roomReservation[0]->reservation_id;
-            $invoice->reserved_room_id = implode(',',$reservation_room);
-            $invoice->checkin = $checkin_date;
-            $invoice->checkout = $checkout_date;
-            $invoice->invoice_date = date('Y-m-d H:i:s',strtotime($now));
-            $invoice->no_of_nights = $request->number_of_days;
-            $invoice->no_of_rooms = count($roomReservation);
-            $invoice->guest_id = $reservations[0]->id;
-            $invoice->guest_name = $request->guest_name;
-            $invoice->guest_phone = $reservations[0]->mobile;
-            $invoice->guest_address = $reservations[0]->address;
-            $invoice->guest_email = $reservations[0]->email;
-            $invoice->total = $request->total_amount;
-            $invoice->dis_per = $discount_percentage;
-            $invoice->dis_amount = $request->dicount_amount;
-            $invoice->amount_after_discount = $amount_after_discount;
-            $invoice->cgst_per = ($request->tax_value)/2;
-            $invoice->sgst_per = ($request->tax_value)/2;
-            $invoice->igst_per = $request->tax_value;
-            $invoice->cgst_amount = $request->total_cgst;
-            $invoice->sgst_amount = $request->total_sgst;
-            $invoice->igst_amount = $request->total_igst;
-            $invoice->amount_after_tax = $amount_after_tax;
-            $invoice->round_off = $round_off;
-            $invoice->advance_amount = $advance_amount;
-            $invoice->pay_amount = $request->remaining_amount;
-            $invoice->payment_mode = $request->payment_mode;
-            $invoice->reference = $request->reference_code;
-            $invoice->note = $request->notes;
-            $invoice->received_by = Auth::user()->id;
+                if($invoice->save()){
+                    $invoice_id = $invoice->id;
+                    foreach($reserved_room as $room_res){
 
-            if($invoice->save()){
+                        $invoice_room = new InvoiceRoomDetail();
+                        $invoice_room->invoice_id = $invoice->id;
+                        $invoice_room->invoice_date = date('Y-m-d H:i:s',strtotime($now));
+                        $invoice_room->reserved_room_id = $room_res['id'];
+                        $invoice_room->room_id = $room_res['room_id'];
+                        $invoice_room->room_number = $room_res['room_number'];
+                        $invoice_room->room_type = $room_res['room_type'];
+                        $invoice_room->room_category = $room_res['room_type'];
+                        $invoice_room->no_of_days = $room_res['days'];
+                        $invoice_room->tariff_type = $room_res['tariff_type'];
+                        $invoice_room->total = $room_res['room_tariff'];
+                        $invoice_room->adult = $room_res['adult'];
+                        $invoice_room->extra_person_no = $room_res['extra_person'];
+                        $invoice_room->extra_person_total = $room_res['extra_person'] * $room_res['tariff_extra_person'];
+                        $invoice_room->subtotal = $room_res['total'];
+                        $invoice_room->save();
 
-                foreach($reserved_room as $room_res){
+                        $reservationRoomCheckout = ReservationRoom::where('id',$room_res['id'])->update([
+                            'status' => 'Check-out',
+                            'guest_status' => 'Check-out',
+                            'checkedout_at' => date('Y-m-d H:i:s',strtotime($now))
+                        ]);
 
-                    $invoice_room = new InvoiceRoomDetail();
-                    $invoice_room->invoice_id = $invoice->id;
-                    $invoice_room->invoice_date = date('Y-m-d H:i:s',strtotime($now));
-                    $invoice_room->reserved_room_id = $room_res['id'];
-                    $invoice_room->room_id = $room_res['room_id'];
-                    $invoice_room->room_number = $room_res['room_number'];
-                    $invoice_room->room_type = $room_res['room_type'];
-                    $invoice_room->room_category = $room_res['room_type'];
-                    $invoice_room->no_of_days = $room_res['days'];
-                    $invoice_room->total = $room_res['room_tariff'];
-                    $invoice_room->extra_person_no = $room_res['extra_person'];
-                    $invoice_room->extra_person_total = $room_res['extra_person'] * $room_res['tariff_extra_person'];
-                    $invoice_room->subtotal = $room_res['total'];
-                    $invoice_room->save();
-
-                    $reservationRoomCheckout = ReservationRoom::where('id',$room_res['id'])->update([
-                        'status' => 'Check-out',
-                        'guest_status' => 'Check-out',
-                        'checkedout_at' => date('Y-m-d H:i:s',strtotime($now))
-                    ]);
-
-                    $vacant_room = RoomNumber::where('id',$room_res['room_id'])->update([
-                        'current_status' => '-1'
-                    ]);
+                        $vacant_room = RoomNumber::where('id',$room_res['room_id'])->update([
+                            'current_status' => '-1'
+                        ]);
+                    }
                 }
 
+                DB::commit(); // data saved in both the table successfullt.
+                return response()->json(['success' => 'Invoice created successfully','reservation_id'=>$roomReservation[0]->reservation_id, 'invoice_id' => $invoice_id], 200);
+            }catch (\Exception $e) {
+                DB::rollBack(); // if date not saved in both table then both table rollback as before.
+                return response()->json(['error_success' => 'Error! Data not added', 'message' => $e->getMessage()], 500);
             }
-
-            DB::commit(); // data saved in both the table successfullt.
-            return response()->json(['success' => 'Invoice created successfully','reservation_id'=>$roomReservation[0]->reservation_id], 200);
-        }catch (\Exception $e) {
-            DB::rollBack(); // if date not saved in both table then both table rollback as before.
-            return response()->json(['error_success' => 'Error! Data not added', 'message' => $e->getMessage()], 500);
         }
-
     }
 
     public function daysCalculate($checkin_date){
-
-        $hotlr = HotlrConfiguration::where('id',1)->value('time_configuration');
-        $hotrl_json = json_decode($hotlr,true);
-
-        $timeslot = $hotrl_json['timeslot'];
-        $time = $hotrl_json['checkout_time'];
-
-        $checkin_time_default = $hotrl_json['checkin_time'];
-        $checkout_time_default = date("H:i", strtotime($time . " +".$hotrl_json['checkout_buffer_time']." hours"));
 
         $checkin = Carbon::parse($checkin_date);
         $now = Carbon::now();
 
         $days = $checkin->diffInDays($now);
 
-        if($timeslot == 1){
-            $checkin_time = $checkin->format('H:i:s');
-            $checkout_time = $now->format('H:i:s');
+        $checkin_time = $checkin->format('H:i:s');
+        $checkout_time = $now->format('H:i:s');
 
-            $checkin_seconds = strtotime($checkin_time);
-            $checkout_seconds = strtotime($checkout_time);
+        $checkin_seconds = strtotime($checkin_time);
+        $checkout_seconds = strtotime($checkout_time);
 
-            $before_12 = strtotime($checkin_time_default.':00');
-            $after_14 = strtotime($checkout_time_default.':00');
+        $before_12 = strtotime('12:00:00');
+        $after_14 = strtotime('14:00:00');
 
-            if ($days == 0) {
-                if ($checkin_seconds < $before_12 && $checkout_seconds > $after_14) {
-                    $days += 2;
-                } else {
-                    $days += 1;
-                }
+        if ($days == 0) {
+            if ($checkin_seconds < $before_12 && $checkout_seconds > $after_14) {
+                $days += 2;
             } else {
-                if ($checkin_seconds < $before_12 && $checkout_seconds > $after_14) {
-                    $days += 2;
-                } elseif (
-                    ($checkin_seconds < $before_12 && $checkout_seconds < $after_14) ||
-                    ($checkin_seconds > $before_12 && $checkout_seconds > $after_14)
-                ) {
-                    $days += 1;
-                }
+                $days += 1;
             }
-        }else{
-            if ($days == 0) {
-                $days = 1;
-            }else{
-                $days = $days;
-            }
+        } else {
+            if ($checkin_seconds < $before_12 && $checkout_seconds > $after_14) {
+                $days += 2;
+            } elseif (
+                ($checkin_seconds < $before_12 && $checkout_seconds < $after_14) ||
+                ($checkin_seconds > $before_12 && $checkout_seconds > $after_14)
+            ) {
+                $days += 1;
+            } 
         }
 
         return $days;

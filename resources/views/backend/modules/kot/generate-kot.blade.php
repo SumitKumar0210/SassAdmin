@@ -142,7 +142,7 @@
                             </div>
                             <div class="kot-itemlist-wrapper p-3 border-bottom all-kot-itemlist">
                                 <div class="menu-flex">
-                                    @for($i=0; $i < 60; $i++)
+                                    @for($i=0; $i < 70; $i++)
                                         <div class="skeleton-line"></div>
                                     @endfor
                                 </div>
@@ -151,7 +151,7 @@
                     </div>
                 </div>
                 <div class="col-xl-4 col-lg-4 col-md-5 col-sm-12 p-0">
-                    <audio id="clickSound" src="{{ asset('backend/uploads/tone/'.$hotlr[0]->item_add.'')}}" preload="auto"></audio>
+                    <audio id="clickSound" src="{{ asset('backend/uploads/tone/'.$hotlr[0]->item_add.'')}}" preload="auto" @if ($hotlr[0]->add_item_status == 0) muted @endif></audio>
                     <div class="book-item-wrapper border-start position-relative">
                         {{-- order type section start --}}
                         <div class="d-flex justify-content-between align-items-center">
@@ -177,6 +177,7 @@
                                 <div class="order-section border-end" data-bs-toggle="modal" data-bs-target="#customerModal">
                                     <small class="kot-small-font">Customer</small>
                                     <div class="icon"><i class="ri-user-3-line"></i></div>
+                                    <p class="mb-0 text-danger customer_name_display"></p>
                                 </div>
                                 <div class="order-section border-end" data-bs-toggle="modal" data-bs-target="#noteModal" onClick="getLastNote()">
                                     <small class="kot-small-font">Note</small>
@@ -273,7 +274,7 @@
                                                     <option value="">Select</option>
                                                     @foreach($payment_methods as $method)
                                                         @if($method->id > 2)
-                                                            <option value="{{$method->id}}">{{$method->name}}</option>
+                                                            <option value="{{$method->name}}">{{$method->name}}</option>
                                                         @endif
                                                     @endforeach
                                                 </select> 
@@ -361,8 +362,11 @@
                                         <input class="checkbox_animated m-0" id="record-payment" type="checkbox">
                                         <span class="ms-1" style="padding-top:2px;">Pay</span>
                                     </button>
+                                    <div>
+                                        <label class="text-danger">Mark It Urgent</label>
+                                        <input class="form-check-input ms-1" id="urgent_order" type="checkbox">
+                                    </div>
                                     <div class="d-flex flex-wrap align-items-center justify-content-between">
-                                        <!--<button class="btn btn-secondary btn-sm mb-1 me-1 kotgenerate" onclick="generateKot(0)"><span>₹ </span>Pay</button>-->
                                         <button class="btn btn-secondary btn-sm mb-1 kotgenerate" onclick="generateKot(1)"><i class="ri-printer-line"></i> Create</button>
                                         <button class="btn btn-secondary btn-sm mb-1 kotprocessing d-none">Placing Order </button>
                                         <button class="btn btn-outline-dark btn-sm ms-1 mb-0"><span>₹ </span><span class="grand-total-amount"></span></button> 
@@ -418,7 +422,7 @@
                                 @foreach($roomList as $area)
                                     <optgroup class="text-muted" label="{{$area['name']}}">
                                         @foreach($area['rooms'] as $room)
-                                            <option value="{{$room['id']}}">{{$room['room_number']}}</option>
+                                            <option value="{{$room['id']}}" data-name="{{$room['name']}}">{{$room['room_number']}}</option>
                                         @endforeach
                                     </optgroup>
                                 @endforeach
@@ -591,6 +595,7 @@
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        $('#tableModal').modal('show');
         const checkbox = document.querySelector("#record-payment");
         const bookItemFooter = document.querySelector(".order-item-offer");
         const orderItems = document.querySelector(".order-items");
@@ -600,9 +605,9 @@
         bookItemFooter.classList.toggle("collapsed", isChecked);
 
         if (isChecked) {
-            orderItems.style.height = "calc(100vh - 580px)";
+            orderItems.style.height = "calc(100vh - 515px)";
         } else {
-            orderItems.style.height = "calc(100vh - 319px)";
+            orderItems.style.height = "calc(100vh - 245px)";
         }
         });
     });

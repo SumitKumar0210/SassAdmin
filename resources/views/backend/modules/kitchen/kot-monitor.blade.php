@@ -21,7 +21,7 @@
     <!-- Container-fluid starts-->
     <div class="container-fluid">
         <div class="row mb-3">
-            <div class="col-lg-12 col-sm-12">
+            <div class="col-lg-8 col-sm-12">
                 <div class="card">
                     <div class="card-body">
                       <div class="row d-flex flex-wrap align-items-stretch">
@@ -30,6 +30,20 @@
                         </div>
                         <div class="kot-monitor-data row">
                           {{-- data appended here using js --}}
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+             <div class="col-lg-4 col-sm-12">
+                <div class="card sticky-card">
+                    <div class="card-body">
+                      <div class="row align-items-start">
+                        <!-- LEFT COLUMN : Order Summary -->
+                        <div class="col-md-12">
+                          <h4 class="fw-semibold mb-2">Order Summary</h4>
+                          <hr class="mt-1">
+                          <div class="d-flex flex-wrap gap-2 mt-3 summary-item"></div>
                         </div>
                       </div>
                     </div>

@@ -5,6 +5,7 @@ let availableRoomDetail = [];
 let tariff_data = [];
 let currenct_date_area_key = 0;
 let roomDetail = [];
+let reservationCancelPer = 0;
 
 function loadreservationdata(x = 0, y = 0, button = null) {
    
@@ -32,6 +33,7 @@ function loadreservationdata(x = 0, y = 0, button = null) {
         },
         success: function(data) {
             // console.log(data);
+            reservationCancelPer = data.reservation_cancel;
             availableRoomDetail = data.roomCategoryNum;
             tariff_data = data.tariffs;
             let roomCategoryNum = data.roomCategoryNum;
@@ -379,6 +381,10 @@ function processReservationData(reservations){
                         let tot1 = parseInt(checkUnallocated.length) * 48 + totalHeight;
                         tot += parseInt(checkUnallocated.length) * 48;
                         checkUnallocated.push(idCounter);
+                        let reservation_cancel_class = '';
+                        if(reservationCancelPer == 0){
+                            reservation_cancel_class = 'd-none';
+                        }
                         $('td[data-key="unallocated-' + getroomCategory + '"][data-j="' + index + '"]').addClass('position-relative').css("height", tot1 + "px").append(`
                         <div class="booked-details draggable top-0 start-0 mt-1 position-absolute bookedby" draggable="true" id="${idCounter}" style="margin-left:` + calculateMarginLeft + `px; width:` + calTotalWidth + `px; margin-top: `+tot+`px !important">
                             <span class="bg-dark py-2 px-1 bookedbysearch onhover-dropdown"><i class="icon-search"></i>
@@ -436,7 +442,7 @@ function processReservationData(reservations){
                                         </div>
                                     </div>
                                     <div class="text-end mt-2">
-                                        <button class="btn btn-danger customer-d-close" type="button" onClick="cancelReservationData(${value['id']})">Cancel Reservation</button>
+                                        <button class="btn btn-danger customer-d-close ${reservation_cancel_class}" type="button" onClick="cancelReservationData(${value['id']})">Cancel Reservation</button>
                                         <button class="btn btn-muted border mx-2" type="button" onclick="edit_reservation(${value['reservation_room_id']},'${value['reservation_id']}')">View Reservation</button>
                                     </div>
                                 </div>
@@ -527,7 +533,6 @@ function processReservationData(reservations){
                                 </div>
                             </div>
                             <div class="text-end mt-2">
-                                <!-- <button class="btn btn-danger customer-d-close" type="button" onClick="cancelReservationData(${reservations.id})">Cancel Reservation</button> -->
                                 <button class="btn btn-muted border mx-2" type="button" onclick="edit_reservation(${value['reservation_room_id']},'${value['reservation_id']}')">View Reservation</button>
                             </div>
                         </div>

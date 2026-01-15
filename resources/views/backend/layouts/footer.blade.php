@@ -42,6 +42,7 @@
 <script src="{{asset('backend/assets/js/datatable/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('backend/assets/js/datatable/datatables/datatable.custom.js')}}"></script>
 <script src="{{asset('backend/assets/js/datatable/datatables/dataTables.select.min.js')}}"></script>
+ <script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.buttons.min.js')}}"></script>
 <script src="{{asset('backend/assets/js/datepicker/date-picker/datepicker.js')}}"></script>
 <script src="{{asset('backend/assets/js/datepicker/date-picker/datepicker.en.js')}}"></script>
 <script src="{{asset('backend/assets/js/datepicker/date-picker/datepicker.custom.js')}}"></script>
@@ -55,6 +56,7 @@
 <script src="{{asset('backend/assets/js/jsgrid/jsgrid.min.js')}}"></script>
 <script src="{{asset('backend/assets/js/jsgrid/griddata.js')}}"></script>
 <script src="{{asset('backend/assets/js/jsgrid/jsgrid.js')}}"></script>
+
 <!-- Plugins JS Ends-->
 <!-- Theme js-->
 <script src="{{asset('backend/assets/js/script.js')}}"></script>
@@ -93,11 +95,36 @@
  <script src="{{asset('backend/assets/js/sweet-alert.js')}}"></script>
  <script src="{{asset('backend/assets/js/notify/custom-notify.js')}}"></script>
   {{-- For datatable data responsivness --}}
- <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+ {{-- <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script> --}}
+
  {{-- ---kot--- --}}
  <script src="{{asset('backend/assets/js/scrollable/perfect-scrollbar.min.js')}}"></script>
  <script src="{{asset('backend/assets/js/scrollable/scrollable-custom.js')}}"></script>
- <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+ <script src="{{asset('backend/assets/js/select2/tagify.js')}}"></script>
+<script src="{{asset('backend/assets/js/select2/tagify.polyfills.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/select2/intltelinput.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/select2/telephone-input.js')}}"></script>
+<script src="{{asset('backend/assets/js/select2/custom-inputsearch.js')}}"></script>
+<script src="{{asset('backend/assets/js/select2/select3-custom.js')}}"></script>
+{{-- <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script> --}}
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/jszip.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/buttons.colVis.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/pdfmake.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/vfs_fonts.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.autoFill.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.select.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/buttons.bootstrap4.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/buttons.html5.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/buttons.print.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.bootstrap4.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.responsive.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/responsive.bootstrap4.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.keyTable.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.colReorder.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.fixedHeader.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.rowReorder.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/dataTables.scroller.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/datatable/datatable-extension/custom.js')}}"></script>
  
 <!-- Plugin used-->
 <script>new WOW().init();</script>
@@ -119,33 +146,46 @@
   });
 </script>
 <script>
-  document.querySelectorAll('.more-menu').forEach(menu => {
-    const moreBtn = menu.querySelector('.moreMenuBtn');
-    const morePanel = menu.querySelector('.morePanel');
-    const popoverClose = morePanel.querySelector('.popover-close');
+document.addEventListener('click', function (event) {
 
-    moreBtn.addEventListener('click', function(event) {
-      event.preventDefault();
-      morePanel.style.display = morePanel.style.display === 'block' ? 'none' : 'block';
-    });
+    // Helper: close all popovers
+    function closeAllPopovers() {
+        document.querySelectorAll('.morePanel').forEach(panel => {
+            panel.style.display = 'none';
+        });
+    }
 
-    // Close popover when clicking close button
-    popoverClose.addEventListener('click', function(event) {
-      event.stopPropagation();
-      morePanel.style.display = 'none';
-    });
-  });
+    const moreBtn = event.target.closest('.moreMenuBtn');
+    if (moreBtn) {
+        event.preventDefault();
+        event.stopPropagation();
 
-  // Additionally close popovers if clicking outside
-  document.addEventListener('click', function(event) {
-    document.querySelectorAll('.more-menu').forEach(menu => {
-      const moreBtn = menu.querySelector('.moreMenuBtn');
-      const morePanel = menu.querySelector('.morePanel');
-      if (!moreBtn.contains(event.target) && !morePanel.contains(event.target)) {
-        morePanel.style.display = 'none';
-      }
-    });
-  });
+        const menu = moreBtn.closest('.more-menu');
+        const panel = menu.querySelector('.morePanel');
+
+        // Close others first
+        closeAllPopovers();
+
+        // Toggle current one
+        panel.style.display =
+            panel.style.display === 'block' ? 'none' : 'block';
+
+        return;
+    }
+
+    // Click on popover close button
+    const closeBtn = event.target.closest('.popover-close');
+    if (closeBtn) {
+        event.stopPropagation();
+
+        const panel = closeBtn.closest('.morePanel');
+        panel.style.display = 'none';
+        return;
+    }
+
+    // Click anywhere else → close all
+    closeAllPopovers();
+});
 
 </script>
 </body>

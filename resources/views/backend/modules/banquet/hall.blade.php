@@ -90,7 +90,7 @@
                 @foreach ($features as $item)
                   <li> 
                     <input class="form-check-input" id="checkbox-icon{{$item->id}}" type="checkbox" name="features[]" value="{{$item->id}}">
-                    <label class="form-check-label" for="checkbox-icon{{$item->id}}"><i class="fa fa-user"> </i><span>{{$item->name}} </span></label>
+                    <label class="form-check-label" for="checkbox-icon{{$item->id}}"><i class="{{$item->icon}}"> </i><span>{{$item->name}} </span></label>
                   </li>
                 @endforeach
               </ul>

@@ -5,48 +5,50 @@
     <div class="container-fluid py-3">
         <div class="email-wrap bookmark-wrap">
             <div class="row">
-                <div class="col-xl-2 box-col-6">
-                    @include('backend.layouts.sidebar_master')
-                </div>
-                <div class="col-xl-10 col-md-12 box-col-12">
-                    <div class="container-fluid">
-                        <div class="page-title mt-2">
-                            <div class="row gx-0">
-                                <div class="col-12 col-sm-6">
-                                    <h3 class="d-block">Raw Material</h3>
-                                </div>
-                                @if(in_array('Setting Add', (explode(',',auth()->user()->permission))))
-                                <div class="col-12 col-sm-6">
-                                    <div class="float-end">
-                                        <button class="btn btn-primary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#restaurantRawMaterialModal" onclick="resetmodel()"><span class="btn-icon"><i class="ri-add-line"></i></span> Add Raw Material</button>
+                <div class="col-xl-12 col-md-12 box-col-12">
+                    <div> 
+                        @include('backend.layouts.sidebar_master')
+                    </div>
+                    <div style=" padding-left:220px;">
+                        <div class="container-fluid">
+                            <div class="page-title mt-2">
+                                <div class="row gx-0">
+                                    <div class="col-12 col-sm-6">
+                                        <h3 class="d-block">Raw Material</h3>
                                     </div>
+                                    @if(in_array('Setting Add', (explode(',',auth()->user()->permission))))
+                                    <div class="col-12 col-sm-6">
+                                        <div class="float-end">
+                                            <button class="btn btn-primary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#restaurantRawMaterialModal" onclick="resetmodel()"><span class="btn-icon"><i class="ri-add-line"></i></span> Add Raw Material</button>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
-                                @endif
                             </div>
                         </div>
-                    </div>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <!-- Zero Configuration  Starts-->
-                            <div class="col-lg-12 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="display" id="restaurant_raw_material">
-                                                <thead>
-                                                    <tr>
-                                                        <th>S No</th>
-                                                        <th>Code</th> 
-                                                        <th>Name</th> 
-                                                        <th>UOM</th> 
-                                                        <th>Minimum Capping</th> 
-                                                        <th>Maximum Capping</th> 
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <!-- Zero Configuration  Starts-->
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="display" id="restaurant_raw_material">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>S No</th>
+                                                            <th>Code</th> 
+                                                            <th>Name</th> 
+                                                            <th>UOM</th> 
+                                                            <th>Minimum Capping</th> 
+                                                            <th>Maximum Capping</th> 
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

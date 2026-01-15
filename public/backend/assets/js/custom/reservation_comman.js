@@ -41,7 +41,7 @@ function addNewResFields(type='') {
                                     newResRows += `
                                 </select>
                             </div>
-                            <div class="mb-3 mb-lg-1 reservation_checkin_confirmation_allow d-none">
+                            <div class="mb-3 mb-lg-1 reservation_checkin_confirmation_allow">
                                 <label class="form-label">Room No</label>
                                 <select class="form-select form-select-sm" id="roomno_resvn${randNum}" name="roomno_resvn${type}[]" onchange="checkRoomNum()" disabled>
                                     <option value="NA">Select</option>
@@ -243,9 +243,9 @@ function allCalculation(action){
     }
 
     roomAmountTot = totAmount + extra_person_total_amount;
-    let dis = $('.discount_percentage_reservation').html();
+    let dis = $('.discount_percentage_reservation').val();
     let discount_amount = 0;
-    if(dis != ''){
+    if(dis != '' && dis > 0){
         let num = parseFloat(dis.replace(/[^\d.-]/g, ''));
         discount_amount = (parseFloat(num)/100) * parseFloat(roomAmountTot);
     }
@@ -429,6 +429,7 @@ function resetPrimaryForm(x=0){
     if(x > 0){
         action = '_edit';
     }
+    
     $('#first_name_resvn'+action).val('');
     $('#last_name_resvn'+action).val('');
     $('#mobile_resvn'+action).val('');
@@ -460,6 +461,10 @@ function resetPrimaryForm(x=0){
         toast.show();
     }
 }
+
+// $('body').on('shown.bs.modal', '#reservation', function () {
+//     $('#mobile_resvn').focus();
+// });
 
 function discount_resvn_edit_click(value){
     if(value > 0){
@@ -630,7 +635,7 @@ function getroomoccupancy(yy, randNumm) {
             let roomno_resvn = $("#roomno_resvn"+randNumm);
             roomno_resvn.prop('disabled', false);
             roomno_resvn.empty();
-            roomno_resvn.append(`<option value="NA">Select</option>`);
+            roomno_resvn.append(`<option value="">Select</option>`);
             roomNumbers.forEach(function (r_num) {
                 if(r_num['current_status'] == '-1'){
                     roomno_resvn.append(`<option value="${r_num['id']}">${r_num['room_number']}</option>`);
@@ -707,11 +712,7 @@ function calculateHotelDays(checkinDate, checkoutDateTime,type = '') {
     
     // If only date is given for check-in, system adds current time
     if(type == ''){
-        if(timeConfiguration[0].timeslot == 1){
-            checkin.setHours(checkin.getHours(), checkin.getMinutes(), 0, 0);
-        }else{
-            checkin.setHours(new Date().getHours(), new Date().getMinutes(), 0, 0);
-        }
+        checkin.setHours(new Date().getHours(), new Date().getMinutes(), 0, 0);
     }else{
         checkin.setHours(checkinDate.getHours(), checkinDate.getMinutes(), 0, 0);
     }
@@ -719,57 +720,55 @@ function calculateHotelDays(checkinDate, checkoutDateTime,type = '') {
     // Calculate day difference
     let diffMs = checkout - checkin;
     let diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    let checkinHour = checkin.getHours() + checkin.getMinutes() / 60;
+    let checkoutHour = checkout.getHours() + checkout.getMinutes() / 60;
     diffDays = Math.ceil(diffDays);
-
-    if(timeConfiguration[0].timeslot == 1){
-        let checkinHour = checkin.getHours() + checkin.getMinutes() / 60;
-        let checkoutHour = checkout.getHours() + checkout.getMinutes() / 60;
-
-        let [hh, mm] = timeConfiguration[0].checkin_time.split(":").map(Number);
-        let [hh1, mm1] = timeConfiguration[0].checkout_time.split(":").map(Number);
-        let checkin_before = hh;
-        let checkout_after = hh1;
-        
-        if (diffDays <= 0) {
-            if (checkinHour < checkin_before && checkoutHour > checkout_after) {
-                diffDays = diffDays + 2;
-            } else {
+    if (diffDays <= 0) {
+        if (checkinHour < 12 && checkoutHour > 14) {
+            diffDays = diffDays + 2;
+        } else {
+            diffDays = diffDays + 1;
+        }
+    } else {
+       if(type == ''){
+            if (checkinHour < 12 && checkoutHour > 14) {
+           diffDays = diffDays + 2;
+            } else if (
+                (checkinHour < 12 && checkoutHour < 14) ||
+                (checkinHour > 12 && checkoutHour > 14)
+            ) {
                 diffDays = diffDays + 1;
             }
-        } else {
-            
-            if(type == ''){
-                if (checkinHour < checkin_before && checkoutHour > checkout_after) {
-            diffDays = diffDays + 2;
-                } else if (
-                    (checkinHour < checkin_before && checkoutHour < checkout_after) ||
-                    (checkinHour > checkin_before && checkoutHour > checkout_after)
-                ) {
-                    diffDays = diffDays + 1;
-                }
-                else if((checkinHour > checkin_before && checkoutHour < checkout_after)){
-                    diffDays = diffDays + 1;
-                }
-            }else{
-                if (checkinHour < checkin_before && checkoutHour > checkout_after) {
-                    diffDays = diffDays + 2;
-                } else if (
-                    (checkinHour < checkin_before && checkoutHour < checkout_after) ||
-                    (checkinHour > checkin_before && checkoutHour > checkout_after)
-                ) {
-                    diffDays = diffDays + 1;
-                }
+            else if((checkinHour > 12 && checkoutHour < 14)){
+                diffDays = diffDays + 1;
             }
-        }
-    }else{
-        if (diffDays <= 0) {
-            diffDays = 1;
         }else{
-            diffDays = diffDays;
+            if (checkinHour < 12 && checkoutHour > 14) {
+                diffDays = diffDays + 2;
+            } else if (
+                (checkinHour < 12 && checkoutHour < 14) ||
+                (checkinHour > 12 && checkoutHour > 14)
+            ) {
+                diffDays = diffDays + 1;
+            }
         }
     }
 
     return diffDays;
+}
+
+function checkGstCompany(type,x=0){
+    let action = '';
+    if(x > 0){
+        action = '_edit';
+    }
+    const regex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/
+    if(regex.test(type)){
+        $('.gst-fetch-detail'+action).removeAttr('disabled');
+    }else{
+        $('.gst-fetch-detail'+action).attr("disabled", "disabled");
+    }
 }
 
 function checkGstRequest(x=0){
@@ -780,7 +779,8 @@ function checkGstRequest(x=0){
     let number = $('#companygst_resvn'+action).val();
     const regex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/
     if(regex.test(number)){
-        
+        $('.gst-fetch-detail').html('Please Wait');
+        $('.gst-fetch-detail').attr("disabled",true);
         $.ajax({
             url: companyVerifyGst,
             type: "POST",
@@ -791,7 +791,9 @@ function checkGstRequest(x=0){
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                console.log(response);
+                // console.log(response);
+                $('.gst-fetch-detail').html('Fetch');
+                $('.gst-fetch-detail').attr("disabled",true);
                 if (response.status == 200) {
                     let data = response.data.data;
                     if(data == undefined){
@@ -821,6 +823,15 @@ function checkGstRequest(x=0){
                         $('.gst-address'+action).append(`<p class="mb-0">${data.TradeName}, ${addr} - ${data.AddrPncd} </p>`);
                     }
                 } else if(response.alreadyfound){
+                    if(x > 0){
+                        $('.gst-fetch-update-view').addClass('d-none');
+                        $('.last-company-detail').removeClass('d-none');
+                        $('#updateGSTBtn').prop('checked',false);
+                    }
+                    $('#last_company_id').val(response.company_id);
+                    $('#last_GST').val(number);
+                    $('#last_company').val(response.company_name);
+                    $('#last_addr').val(response.company_addr);
                     $('.alert_msg_danger').html('Gst already exists in record!');
                     var toast = new bootstrap.Toast(document.getElementById('liveToast2'));
                     toast.show();

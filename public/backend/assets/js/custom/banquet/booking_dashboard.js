@@ -139,30 +139,30 @@ function drawHallDetail(filter = '',btn = ''){
                     <div class="row mt-3 g-2">`;
                     if(item.booking_status == 'Occupied'){
                         output +=`<div class="col-12 col-lg-6">
-                            <button class="btn btn-outline-primary btn-sm w-100" type="button" onclick="invoicePrint(${item.booking_id})">
+                            <button class="btn btn-outline-primary btn-sm w-100 text-truncate" type="button" onclick="invoicePrint(${item.booking_id})">
                                 View
                             </button>
                         </div>
                         <div class="col-12 col-lg-6">
-                            <button class="btn btn-outline-danger btn-sm w-100" type="button" onclick="editBooking(${item.booking_id})">
+                            <button class="btn btn-outline-danger btn-sm w-100text-truncate" type="button" onclick="editBooking(${item.booking_id})">
                                 Edit
                             </button>
                         </div>`;
                     }else if(item.booking_status == 'Maintainance'){
                         output +=`<div class="col-12 col-lg-6">
-                            <button class="btn btn-outline-success btn-sm w-100" type="button" onclick="markMaintainance(${item.id})">
+                            <button class="btn btn-outline-success btn-sm w-100 text-truncate" type="button" onclick="markMaintainance(${item.id})">
                                 Available
                             </button>
                         </div>`;
                     }else{
                         output +=`<div class="col-12 col-lg-6">
-                            <button class="btn btn-outline-primary btn-sm w-100" type="button" onclick="bookingPage()">
+                            <button class="btn btn-outline-primary btn-sm w-100 text-truncate" type="button" onclick="bookingPage()">
                                 Book This
                             </button>
                         </div>
                     
                         <div class="col-12 col-lg-6">
-                            <button class="btn btn-outline-danger btn-sm w-100" type="button" onclick="markMaintainance(${item.id})">
+                            <button class="btn btn-outline-danger btn-sm w-100 text-truncate" type="button" onclick="markMaintainance(${item.id})">
                                 Maintainance
                             </button>
                         </div>`;

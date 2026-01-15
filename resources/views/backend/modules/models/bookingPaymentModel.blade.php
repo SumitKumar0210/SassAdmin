@@ -14,7 +14,7 @@
         </div>
         <div class="my-2">
             <h4 class="d-flex justify-content-between text-danger"><div><span>Total Outstanding</span></div><div><span class="me-1">₹ </span><span class="total_outstanding">0</span></div></h4><br>
-            <button class="btn btn-success w-100 btn-sm p-recordBtnShow text-light btn-dark" onClick="getPaymentDetailRemaining()">Record Payment</button>
+            <button class="btn btn-success w-100 btn-sm p-recordBtnShow text-light btn-dark" onClick="getPaymentDetailRemaining()" type="button">Record Payment</button>
         </div>
     </div>
 </div>

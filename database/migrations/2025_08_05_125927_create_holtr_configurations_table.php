@@ -23,6 +23,7 @@ return new class extends Migration
                 $table->string('restaurant_area', 50)->nullable();
                 $table->string('state', 50)->nullable();
                 $table->string('gst', 100)->nullable();
+                $table->string('hsn',20)->nullable();
                 $table->string('mobile', 20)->nullable();
                 $table->string('email', 100)->nullable();
                 $table->string('invoice_prefix', 25)->nullable();

@@ -14,260 +14,262 @@
         <div class="container-fluid py-3">
             <div class="email-wrap bookmark-wrap">
                 <div class="row">
-                    <div class="col-xl-2 box-col-6">
-                        @include('backend.layouts.sidebar_master')
-                    </div>
-                    <div class="col-xl-10 col-md-12 box-col-12">
-                        <div class="container-fluid">
-                            <div class="page-title">
-                                <div class="row">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div class="col-12 col-sm-6 p-0">
-                                            <h3>Room Type ({{$roomTypedataCount ?? 0}})</h3>
+                    <div class="col-xl-12 col-md-12 box-col-12">
+                        <div> 
+                            @include('backend.layouts.sidebar_master')
+                        </div>
+                        <div style="padding-left:220px;">
+                            <div class="container-fluid">
+                                <div class="page-title">
+                                    <div class="row">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="col-12 col-sm-6 p-0">
+                                                <h3>Room Type ({{$roomTypedataCount ?? 0}})</h3>
+                                            </div>
+                                            @if(in_array('Setting Add', (explode(',',auth()->user()->permission))))
+                                                <button class="btn btn-primary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#addRoomType" onclick="getAvailableRoomType()"><i class="icon-plus me-1" style="font-size:12px"></i> Add Room Type</button>
+                                            @endif
                                         </div>
-                                        @if(in_array('Setting Add', (explode(',',auth()->user()->permission))))
-                                            <button class="btn btn-primary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#addRoomType" onclick="getAvailableRoomType()"><i class="icon-plus me-1" style="font-size:12px"></i> Add Room Type</button>
-                                        @endif
                                     </div>
                                 </div>
-                            </div>
-                            <div class="container-fluid">
-                                <div class="row mb-3">
-                                    @php
-                                        $getroomView = [];
-                                        $getroomAminitiynFacility = [];
-                                    @endphp
-                                    @foreach ($roomTypedata as $roomtype)
+                                <div class="container-fluid">
+                                    <div class="row mb-3">
                                         @php
-                                            $room_beds_detail = '';
-                                            $room_beds = '';
-                                            $beds = App\Models\RoomBedConfiguration::where('roomtype_id', $roomtype->id)->get(['bed_type','no_of_bed']);
-                                            if(count($beds) > 0){
-                                                foreach($beds as $bed){
-                                                    $beds_name = App\Models\BedType::where('id', $bed['bed_type'])->value('bedtype');
-                                                    $room_beds .= $beds_name.',';
-                                                    $room_beds_detail = $beds_name.'-'.$bed['no_of_bed'].'/';
-                                                }
-                                            }else{
-                                                $room_beds = $roomtype->bed_type;
-                                            }
+                                            $getroomView = [];
+                                            $getroomAminitiynFacility = [];
                                         @endphp
-                                        <div class="col-sm-12 p-0 mb-3">
-                                            <div class="room-type-wrapper d-flex  border border-radius-4 position-relative overflow-hidden">
-                                                <div class="room-type-toggle text-center">
-                                                    <h4><i class="icofont icofont-thin-down"></i></h4>
-                                                </div>
-                                                <div class="room-type-description border-start">
-                                                    <h4 class="mb-2 ">{{$roomtype->room_category}} <button class="btn btn-primary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#RoomNumber" onclick="getRoomNumberCategory({{$roomtype->id}})"><i class="icon-plus me-1" style="font-size:12px"></i> Room</button></h4>
-                                                    <p class="mb-0 d-sm-block d-none">{{$roomtype->description}}</p>
-                                                        <ul class="list-items d-sm-block d-none">
-                                                            <li class="list-item"><span class="me-2"><i class="icofont icofont-hotel"></i></span>{{rtrim($room_beds, ", ")}}</li>
-                                                            <li class="list-item"><span class="me-2"><i class="icofont icofont-bathtub"></i></span>{{$roomtype->bathroom}} Bath</li>
-                                                            <li class="list-item"><span class="me-2"><i class="icofont icofont-map"></i></span>{{$roomtype->room_size}} SQM</li>
-                                                            <li class="list-item"><span class="me-2"><i class="icofont icofont-users"></i></span> {{$roomtype->max_adult}} adults, {{$roomtype->max_child}} children {{$roomtype->max_infant}} infants</li>
-                                                            <li class="list-item"><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span> {{$roomtype->room_category}}</li>
-                                                            @if($roomtype->smoking_category == 'Non-Smoking')
-                                                                <li class="list-item"><span class="me-2"><i class="icofont icofont-no-smoking"></i></span> {{$roomtype->smoking_category}}</li>
-                                                            @else
-                                                                <li class="list-item"><span class="me-2"><i class="fa-solid fa-smoking"></i></span> {{$roomtype->smoking_category}}</li>
-                                                            @endif
-                                                            {{-- <li class="list-item"><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span> {{$roomtype->room_view}} views</li> --}}
-                                                            @php
-                                                            $roomViewIds = explode(',', $roomtype->room_view);
-                                                            $amanititysIds = explode(',', $roomtype->ami_facilities);
-                                                            @endphp
-                                                            <li class="list-item"><span class="me-2"><i class="icofont icofont-eye"></i></span>
-                                                            @foreach ($roomViewIds as $roomViewid)
+                                        @foreach ($roomTypedata as $roomtype)
+                                            @php
+                                                $room_beds_detail = '';
+                                                $room_beds = '';
+                                                $beds = App\Models\RoomBedConfiguration::where('roomtype_id', $roomtype->id)->get(['bed_type','no_of_bed']);
+                                                if(count($beds) > 0){
+                                                    foreach($beds as $bed){
+                                                        $beds_name = App\Models\BedType::where('id', $bed['bed_type'])->value('bedtype');
+                                                        $room_beds .= $beds_name.',';
+                                                        $room_beds_detail = $beds_name.'-'.$bed['no_of_bed'].'/';
+                                                    }
+                                                }else{
+                                                    $room_beds = $roomtype->bed_type;
+                                                }
+                                            @endphp
+                                            <div class="col-sm-12 p-0 mb-3">
+                                                <div class="room-type-wrapper d-flex  border border-radius-4 position-relative overflow-hidden">
+                                                    <div class="room-type-toggle text-center">
+                                                        <h4><i class="icofont icofont-thin-down"></i></h4>
+                                                    </div>
+                                                    <div class="room-type-description border-start">
+                                                        <h4 class="mb-2 ">{{$roomtype->room_category}} <button class="btn btn-primary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#RoomNumber" onclick="getRoomNumberCategory({{$roomtype->id}})"><i class="icon-plus me-1" style="font-size:12px"></i> Room</button></h4>
+                                                        <p class="mb-0 d-sm-block d-none">{{$roomtype->description}}</p>
+                                                            <ul class="list-items d-sm-block d-none">
+                                                                <li class="list-item"><span class="me-2"><i class="icofont icofont-hotel"></i></span>{{rtrim($room_beds, ", ")}}</li>
+                                                                <li class="list-item"><span class="me-2"><i class="icofont icofont-bathtub"></i></span>{{$roomtype->bathroom}} Bath</li>
+                                                                <li class="list-item"><span class="me-2"><i class="icofont icofont-map"></i></span>{{$roomtype->room_size}} SQM</li>
+                                                                <li class="list-item"><span class="me-2"><i class="icofont icofont-users"></i></span> {{$roomtype->max_adult}} adults, {{$roomtype->max_child}} children {{$roomtype->max_infant}} infants</li>
+                                                                <li class="list-item"><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span> {{$roomtype->room_category}}</li>
+                                                                @if($roomtype->smoking_category == 'Non-Smoking')
+                                                                    <li class="list-item"><span class="me-2"><i class="icofont icofont-no-smoking"></i></span> {{$roomtype->smoking_category}}</li>
+                                                                @else
+                                                                    <li class="list-item"><span class="me-2"><i class="fa-solid fa-smoking"></i></span> {{$roomtype->smoking_category}}</li>
+                                                                @endif
+                                                                {{-- <li class="list-item"><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span> {{$roomtype->room_view}} views</li> --}}
                                                                 @php
-                                                                    $roomView22 = App\Models\RoomView::where('id', $roomViewid)->first(['view_name']);
-                                                                    if ($roomView22 && isset($roomView22->view_name)) {
-                                                                        // Only push valid view names to the array
-                                                                        array_push($getroomView, $roomView22->view_name);
-                                                                    }
+                                                                $roomViewIds = explode(',', $roomtype->room_view);
+                                                                $amanititysIds = explode(',', $roomtype->ami_facilities);
                                                                 @endphp
-                                                            @endforeach
-                                                            @php
-                                                                $get_roomView = implode(", ", $getroomView); // Join array values into a string
-                                                                $roomViewCount = count($getroomView); // Count the number of room views
-                                                                $getroomView = [];
-                                                            @endphp
-                                                            {{$roomViewCount}} View
-                                                            </li>
-                                                            <li class="list-item"><span class="me-2"><i class="icofont icofont-snow"></i></span>
-                                                            @foreach ($amanititysIds as $amanity)
-                                                                @php
-                                                                    $amanity22 = App\Models\FacilitieAmenitie::where('id', $amanity)->first(['facilities']);
-                                                                    if ($amanity22 && isset($amanity22->facilities)) {
-                                                                        // Only push valid view names to the array
-                                                                        array_push($getroomAminitiynFacility, $amanity22->facilities);
-                                                                    }
-                                                                @endphp
-                                                            @endforeach
-                                                            @php
-                                                                $get_facility = implode(", ", $getroomAminitiynFacility); // Join array values into a string
-                                                                $facilityCount = count($getroomAminitiynFacility); // Count the number of room Facility
-                                                                $getroomAminitiynFacility = [];
-                                                            @endphp
-                                                                {{$facilityCount}} Facility
-                                                        </li>
-                                                        </ul>
-                                                </div>
-                                                <div class="d-sm-block d-none">                     
-                                                    <div class="room-type-gallery">
-                                                            @php
-                                                                $roomtypeimages = App\Models\RoomtypeImage::where('roomtype_id', $roomtype->id)->get();
-                                                            @endphp
-                                                            @foreach ($roomtypeimages as $roomtypeimage)
-                                                                <div><figure><img class="img-thumbnail" src="/backend/uploads/RoomType/{{ $roomtypeimage->file_name }}" itemprop="thumbnail" alt="Image description"></figure></div>
-                                                            @endforeach    
-                                                    </div> 
-                                                </div>       
-                                                <div class="dropdown action-btn">
-                                                    <button class="btn btn-light active btn-sm txt-dark dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="ri-more-fill"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                        <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight" onclick="getroomTypeDetails({{$roomtype->id}})"><span class="font-info"><i class="icon-pencil-alt"></i></span> Edit Room Type</a></li>
-                                                        {{-- <li><a class="dropdown-item" onclick="delete_roomtype({{$roomtype->id}})"><span class="font-danger"><i class="icon-trash"></i></span> Delete Room Type</a></li> --}}
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="room-type-toggle-container border  border-radius-4" style="display:none;border-top:none !important;">
-                                                <div class="row">
-                                                    <div class="col-lg-6 col-md-6 col-sm-12 d-sm-none d-block">
-                                                        <p class="mb-0 ">{{$roomtype->description}}</p>
-                                                        <ul class="list-items mb-2">
-                                                            <li><span class="me-2"><i class="icofont icofont-hotel"></i></span>{{$roomtype->bed_type}}</li>
-                                                            <li><span class="me-2"><i class="icofont icofont-bathtub"></i></span>{{$roomtype->bathroom}} Bath</li>
-                                                            <li><span class="me-2"><i class="icofont icofont-map"></i></span>{{$roomtype->room_size}} SQM</li>
-                                                            <li><span class="me-2"><i class="icofont icofont-users"></i></span> {{$roomtype->max_adult}} adults, {{$roomtype->max_child}} children {{$roomtype->max_infant}} infants</li>
-                                                            <li><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span> {{$roomtype->room_category}}</li>
-                                                            @if($roomtype->smoking_category == 'Non-Smoking')
-                                                                <li><span class="me-2"><i class="icofont icofont-no-smoking"></i></span> {{$roomtype->smoking_category}}</li>
-                                                            @else
-                                                                <li><span class="me-2"><i class="fa-solid fa-smoking"></i></span> {{$roomtype->smoking_category}}</li>
-                                                            @endif
-                                                            <li><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span>
+                                                                <li class="list-item"><span class="me-2"><i class="icofont icofont-eye"></i></span>
                                                                 @foreach ($roomViewIds as $roomViewid)
-                                                                @php
-                                                                    $roomView22 = App\Models\RoomView::where('id', $roomViewid)->first(['view_name']);
-                                                                @endphp
-                                                                {{$roomView22->view_name ??''}}
+                                                                    @php
+                                                                        $roomView22 = App\Models\RoomView::where('id', $roomViewid)->first(['view_name']);
+                                                                        if ($roomView22 && isset($roomView22->view_name)) {
+                                                                            // Only push valid view names to the array
+                                                                            array_push($getroomView, $roomView22->view_name);
+                                                                        }
+                                                                    @endphp
                                                                 @endforeach
-                                                            </li>
-                                                            <li><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span>
-                                                                @foreach ($amanititysIds as $ame)
                                                                 @php
-                                                                $facilitiesame = App\Models\FacilitieAmenitie::where('id', $ame)->first(['facilities']);
+                                                                    $get_roomView = implode(", ", $getroomView); // Join array values into a string
+                                                                    $roomViewCount = count($getroomView); // Count the number of room views
+                                                                    $getroomView = [];
                                                                 @endphp
-                                                                {{$facilitiesame->facilities ??''}}
+                                                                {{$roomViewCount}} View
+                                                                </li>
+                                                                <li class="list-item"><span class="me-2"><i class="icofont icofont-snow"></i></span>
+                                                                @foreach ($amanititysIds as $amanity)
+                                                                    @php
+                                                                        $amanity22 = App\Models\FacilitieAmenitie::where('id', $amanity)->first(['facilities']);
+                                                                        if ($amanity22 && isset($amanity22->facilities)) {
+                                                                            // Only push valid view names to the array
+                                                                            array_push($getroomAminitiynFacility, $amanity22->facilities);
+                                                                        }
+                                                                    @endphp
                                                                 @endforeach
+                                                                @php
+                                                                    $get_facility = implode(", ", $getroomAminitiynFacility); // Join array values into a string
+                                                                    $facilityCount = count($getroomAminitiynFacility); // Count the number of room Facility
+                                                                    $getroomAminitiynFacility = [];
+                                                                @endphp
+                                                                    {{$facilityCount}} Facility
                                                             </li>
+                                                            </ul>
+                                                    </div>
+                                                    <div class="d-sm-block d-none">                     
+                                                        <div class="room-type-gallery">
+                                                                @php
+                                                                    $roomtypeimages = App\Models\RoomtypeImage::where('roomtype_id', $roomtype->id)->get();
+                                                                @endphp
+                                                                @foreach ($roomtypeimages as $roomtypeimage)
+                                                                    <div><figure><img class="img-thumbnail" src="/backend/uploads/RoomType/{{ $roomtypeimage->file_name }}" itemprop="thumbnail" alt="Image description"></figure></div>
+                                                                @endforeach    
+                                                        </div> 
+                                                    </div>       
+                                                    <div class="dropdown action-btn">
+                                                        <button class="btn btn-light active btn-sm txt-dark dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="ri-more-fill"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                            <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight" onclick="getroomTypeDetails({{$roomtype->id}})"><span class="font-info"><i class="icon-pencil-alt"></i></span> Edit Room Type</a></li>
+                                                            {{-- <li><a class="dropdown-item" onclick="delete_roomtype({{$roomtype->id}})"><span class="font-danger"><i class="icon-trash"></i></span> Delete Room Type</a></li> --}}
                                                         </ul>
                                                     </div>
-                                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                                        <div class="table-responsive">
-                                                            <table class="table">
-                                                                <tr>
-                                                                    <th colspan="2">Occupancy</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Maximum Occupancy:</td>
-                                                                    <td>{{$roomtype->max_occupancy}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Maximum adults/childrens/infants:</td>
-                                                                    <td>{{$roomtype->max_adult}}/{{$roomtype->max_child}}/{{$roomtype->max_infant}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th colspan="2">Features</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Bed type configurtion:</td>
-                                                                    <td>{{rtrim($room_beds_detail, "/ ")}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Room size:</td>
-                                                                    <td>{{$roomtype->room_size}} SQM</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Smoking policy:</td>
-                                                                    <td>{{$roomtype->smoking_category}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Number of bath rooms:</td>
-                                                                    <td>{{$roomtype->bathroom}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Room Category:</td>
-                                                                    <td>{{$roomtype->room_category}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Room view:</td>
-                                                                    <td>
-                                                                        @foreach ($roomViewIds as $roomViewid)
-                                                                        @php
-                                                                            $roomView22 = App\Models\RoomView::where('id', $roomViewid)->first(['view_name']);
-                                                                            if ($roomView22 && isset($roomView22->view_name)) {
-                                                                                // Only push valid view names to the array
-                                                                                array_push($getroomView, $roomView22->view_name);
-                                                                            }
-                                                                        @endphp
-                                                                    @endforeach
+                                                </div>
+                                                <div class="room-type-toggle-container border  border-radius-4" style="display:none;border-top:none !important;">
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 d-sm-none d-block">
+                                                            <p class="mb-0 ">{{$roomtype->description}}</p>
+                                                            <ul class="list-items mb-2">
+                                                                <li><span class="me-2"><i class="icofont icofont-hotel"></i></span>{{$roomtype->bed_type}}</li>
+                                                                <li><span class="me-2"><i class="icofont icofont-bathtub"></i></span>{{$roomtype->bathroom}} Bath</li>
+                                                                <li><span class="me-2"><i class="icofont icofont-map"></i></span>{{$roomtype->room_size}} SQM</li>
+                                                                <li><span class="me-2"><i class="icofont icofont-users"></i></span> {{$roomtype->max_adult}} adults, {{$roomtype->max_child}} children {{$roomtype->max_infant}} infants</li>
+                                                                <li><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span> {{$roomtype->room_category}}</li>
+                                                                @if($roomtype->smoking_category == 'Non-Smoking')
+                                                                    <li><span class="me-2"><i class="icofont icofont-no-smoking"></i></span> {{$roomtype->smoking_category}}</li>
+                                                                @else
+                                                                    <li><span class="me-2"><i class="fa-solid fa-smoking"></i></span> {{$roomtype->smoking_category}}</li>
+                                                                @endif
+                                                                <li><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span>
+                                                                    @foreach ($roomViewIds as $roomViewid)
                                                                     @php
-                                                                    $get_roomView = implode(", ", $getroomView); // Join array values into a string
-                                                                    $getroomView = [];
+                                                                        $roomView22 = App\Models\RoomView::where('id', $roomViewid)->first(['view_name']);
                                                                     @endphp
-                                                                    {{$get_roomView}}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Amenities and facilities:</td>
-                                                                    <td>
-                                                                        @foreach ($amanititysIds as $amanity)
-                                                                        @php
-                                                                            $amanity22 = App\Models\FacilitieAmenitie::where('id', $amanity)->first(['facilities']);
-                                                                            if ($amanity22 && isset($amanity22->facilities)) {
-                                                                                // Only push valid view names to the array
-                                                                                array_push($getroomAminitiynFacility, $amanity22->facilities);
-                                                                            }
-                                                                        @endphp
+                                                                    {{$roomView22->view_name ??''}}
                                                                     @endforeach
+                                                                </li>
+                                                                <li><span class="me-2"><i class="icofont icofont-5-star-hotel"></i></span>
+                                                                    @foreach ($amanititysIds as $ame)
                                                                     @php
-                                                                    $get_facility = implode(", ", $getroomAminitiynFacility); // Join array values into a string
-                                                                    $getroomAminitiynFacility = [];
+                                                                    $facilitiesame = App\Models\FacilitieAmenitie::where('id', $ame)->first(['facilities']);
                                                                     @endphp
-                                                                    {{$get_facility}}
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
+                                                                    {{$facilitiesame->facilities ??''}}
+                                                                    @endforeach
+                                                                </li>
+                                                            </ul>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-6 col-sm-12 ">
-                                                        <h4 class="mb-2">Media</h4>
-                                                        <div class="gallery-meia row d-sm-flex d-none">
-                                                            @php
-                                                                // Fetch images that belong only to the current room type
-                                                                $roomtypeimages = App\Models\RoomtypeImage::where('roomtype_id', $roomtype->id)->get();
-                                                            @endphp
-                                                            @foreach ($roomtypeimages as $roomtypeimage)
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <div class="table-responsive">
+                                                                <table class="table">
+                                                                    <tr>
+                                                                        <th colspan="2">Occupancy</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Maximum Occupancy:</td>
+                                                                        <td>{{$roomtype->max_occupancy}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Maximum adults/childrens/infants:</td>
+                                                                        <td>{{$roomtype->max_adult}}/{{$roomtype->max_child}}/{{$roomtype->max_infant}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th colspan="2">Features</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Bed type configurtion:</td>
+                                                                        <td>{{rtrim($room_beds_detail, "/ ")}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Room size:</td>
+                                                                        <td>{{$roomtype->room_size}} SQM</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Smoking policy:</td>
+                                                                        <td>{{$roomtype->smoking_category}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Number of bath rooms:</td>
+                                                                        <td>{{$roomtype->bathroom}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Room Category:</td>
+                                                                        <td>{{$roomtype->room_category}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Room view:</td>
+                                                                        <td>
+                                                                            @foreach ($roomViewIds as $roomViewid)
+                                                                            @php
+                                                                                $roomView22 = App\Models\RoomView::where('id', $roomViewid)->first(['view_name']);
+                                                                                if ($roomView22 && isset($roomView22->view_name)) {
+                                                                                    // Only push valid view names to the array
+                                                                                    array_push($getroomView, $roomView22->view_name);
+                                                                                }
+                                                                            @endphp
+                                                                        @endforeach
+                                                                        @php
+                                                                        $get_roomView = implode(", ", $getroomView); // Join array values into a string
+                                                                        $getroomView = [];
+                                                                        @endphp
+                                                                        {{$get_roomView}}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Amenities and facilities:</td>
+                                                                        <td>
+                                                                            @foreach ($amanititysIds as $amanity)
+                                                                            @php
+                                                                                $amanity22 = App\Models\FacilitieAmenitie::where('id', $amanity)->first(['facilities']);
+                                                                                if ($amanity22 && isset($amanity22->facilities)) {
+                                                                                    // Only push valid view names to the array
+                                                                                    array_push($getroomAminitiynFacility, $amanity22->facilities);
+                                                                                }
+                                                                            @endphp
+                                                                        @endforeach
+                                                                        @php
+                                                                        $get_facility = implode(", ", $getroomAminitiynFacility); // Join array values into a string
+                                                                        $getroomAminitiynFacility = [];
+                                                                        @endphp
+                                                                        {{$get_facility}}
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 ">
+                                                            <h4 class="mb-2">Media</h4>
+                                                            <div class="gallery-meia row d-sm-flex d-none">
+                                                                @php
+                                                                    // Fetch images that belong only to the current room type
+                                                                    $roomtypeimages = App\Models\RoomtypeImage::where('roomtype_id', $roomtype->id)->get();
+                                                                @endphp
+                                                                @foreach ($roomtypeimages as $roomtypeimage)
+                                                                    <div class="col-lg-4 col-sm-6">
+                                                                        <figure><img class="img-thumbnail border-0 p-0" src="/backend/uploads/RoomType/{{ $roomtypeimage->file_name }}" itemprop="thumbnail" alt="Image description"></figure>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                            <div class="gallery-media d-sm-none d-block">
+                                                                @foreach ($roomtypeimages as $roomtypeimage)
                                                                 <div class="col-lg-4 col-sm-6">
                                                                     <figure><img class="img-thumbnail border-0 p-0" src="/backend/uploads/RoomType/{{ $roomtypeimage->file_name }}" itemprop="thumbnail" alt="Image description"></figure>
                                                                 </div>
                                                             @endforeach
-                                                        </div>
-                                                        <div class="gallery-media d-sm-none d-block">
-                                                            @foreach ($roomtypeimages as $roomtypeimage)
-                                                            <div class="col-lg-4 col-sm-6">
-                                                                <figure><img class="img-thumbnail border-0 p-0" src="/backend/uploads/RoomType/{{ $roomtypeimage->file_name }}" itemprop="thumbnail" alt="Image description"></figure>
                                                             </div>
-                                                        @endforeach
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         </div>

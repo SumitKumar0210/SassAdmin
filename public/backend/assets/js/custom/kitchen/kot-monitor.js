@@ -34,13 +34,15 @@ function markDelivered(id){
 }
 
 let kot_item_data = [];
-
+let running_kot = [];
 function loadKotMonitor(type = '',button = '') {
+  // running_kot = [];
   if(type == ''){
     $('.kot-status').html('All KOT');
   }else if(type == 'Delivered'){
     $('.kot-status').html('Previous KOT');
   }else {
+    running_kot = [];
     $('.kot-status').html('Running KOT');
   }
   $(".loadKot").css({ "background-color": "","color": ""});
@@ -80,12 +82,12 @@ function loadKotMonitor(type = '',button = '') {
         let d2Str = kot_data.order_time;
         let d2Parts = d2Str.split(" ");
         let content = `
-          <div class="col-md-3 col-sm-12 mb-3 d-flex">
+          <div class="col-md-4 col-sm-12 mb-3 d-flex">
             <div class="kitchen-kot-item p-0 border rounded-3 w-100 h-100">
               <div class="kitchen-kot-item-header ${kot_data.order_status == 'Pending' ? 'running':''} p-3 border-bottom rounded position-relative">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                   <div>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center d-none">
                       <p class="mb-0 item-title me-1">KOT ID:</p>
                       <p class="mb-0">${kot_data.kot_id}</p>
                     </div>
@@ -95,9 +97,9 @@ function loadKotMonitor(type = '',button = '') {
                     </div>
                     <div class="d-flex align-items-center">
                       <p class="mb-0 item-title me-1">Type:</p>
-                      <p class="mb-0">${kot_data.type}</p>
+                      <p class="mb-0">${ kot_data.type.charAt(0)}-${kot_data.type_number}`; if(kot_data.is_urgent == 1){ content += `<span class="badge badge-danger ms-2">Urgent</span>`; } content += `</p>
                     </div>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center d-none">
                       <p class="mb-0 item-title me-1">Table/Room No.:</p>
                       <p class="mb-0">${kot_data.type_number}</p>
                     </div>
@@ -121,8 +123,16 @@ function loadKotMonitor(type = '',button = '') {
 
         // Filter kot_items for current kot_id
         let itemsForKot = kot_items.filter(item => item.kot_id == kot_data.id);
-
+        
+        // console.log(itemsForKot);
         itemsForKot.forEach(item => {
+          if(type == 'Pending'){
+            running_kot.push({
+              'item_id' : item.item_id,
+              'item_name' : item.item_name,
+              'item_qty' : item.qty,
+            });
+          }
           content += `
             <div class="d-flex align-items-center justify-content-between">
               <p class="mb-0">${item.item_name}</p>
@@ -130,6 +140,7 @@ function loadKotMonitor(type = '',button = '') {
             </div>`;
         });
 
+        console.log(running_kot);
         content += `
               </div>
             </div>
@@ -137,8 +148,31 @@ function loadKotMonitor(type = '',button = '') {
 
         $('.kot-monitor-data').append(content);
       });
+      drawSummary();
     }
   });
+}
+
+function drawSummary(){
+  const result = Object.values(
+      running_kot.reduce((acc, item) => {
+          if (!acc[item.item_id]) {
+              acc[item.item_id] = { ...item };
+          } else {
+              acc[item.item_id].item_qty += item.item_qty;
+          }
+          return acc;
+      }, {})
+  );
+  $('.summary-item').empty();
+  let itemList = '';
+  itemList += '<div class="justify-content-between flex-wrap d-flex gap-2">';
+  result.forEach(item => {
+    console.log(item);
+    itemList +=`<button class="btn btn-primary d-flex align-items-center mb-2 justify-content-between px-1" style="width:48%;" type="button"><span class="text-truncate overflow-hidden ">${item.item_name} </span><span class="badge rounded-circle btn-p-space badge-light text-dark ms-2 pull-end">${item.item_qty}</span></button>`
+  });
+  itemList += '</div>';
+  $('.summary-item').html(itemList);
 }
 
 loadKotMonitor('Pending');

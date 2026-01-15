@@ -275,6 +275,12 @@ class RoomController extends Controller
         return response()->json(['success'=>'Room Type Data fetched successfully...','roomNum'=>$roomNumber,'roomtypeDatas'=>$roomtypeDatas],200);
     }
 
+    public function roomOccupancy(){
+        $company = HotlrConfiguration::get(['logo']);
+        $reservation_data = ReservationRoom::where('status','Alloted')->get();
+        return view('backend.modules.reservation.occupancy-chart',compact('reservation_data','company'));
+    }
+
     public function getRoomTypeEditData(Request $request){
         $catID = $request->catID;
         $roomID = $request->roomID;

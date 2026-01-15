@@ -47,6 +47,11 @@
 .tm_m0 {
     line-height: 20px;
 }
+@media print{
+  body, * {
+      color: #000 !important;
+  }
+}
 </style>
 <body>
   <div class="tm_container" style="font-size:13px">
@@ -62,8 +67,8 @@
                   <p class="tm_m0"><b>Company</b> : {{$company->name}}</p>
                   <p class="tm_m0"> <b>Address</b> :{{$company->address}},<br> {{$company->state}} - {{$company->pincode}}</p>
                   <p class="tm_m0"><b>Tel-No</b> :  {{$company->mobile}}</p>
-                  <p class="tm_m0"><b>GST NO</b> : {{$company->gst}}</p>
-                  {{-- <p class="tm_m0"><b>IRN</b> : ABC987654321123456789CDF1</p>  --}}
+                  <p class="tm_m0"><b>GST No</b> : {{$company->gst}}</p>
+                  <p class="tm_m0"><b>HSN No</b> : {{ $hsn_no }}</p> 
                 </div>
                 @endforeach
                 <div class="scanner"><img src="{{asset('backend/assets/images/scan_me.jpg')}}" alt="Logo"></div>
@@ -111,30 +116,22 @@
                 </div>
               </div>
             </div>
-            @if($reservations[0]->company_gst != '')
-              <div class="tm_grid_row tm_col_2 tm_invoice_info_in tm_round_border tm_mb30" style="grid-template-columns: repeat( 3, 1fr);">
-            @else
-              <div class="tm_grid_row tm_col_2 tm_invoice_info_in tm_round_border tm_mb30" style="grid-template-columns: repeat( 2, 1fr);">
-            @endif
+            <div class="tm_grid_row tm_col_2 tm_invoice_info_in tm_round_border tm_mb30" style="grid-template-columns: repeat( 2, 1fr);">
               <div class="tm_border_right tm_border_none_sm">
                 <b class="tm_primary_color">Guest Info</b>
                 <p class="tm_m0">Name: {{$reservations[0]->first_name}} {{$reservations[0]->last_name}} <br>Phone: {{$reservations[0]->mobile}}</p>
-              </div>
-            @if($reservations[0]->company_gst != '')
-              <div class="tm_border_right tm_border_none_sm">
-            @else
-              <div class="">
-            @endif
-                <b class="tm_primary_color">Address:</b>
-                <p class="tm_m0">{{$reservations[0]->address}},{{$reservations[0]->city}},{{$reservations[0]->state}}-{{$reservations[0]->pincode}}</p>
+                <p class="tm_m0">Address : 
+                  @if($reservations[0]->address != '') {{$reservations[0]->address}}, @endif
+                  @if($reservations[0]->city != ''){{$reservations[0]->city}}, @endif
+                  @if($reservations[0]->state != ''){{$reservations[0]->state}} @endif
+                  @if($reservations[0]->pincode != '') -{{$reservations[0]->pincode}} @endif
+                </p>
                 <p class="tm_m0">Email: {{$reservations[0]->email}}</p>
               </div>
-              @if($reservations[0]->company_gst != '')
               <div class="">
                 <b class="tm_primary_color">Company:</b>
                 <p class="tm_m0">GST: {{$reservations[0]->company_gst}} <br> Name: {{$reservations[0]->company_name}} <br> Address: {{$reservations[0]->company_address}}</p>
               </div>
-              @endif
             </div>
             <div class="tm_table tm_style1">
               <div class="tm_round_border">
@@ -143,7 +140,8 @@
                   <thead>
                     <tr>
                       <th class="tm_primary_color">Room Charges</th>
-                      <th class="tm_primary_color">Pax + Extra</th>
+                      {{-- <th class="tm_primary_color">Pax + Extra</th> --}}
+                      <th class="tm_primary_color">Occupancy Type</th>
                       <th class="tm_primary_color">No Of Days</th>
                       <th class="tm_primary_color" style="text-align:right">Amount</th>
                     </tr>
@@ -152,8 +150,8 @@
                     @foreach($reserved_room as $room)
                     <tr>
                       <td data-label="Room Charges" style="text-align:left">₹ {{$room['room_tariff']}}</td>
-                      <td data-label="Extra Pax Amount" style="text-align:left">{{$room['adults']}} + {{$room['extra_person']}}</td>
-                      <td data-label="No Of Days" style="text-align:left">{{$room['days']}}</td>
+                      <td data-label="Extra Pax Amount" style="text-align:left">{{$room['adults'] + $room['extra_person']}}</td>
+                      <td data-label="No Of Days" style="text-align:left">{{intval($room['days'])}}</td>
                       <td data-label="Total" style="text-align:right">₹ {{$room['total']}}</td>
                     </tr>
                     @endforeach
@@ -243,7 +241,7 @@
                         <b class="tm_primary_color">Please Notes</b>
                         <p class="tm_m0" style="margin-top:6px; font-size:12px;">The customer is liable to pay the net amount mentioned in this invoice. Any disputes are subject to Bihar jurisdiction. We appreciate your business and regret any inconvenience. Looking forward to serving you again. Thank you!
                         </p>
-                        <p style="margin-top:10px;font-size:12px;margin-bottom:0">Assisted By : Amit Kumar</p>
+                        <p style="margin-top:10px;font-size:12px;margin-bottom:0">Assisted By : {{Auth::user()->name}}</p>
                     </div>
                 </div>
               </div>

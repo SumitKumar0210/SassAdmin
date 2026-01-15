@@ -55,12 +55,13 @@ class ReservationLayoutController extends Controller
                 'stay' => $no_of_nights,
                 'total' => $total_amount,
                 'outstanding' => $total_cost,
-                'roomData' => $reserve->roomData
+                'roomData' => $reserve->roomData,
             ];
         }
 
         $roomEachDetails = [];
         $statusNameColor = [];
+        $total_room = 0;
         foreach ($roomnumber as $rnum) {
             $roomnumberDetail = [];
             
@@ -79,19 +80,24 @@ class ReservationLayoutController extends Controller
             //array push
             $closer_name = '';
             $closer_color = '';
+            $closer_id = '';
             if($rnum->current_status == 0){
                 $closer_name = 'Occupied';
-                $closer_color = '#feb858';
+                $closer_color = '#ca4c3b';
+                $closer_id = 0;
             }else if($rnum->current_status > 0){
                 $closer_reasons = CloserReason::where('id',$rnum->current_status)->get(['name','color']);
                 $closer_name = $closer_reasons[0]->name;
                 $closer_color = $closer_reasons[0]->color;
                 $roomnumberDetail = [];
+                $closer_id = $rnum->current_status;
             }else{
                 $closer_name = 'Vacant';
-                $closer_color = '#9560DD';
+                $closer_color = '#3cc895';
+                $closer_id = -1;
             }
 
+            $room_count = RoomNumber::where('current_status',$closer_id)->count();
             $roomEachDetails[] = [
                 'room_id' => $rnum->id,
                 'room_number' => $rnum->room_number,
@@ -100,7 +106,7 @@ class ReservationLayoutController extends Controller
                 'closer_name' => $closer_name,
                 'closer_color' => $closer_color,
                 'closer_name_vacant' => 'Vacant',
-                'closer_color_vacant' => '#9560DD',
+                'closer_color_vacant' => '#3cc895',
             ];
             
             if (array_search($closer_name, array_column($statusNameColor, 'name')) === FALSE) {
@@ -108,6 +114,7 @@ class ReservationLayoutController extends Controller
                     'id' => $rnum->current_status,
                     'name' => $closer_name,
                     'color' => $closer_color,
+                    'count' => $room_count,
                 ];
             } 
         }
@@ -145,6 +152,11 @@ class ReservationLayoutController extends Controller
                                 'room_alloted' => $reservation_rooms->room_alloted,
                                 'grand_total' => $reservations[0]->grand_total,
                                 'due' => $reservations[0]->grand_total - $reservations[0]->paid_amount,
+                                'company_name' => $reservations[0]->company_name ?? '',
+                                'company_gst' => $reservations[0]->company_gst ?? '',
+                                'tariff' => optional($reservation_rooms->tariff_detail)->tariff_type,
+                                'tariff_cost' => $reservation_rooms->amount,
+                                'category' => optional($reservation_rooms->room_type_detail)->room_category,
                             ];
                         }
                     }
@@ -165,9 +177,9 @@ class ReservationLayoutController extends Controller
         }
         // dd($roomDetails);
         $tariffs = Tariff::where('status','active')->get(['id','room_category_id','tariff_type','room_tariff','extra_person_tariff']);
-        $hotlr = HotlrConfiguration::where('id',1)->get(['name','time_configuration']);
+        $hotlr = HotlrConfiguration::where('id',1)->get(['name']);
         
         $roomCloser = RoomClosure::where('status','Closed')->whereNull('end_date')->get();
-        return response()->json(['roomDetails' => $roomDetails, 'statusNameColor'=> $statusNameColor, 'roomEachDetails' => $roomEachDetails, 'reservationRoomDetail' => $reservationRoomDetail, 'tariffs' => $tariffs, 'roomCloser' => $roomCloser, 'hotlr' => $hotlr,'time_configuration' => json_decode($hotlr[0]->time_configuration,true)]);
+        return response()->json(['roomDetails' => $roomDetails, 'statusNameColor'=> $statusNameColor, 'roomEachDetails' => $roomEachDetails, 'reservationRoomDetail' => $reservationRoomDetail, 'tariffs' => $tariffs, 'roomCloser' => $roomCloser, 'hotlr' => $hotlr, 'total_room' => $total_room]);
     }
 }

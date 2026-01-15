@@ -1,0 +1,81 @@
+
+.switch-toggle-type {
+  --width: 260px;
+  --height: 44px;
+  --offset: 2px;
+  --radius: 30px;
+  position: relative;
+  width: var(--width);
+  height: var(--height);
+  padding: var(--offset);
+  background: #fff;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  font-style: normal;
+  border: 2px solid #d7d7d7;
+}
+
+.switch-toggle-type input[type=checkbox] {
+  cursor: pointer;
+  position: absolute;
+  inset: 0;
+  appearance: none;
+  z-index: 2;
+  background: transparent;
+}
+
+.switch-toggle-type input[type=checkbox]:checked + label.switch-toggle-type-label:before {
+  translate: 100% 0;
+}
+
+.switch-toggle-type input[type=checkbox] + label.switch-toggle-type-label {
+  position: absolute;
+  inset: var(--offset, 0);
+  padding: 10px 0;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+  display: grid;
+  gap: 2px;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  place-items: center;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+}
+
+.switch-toggle-type input[type=checkbox] + label.switch-toggle-type-label:before {
+  content: "";
+  position: absolute;
+  width: 50%;
+  inset: 0;
+  background: #000;
+  border-radius: calc(var(--radius) - var(--offset));
+  box-shadow: 0px 10px 20px 0px rgba(16, 39, 68, 0.1);
+  translate: 0 0;
+  transition: translate 250ms cubic-bezier(0.93, 0.26, 0.07, 0.69);
+}
+.switch-toggle-type input[type=checkbox] + label.switch-toggle-type-label span {
+  position: relative;
+  transition: 200ms linear;
+}
+.switch-toggle-type input[type=checkbox] + label.switch-toggle-type-label span:nth-child(1) {
+  color: #1a1a1a;
+}
+
+.switch-toggle-type input[type=checkbox]:checked + label.switch-toggle-type-label span:nth-child(2) {
+  color: #fff;
+}
+.switch-toggle-type input[type=checkbox] + label.switch-toggle-type-label span:nth-child(1) {
+  color: #fff;
+}
+
+.switch-toggle-type input[type=checkbox] + label.switch-toggle-type-label span:nth-child(2) {
+  color: #2d2b2b;
+}
+
+.switch-toggle-type input[type=checkbox]:checked + label.switch-toggle-type-label span:nth-child(1) {
+  color: #2b2b2b;
+}

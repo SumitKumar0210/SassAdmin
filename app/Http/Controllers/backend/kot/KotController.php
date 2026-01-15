@@ -8,9 +8,7 @@ use App\Models\Kot;
 use App\Models\KotItem;
 use App\Models\PaymentMethod;
 use App\Models\PaymentReceived;
-use App\Models\Reservation;
 use App\Models\ReservationRoom;
-use App\Models\RoomCategory;
 use App\Models\RoomNumber;
 use App\Models\RoomType;
 use App\Models\Table;
@@ -18,12 +16,13 @@ use App\Models\Waiter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class KotController extends Controller
 {
 
     public function index(Request $request){
-        $hotlr = HotlrConfiguration::get(['logo','name','restaurant_area','item_add','notification']);
+        $hotlr = HotlrConfiguration::get(['logo','name','restaurant_area','item_add','notification','add_item_status']);
         $area = explode(',',$hotlr[0]->restaurant_area);
         $tableArea = [];
         $roomList = [];
@@ -43,10 +42,12 @@ class KotController extends Controller
             $rooms = [];
             $room_numbers = RoomNumber::where('category_id',$type->id)->where('status','active')->where('current_status','0')->get();
             foreach($room_numbers as $number){
+                $reservation_guest = ReservationRoom::where('room_alloted_id',$number->id)->value('primary_name');
                 $rooms[] = [
                     'id' => $number->id,
                     'room_number' => $number->room_number,
                     'current_status' => $number->current_status,
+                    'name' => $reservation_guest
                 ];
             }
             if(count($rooms) > 0){
@@ -109,6 +110,10 @@ class KotController extends Controller
             }
         }
 
+        $is_urgent = 0;
+        if($request->urgent_type == 2){
+            $is_urgent = 1;
+        }
         $item_insert = new Kot();
         $ajdust = $request->adjustment;
         if($request->adjustment == ''){
@@ -143,6 +148,7 @@ class KotController extends Controller
         if($request->total_paid > 0){
            $item_insert->order_status ='Delivered';
         }
+        $item_insert->is_urgent = $is_urgent;
         if(isset($request->person)){
             $item_insert->contact_person_name = $request->person[0]['name'];
             $item_insert->contact_person_mobile = $request->person[0]['phone'];
@@ -176,16 +182,33 @@ class KotController extends Controller
     }
 
     public function recordPayment(Request $request){
-        $kots = Kot::where('id',$request->kot_id)->pluck('grand_total');
-        $update = Kot::where('id',$request->kot_id)->update([
-            'total_paid' => $kots[0],
-            'payment_type' => 'Cash',
-            'order_status' => 'Delivered'
-        ]);
-        if($update){
+        
+        if ($request->ajax()) {
+            $validator = Validator::make($request->all(), [
+                'amount' => ['required'],
+                'mode' => ['required'],
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['error_validation' => $validator->errors()->all()], 200);
+            }
+        }
+
+        DB::beginTransaction();
+        try{
+            $update = Kot::where('id',$request->id)->update([
+                'total_paid' => $request->amount,
+                'payment_type' => $request->mode,
+                'reference_number' => $request->txn,
+                'order_status' => 'Delivered',
+                'payment_type' => 'Paid',
+            ]);
+            
+            DB::commit(); // data saved in both the table successfullt.
             return response()->json(['success' => 'Payment updated successfully'], 200);
-        } else {
-            return response()->json(['error' => 'Something Went Wrong'], 400);
+        } catch (\Exception $e) {
+            DB::rollBack(); // if date not saved in both table then both table rollback as before.
+            return response()->json(['error_success' => 'Error! Data not added', 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -241,9 +264,5 @@ class KotController extends Controller
         }else{
             return response()->json(['error_success'=>'Payment not added']);
         }
-    }
-
-    public function callNishaSecond(){
-        //this is for git
     }
 }

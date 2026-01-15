@@ -632,165 +632,20 @@ function checkOccLimitAdd(randRoomNum) {
 
 }
 
-// -----------------------------------New Reservation Submit-----------------------------------------------
-$("#reservation_form").on("submit", function (event) {
-    event.preventDefault();
-    // let [hh, mm] = timeConfiguration[0].checkin_time.split(":").map(Number); 
-    let check_slot = 1;
-    if ($('#new_reservation_checkin_confirmation').prop('checked')) {
-        console.log(timeConfiguration[0].timeslot);
-        if(timeConfiguration[0].timeslot == 1){
-
-            let checkintme_default = timeConfiguration[0].checkin_time;
-            let d = new Date();
-            let [hh, mm] = checkintme_default.split(":").map(Number);
-        
-            // set the given time
-            d.setHours(hh, mm, 0, 0);
-        
-            // subtract 3 hours
-            if(timeConfiguration[0].checkin_early_time != ""){
-                let d3 = new Date(d);
-                let ts = d3.setHours(d3.getHours() - parseInt(timeConfiguration[0].checkin_early_time));
-    
-                let d1 = new Date(ts);
-                let hours = String(d1.getHours()).padStart(2, "0");
-                let minutes = String(d1.getMinutes()).padStart(2, "0");
-                let allow_checkintime = `${hours}:${minutes}`;
-                
-                let start = allow_checkintime;
-                let end   = checkintme_default;
-                let check = $('.reservation_checkin_confirmation_allow').html();
-    
-                // convert to minutes
-                let [sh, sm] = start.split(":").map(Number);
-                let [eh, em] = end.split(":").map(Number);
-                let [ch, cm] = check.split(":").map(Number);
-    
-                let startMinutes = sh * 60 + sm;
-                let endMinutes   = eh * 60 + em;
-                let checkMinutes = ch * 60 + cm;
-    
-                // compare
-                if (checkMinutes >= startMinutes && checkMinutes <= endMinutes) {
-                    $('#earlyCheckinConfirmation').modal('show');
-                }
-            }else{
-                $('#earlyCheckinAlert').modal('show');
-                $('.await-time').removeClass('d-none');
-                let timeLeft = 7;
-                const downloadTimer = setInterval(function() {
-                    // Log the remaining time
-                    $('.await-time').html(timeLeft + " seconds remaining");
-
-                    timeLeft -= 1;
-                    if (timeLeft < 0) {
-                        // Stop the timer when time is up
-                        clearInterval(downloadTimer);
-                        $('.await-time').addClass('d-none');
-                        ReservationWithCheckin();
-                    }
-                }, 1000);
-            }
-        }
+$('#reservation #checkinSwitch').on('change', function() {
+    if ($(this).is(':checked')) {
+        // Bulk checkin selected
+        $('#reservation .add-more-room').removeClass('d-none');
+    } else {
+        // Single checkin selected
+        $('#reservation .add-more-room').addClass('d-none');
     }
-
-    if(check_slot){
-        alert('insert');
-    }
-
-    
-    
 });
-
-function ReservationWithCheckin(){
-    
-    let checkin = $("#checkin_resvn").val();
-    const enteredDate = new Date(checkin);
-    const today = new Date();
-    const currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    // Compare dates
-    if (!(enteredDate.getFullYear() === currentDate.getFullYear() && enteredDate.getMonth() === currentDate.getMonth() && enteredDate.getDate() === currentDate.getDate())) {
-        let room_number = $("select[name='roomno_resvn[]']").map(function () {return $(this).val();}).get();
-        let chkValue = false;
-        room_number.forEach(function(cate_rooms){
-            if(cate_rooms != 'NA'){
-                chkValue = true;
-            }
-        });
-        if(chkValue){
-            Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Only current date room number is allow",
-                showConfirmButton: "OK",
-                // timer: 3500
-            });
-            return;
-        }
-    }
-
-    let isNameValid = validateField("#first_name_resvn", "text", ".first_name_resvn_class");
-    let isMobileValid = validateField("#mobile_resvn","mobile",".mobile_resvn_class");
-    if (isNameValid === true && isMobileValid === true) {
-
-        $('.add_res_btn').addClass('d-none');
-        $('.new_res_loader').removeClass('d-none');
-
-        let state = $("#companystate_resvn option:selected").text();
-        let id_proof = $('#photo_resvn').prop('files')[0];
-
-        var formData = new FormData(this);
-        formData.append('room_total_amount', $('.room_total_amount').html());
-        formData.append('no_of_nights', $('.no_of_nights').html());
-        formData.append('extra_total_person', $('.extra_total_person').html());
-        formData.append('total_final_res_amount', $('.total_final_res_amount').html());
-        formData.append('total_discount_percentage', $('.total_discount_percentage').val());
-        formData.append('total_subtotal', $('.total_subtotal').val());
-        formData.append('total_advance_amount', $('.total_advance_amount').val());
-        formData.append('total_received', $('.total_received').html());
-        formData.append('total_outstanding', $('.total_outstanding').html());
-        formData.append('state', state);
-        formData.append('id_proof', id_proof);
-
-        $.ajax({
-            url: reservatiionAdd, // PHP script to handle the upload
-            type: 'POST',
-            data: formData,
-            contentType: false, // Important: Don't set content type
-            processData: false, // Important: Don't process the data
-            success: function(response) {
-                $('#response').html(response); // Display response from PHP
-                if(response.success){
-
-                    $('#reservation').modal('hide');
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        text: "Reservation Created Successfully",
-                        showConfirmButton: false,
-                        timer: 4000,
-                    });
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2500);
-
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-
-    }else{
-        toastErrorAlert('Name and Mobile is Required');
-    }
-}
 
 function outsidePaymentRecode(id){
     
     let current_outstanding_amount = parseFloat($('.outstanding_amount').html());
-    let reservation_id = $('.reservation_id_checkout').html();
+    let reservation_id = $('.reservation_id_checkout').val();
     let clicked_room_id = $('.guest_room_id').text(); 
     if (roomCheck_Ids.length === 0) {
         Swal.fire({
@@ -946,100 +801,115 @@ function activity_log_Details(res_id,room_id, callback) {
 
 function checkinBtn(res_id,roonID) {
     
-    Swal.fire({
-        title: "Are you sure to checkin?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Checkin",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            let check = true;
-            let roomDetail = [];
-            roomCheck_Ids.forEach(function(element,key){
-
-                let val = $('#roomno_resvn'+element).val();
-                if(val == 'NA'){
-                    check = false;
-                    return;
-                }else{
-                    roomDetail.push({
-                        'id' : element,
-                        'room' : val,
-                        'room_number' :  $('#roomno_resvn'+element+' option:selected').text(),
-                    });
-                }
-
-            });
-            
-            if(check){
-
-                let first_name = $('#first_name_resvn_edit').val();
-                let last_name = $('#last_name_resvn_edit').val();
-                let gender = $('#gender_resvn_edit').val();
-                let email = $('#email_resvn_edit').val();
-                let guest = $('#guest_type_resvn_edit').val();
-                let allergic_to = $('#allergic_to_resvn_edit').val();
-                let address = $('#address_resvn_edit').val();
-                let city = $('#city_resvn_edit').val();
-                let state = $('#state_resvn_edit').val();
-                let pincode = $('#pin_resvn_edit').val();
-                let country = $('#country_resvn_edit').val();
-                let coming_from = $('#coming_from_resvn_edit').val();
-                let going_to = $('#going_to_resvn_edit').val();
-                let purpose_of_visit = $('#purpose_of_visit_resvn_edit').val();
-                let document_type = $('#documenttype_resvn_edit').val();
-                let other_detail = $('#otherdetail_resvn_edit').val();
-                let id_number = $('#idnumber_resvn_edit').val();
-                let company_name = $('#companyname_resvn_edit').val();
-                let company_gst = $('#companygst_resvn_edit').val();
-                let company_address = $('#companyaddress_resvn_edit').val();
-                let company_pincode = $('#companypincode_resvn_edit').val();
-                let company_state = $('#companystate_resvn_edit').val();
-
-                $.ajax({
-                    url: checkinProcess,
-                    type: "POST",
-                    data: {
-                        reservationid: res_id,
-                        clicked_room_id: roonID,
-                        roomDetail: roomDetail, first_name:first_name,last_name:last_name,gender:gender,email:email,guest:guest,allergic_to:allergic_to,address:address,city:city,state:state,pincode:pincode,country:country,coming_from:coming_from,going_to:going_to,purpose_of_visit:purpose_of_visit,document_type:document_type,other_detail:other_detail,id_number:id_number,company_name:company_name,company_gst:company_gst,company_address:company_address,company_pincode:company_pincode,company_state:company_state
-                    },
-                    success: function (response) {
-
-                        if (response.success) {
-                            
-                            Swal.fire({
-                                position: "center",
-                                icon: "success",
-                                text: "The room has been successfully checked in.",
-                                showConfirmButton: false,
-                                timer: 2000,
-                            });
-                            
-                            $('#EditReservation').modal('hide');
-                            setTimeout(() => {
-                                window.location.reload();
-                                // let reloadReservationDuration = $(".reload_reservation_duration").html();
-                                // loadreservationdata(reloadReservationDuration, 2); // Reset reservation page
-                            }, 2500);
-                        }
-
-                    },
-                });
-
-            }else{
-                
-                Swal.fire({
-                    text: "Please select room number to proceed",
-                    icon: "warning",
-                });
-
-            }
-
+    let checkFirst = true;
+    roomCheck_Ids.forEach(function(element,key){
+        let val = $('#roomno_resvn'+element).val();
+        if(val == ''){
+            checkFirst = false;
+            $('#roomno_resvn'+element).focus();
+            return;
         }
     });
+    
+    if(checkFirst){
+
+        Swal.fire({
+            title: "Are you sure to checkin?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Checkin",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let check = true;
+                let roomDetail = [];
+                roomCheck_Ids.forEach(function(element,key){
+
+                    let val = $('#roomno_resvn'+element).val();
+                    if(val == 'NA'){
+                        check = false;
+                        return;
+                    }else{
+                        roomDetail.push({
+                            'id' : element,
+                            'room' : val,
+                            'room_number' :  $('#roomno_resvn'+element+' option:selected').text(),
+                        });
+                    }
+
+                });
+                
+                if(check){
+
+                    let first_name = $('#first_name_resvn_edit').val();
+                    let last_name = $('#last_name_resvn_edit').val();
+                    let gender = $('#gender_resvn_edit').val();
+                    let email = $('#email_resvn_edit').val();
+                    let guest = $('#guest_type_resvn_edit').val();
+                    let allergic_to = $('#allergic_to_resvn_edit').val();
+                    let address = $('#address_resvn_edit').val();
+                    let city = $('#city_resvn_edit').val();
+                    let state = $('#state_resvn_edit').val();
+                    let pincode = $('#pin_resvn_edit').val();
+                    let country = $('#country_resvn_edit').val();
+                    let coming_from = $('#coming_from_resvn_edit').val();
+                    let going_to = $('#going_to_resvn_edit').val();
+                    let purpose_of_visit = $('#purpose_of_visit_resvn_edit').val();
+                    let document_type = $('#documenttype_resvn_edit').val();
+                    let other_detail = $('#otherdetail_resvn_edit').val();
+                    let id_number = $('#idnumber_resvn_edit').val();
+                    // let company_name = $('#companyname_resvn_edit').val();
+                    // let company_gst = $('#companygst_resvn_edit').val();
+                    // let company_address = $('#companyaddress_resvn_edit').val();
+                    // let company_pincode = $('#companypincode_resvn_edit').val();
+                    // let company_state = $('#companystate_resvn_edit').val();
+
+                    $.ajax({
+                        url: checkinProcess,
+                        type: "POST",
+                        data: {
+                            reservationid: res_id,
+                            clicked_room_id: roonID,
+                            roomDetail: roomDetail, first_name:first_name,last_name:last_name,gender:gender,email:email,guest:guest,allergic_to:allergic_to,address:address,city:city,state:state,pincode:pincode,country:country,coming_from:coming_from,going_to:going_to,purpose_of_visit:purpose_of_visit,document_type:document_type,other_detail:other_detail,id_number:id_number
+                        },
+                        success: function (response) {
+
+                            if (response.success) {
+                                
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    text: "The room has been successfully checked in.",
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                });
+                                
+                                $('#EditReservation').modal('hide');
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 2500);
+                            }
+
+                        },
+                    });
+
+                }else{
+                    
+                    Swal.fire({
+                        text: "Please select room number to proceed",
+                        icon: "warning",
+                    });
+
+                }
+            }
+        });
+    }else{
+        Swal.fire({
+            text: "Please select room number to proceed",
+            icon: "warning",
+        });
+    }
   
 }
 
@@ -1061,16 +931,13 @@ function checkoutBtn(res_id,roonID) {
         if(chk){
             
             let isStateValid = validateField("#state_resvn_edit", "text", ".state_resvn_edit_class");
-            let isPincodeValid = validateField("#pin_resvn_edit", "text", ".pin_resvn_edit_class");
             let isCountryValid = validateField("#country_resvn_edit", "text", ".country_resvn_edit_class");
             let isComingFromResvnValid = validateField("#coming_from_resvn_edit", "text", ".coming_from_resvn_edit_class");
             let isGoingToResvnValid = validateField("#going_to_resvn_edit", "text", ".going_to_resvn_edit_class");
             let isPurposeOfVisitResvnValid = validateField("#purpose_of_visit_resvn_edit", "text", ".purpose_of_visit_resvn_edit_class");
-            let isDocumentTypeResvnValid = validateField("#documenttype_resvn_edit", "select", ".documenttype_resvn_edit_class");
-            let isIdNumberResvnValid = validateField('#idnumber_resvn_edit','text','.idnumber_resvn_edit');
             let id_proof = $('#photo_resvn_edit').prop('files')[0];
 
-            if(isStateValid == true && isPincodeValid == true && isCountryValid == true && isComingFromResvnValid == true && isGoingToResvnValid == true && isPurposeOfVisitResvnValid == true && isDocumentTypeResvnValid == true && isIdNumberResvnValid == true){
+            if(isStateValid == true && isCountryValid == true && isComingFromResvnValid == true && isGoingToResvnValid == true && isPurposeOfVisitResvnValid == true){
                 
                     let roomcate = $("select[name='roomtype_resvnEdit[]']").map(function () { return $(this).val();}).get();
                     let tariff = $("select[name='roomtariff_resvnEdit[]']").map(function () { return $(this).val();}).get();
@@ -1083,7 +950,7 @@ function checkoutBtn(res_id,roonID) {
                     let extra_person_amount = $("input[name='extrapersonAmount_resvnEdit[]']").map(function () { return $(this).val();}).get();
                     
                     var formData = new FormData();
-                    formData.append('reservationid', $('.reservation_id_checkout').html());
+                    formData.append('reservationid', $('.reservation_id_checkout').val());
                     formData.append('first_name', $('#first_name_resvn_edit').val());
                     formData.append('last_name', $('#last_name_resvn_edit').val());
                     formData.append('gender', $('#gender_resvn_edit').val());
@@ -1101,9 +968,6 @@ function checkoutBtn(res_id,roonID) {
                     formData.append('document_type', $('#documenttype_resvn_edit').val());
                     formData.append('other_detail', $('#otherdetail_resvn_edit').val());
                     formData.append('id_number', $('#idnumber_resvn_edit').val());
-                    formData.append('company_name', $('#companyname_resvn_edit').val());
-                    formData.append('company_gst', $('#companygst_resvn_edit').val());
-                    formData.append('company_address', $('#companyaddress_resvn_edit').val());
                     roomCheck_Ids.forEach(function(element,key){
                         formData.append('room_id[]', element);
                     });
@@ -1150,13 +1014,8 @@ function checkoutBtn(res_id,roonID) {
                     });
 
             }else{
-
-                // Swal.fire({
-                //     title: "Warning",
-                //     text: "Fiel",
-                //     icon: "warning",
-                // });
-
+                toastErrorAlert('Fill All required field of Detail section');
+                $("#detailTab").tabs("option", "active", 1);
             }
         }else{
             Swal.fire({
@@ -1326,21 +1185,6 @@ function getroomoccupancyUpdate(roomTypeID, roomID) {
 //-------------New Reservation Duration Day----------------------------
 function staycount_checkin(action='') {
     let curr_checkin = new Date($("#checkin_resvn").val());
-    
-    // checkin time show hide logic
-    let date2 = new Date();
-    let d1 = new Date(curr_checkin.getFullYear(), curr_checkin.getMonth(), curr_checkin.getDate());
-    let d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
-    if (d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate()) {
-       
-    } else {
-        if ($('#new_reservation_checkin_confirmation').prop('checked')) {
-            $('#new_reservation_checkin_confirmation').prop('checked',false);
-            $('.reservation_checkin_confirmation_allow').addClass('d-none');
-            $('.add_res_btn').html('Reserve');
-        }
-    }
-
     curr_checkin.setDate(curr_checkin.getDate() + 1); // increase one day in current checkin for display date later ther checkin
     // here apply checkout date display later then checkin date after select checkin date.
     flatpickr("#checkout_resvn",{
@@ -1380,42 +1224,19 @@ function staycount_checkout(action=''){
         checkin = new Date(lastDate);
         checkin.setHours(checkin.getHours(), checkin.getMinutes(), 0, 0);
     }else{
-        checkin_setting_time = '';
-        console.log($('#new_reservation_checkin_confirmation').prop('checked'));
-        if($('#new_reservation_checkin_confirmation').prop('checked')) {
-            checkin.setHours(now.getHours(), now.getMinutes(), 0, 0);
-        }else{
-            if(timeConfiguration[0].timeslot == 1){
-                let [hh, mm] = timeConfiguration[0].checkin_time.split(":").map(Number); 
-                checkin.setHours(hh, mm, 0, 0);
-            }else{
-                checkin.setHours(now.getHours(), now.getMinutes(), 0, 0);
-            }
-        }
+        checkin.setHours(now.getHours(), now.getMinutes(), 0, 0);
     }
     let checkout = new Date(checkout_resvn);
-    if(timeConfiguration[0].timeslot == 1){
-        let [hh, mm] = timeConfiguration[0].checkout_time.split(":").map(Number); 
-        checkout.setHours(hh, mm, 0, 0);
-    }else{
-        checkout.setHours(now.getHours(), now.getMinutes(), 0, 0);
-    }
-    
     let totalDays = calculateHotelDays(checkin, checkout);
-    if(timeConfiguration[0].timeslot == 1){
-        let [hh1, mm1] = timeConfiguration[0].checkout_time.split(":").map(Number);
-        if(action == ''){
-            checkout.setHours(hh1, mm1, 0, 0);
-        }else{
-            if(hh1 > now.getHours()){
-                checkout.setHours(hh1, mm1, 0, 0);
-            }else{
-                checkout.setHours(now.getHours(), now.getMinutes(), 0, 0);
-            }
-            totalDays = calculateHotelDays(checkin, checkout,1);
-        }
+    if(action == ''){
+        checkout.setHours(12, 0, 0, 0);
     }else{
-        checkout.setHours(now.getHours(), now.getMinutes(), 0, 0);
+        if(12 > now.getHours()){
+            checkout.setHours(12, 0, 0, 0);
+        }else{
+            checkout.setHours(now.getHours(), now.getMinutes(), 0, 0);
+        }
+        totalDays = calculateHotelDays(checkin, checkout,1);
     }
 
     totalDays = totalDays + lastDays;
@@ -1684,6 +1505,7 @@ function getAllDataViaPhone(id) {
         data: { id: id },
         success: function (response) {
             let getData = response.resDetails[0];
+            $('#itemCodeList').addClass('d-none');
             $('#first_name_resvn').val(getData['first_name']).removeClass("is_field_invalid");
             $('#last_name_resvn').val(getData['last_name']).removeClass("is_field_invalid");
             
@@ -1750,6 +1572,7 @@ function getPaymentDetailRemaining(){
     $('#note_o_rsv').val('');
     const currentDate = new Date();
     $('#payment_date_outside_rsv').val(currentDate);
+    // checkroomchecked();
 }
 
 function checkString(name,value){
@@ -1793,36 +1616,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initial state
     updateBilling();
-
-    const b2bDivEdit = document.getElementById("b2bCompanyEdit");
-    const b2cDivEdit = document.getElementById("b2cCompanyEdit");
-
-    const rIndividualEdit = document.getElementById("freeEdit");
-    const rB2BEdit = document.getElementById("b2bEdit");
-    const rB2CEdit = document.getElementById("b2cEdit");
-
-    function updateBillingEdit() {
-        if (rB2BEdit.checked) {
-            
-            b2bDivEdit.style.display = "block";
-            b2cDivEdit.style.display = "none";
-        } 
-        else if (rB2CEdit.checked) {
-            
-            b2bDivEdit.style.display = "none";
-            b2cDivEdit.style.display = "block";
-        } 
-        else {
-            b2bDivEdit.style.display = "none";
-            b2cDivEdit.style.display = "none";
-        }
-    }
-
-    // Attach listeners
-    rIndividualEdit.addEventListener("change", updateBillingEdit);
-    rB2BEdit.addEventListener("change", updateBillingEdit);
-    rB2CEdit.addEventListener("change", updateBillingEdit);
-
-    // Initial state
-    updateBillingEdit();
 });

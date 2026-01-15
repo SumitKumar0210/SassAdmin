@@ -22,8 +22,39 @@
                             <div class="col-4">
                                 <div class="mb-3">
                                     <label>Add Notes</label>
-                                    <textarea class="form-control" id="notes" rows="3"></textarea>
+                                    <textarea class="form-control" id="notes" rows="2"></textarea>
                                     <span class="random_number d-none">{{$random_id}}</span>
+                                </div>
+                                <div class="checkout-bill-header">
+                                    <table>
+                                        <tr>
+                                            <th colspan="2">To,</th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="mb-0 w-100">
+                                                    <input class="form-control" type="text" name="guest_name" placeholder="Guest Name" value="{{$reservation->first_name}} {{$reservation->last_name}}">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2">
+                                                @if($reservation->address != '') {{$reservation->address}}, @endif
+                                                @if($reservation->city != '') {{$reservation->city}}, @endif
+                                                @if($reservation->state != '') {{$reservation->state}} @endif
+                                                @if($reservation->pincode != '') - {{$reservation->pincode}}@endif
+                                                @if($reservation->country != ''), {{$reservation->country}} @endif
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" >
+                                                @if($reservation->company_name != '') {{$reservation->company_name}}, @endif
+                                                @if($reservation->company_gst != '') <br>{{$reservation->company_gst}} @endif
+                                                @if($reservation->company_address != '') <br><small style="font-weight: 500">{{$reservation->company_address}}</small> @endif
+                                            </th>
+                                            <input class="form-control" type="hidden" name="company_gst" placeholder="N/A" value="{{$reservation->company_gst}}">
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                             <div class="col-4 offset-4">
@@ -34,31 +65,27 @@
                                             <td class="text-end">{{date('d/m/Y')}}</td>
                                         </tr>
                                         <tr>
-                                            <th colspan="2" class="text-end">To,</th>
+                                            <th>Invoice Time:</th>
+                                            <td class="text-end">{{date('h:i A')}}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="2">
-                                                <div class="mb-0 w-100">
-                                                    <input class="form-control" type="text" name="guest_name" placeholder="Guest Name" value="{{$reservation->first_name}} {{$reservation->last_name}}">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {{-- <tr>
-                                            <td colspan="2">
-                                                <div class="mb-0 w-100">
-                                                    <input class="form-control" type="text" placeholder="HB">
-                                                </div>
-                                            </td>
-                                        </tr> --}}
-                                         <tr>
-                                            <th colspan="2" class="text-end">{{$reservation->address}}, {{$reservation->city}}, {{$reservation->state}} - {{$reservation->pincode}}, {{$reservation->country}}</th>
+                                            <th colspan="2" class="text-end">From,</th>
                                         </tr>
                                         <tr>
-                                            <td colspan="2">
-                                                <div class="mb-0 w-100">
-                                                    <input class="form-control" type="text" name="company_gst" placeholder="N/A" value="{{$reservation->company_gst}}">
-                                                </div>
-                                            </td>
+                                            <td colspan="2" class="text-end">{{$hotlr[0]->name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"  class="text-end">{{$hotlr[0]->gst}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"  class="text-end">{{$hotlr[0]->mobile}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" class="text-end">
+                                                @if($hotlr[0]->address != '') {{$hotlr[0]->address}}, @endif
+                                                @if($hotlr[0]->state != '') {{$hotlr[0]->state}} @endif
+                                                @if($hotlr[0]->pincode != '') - {{$hotlr[0]->pincode}} @endif
+                                            </th>
                                         </tr>
                                         <tr>
                                             <th>Check In Date:</th>
@@ -90,22 +117,23 @@
                                             <th>Room No</th>
                                             <th>Tariff Type</th>
                                             <th>Room Tariff</th>
-                                            <th>Pax + Extra's</th>
+                                            <th>Occupancy Type</th>
                                             <th>No Of Days</th>
                                             <th class="text-end">Amount</th>
                                         </tr>
                                         @php
                                             $grand_total =0;
+                                            $no = 1;
                                         @endphp
                                         @foreach($reserved_room as $room)
                                         <tr>
-                                            <td>{{$room['no']}}</td>
+                                            <td>{{$no++}}</td>
                                             <td>{{$room['room_type']}}</td>
                                             <td>{{$room['room_number']}}</td>
                                             <td>{{$room['tariff_type']}}</td>
                                             <td>{{$room['room_tariff']}}</td>
-                                            <td>{{$room['adults']}} + {{$room['extra_person']}}</td>
-                                            <td><input type="hidden" value="{{$room['days']}}" name="no_of_days[]"/>{{$room['days']}}</td>
+                                            <td>{{$room['adults'] + $room['extra_person']}}</td>
+                                            <td><input type="hidden" value="{{$room['days']}}" name="no_of_days[]"/>{{intval($room['days'])}}</td>
                                             <td class="text-end">{{$room['total']}}</td>
                                         </tr>
                                         @php
@@ -119,17 +147,12 @@
                         <div class="row mb-3">
                             <div class="col-lg-3 col-sm-12">
                                 <div class="mb-2">
-                                    <label>Discount</label>
+                                    <label>Discount (%)</label>
                                     @php
                                         $discount = 0;
                                         if($reservation->discount > 0){
                                             $discount = $reservation->discount;
                                         }
-                                        
-                                        // if($reservation->advance_amount > 0){
-                                        //     $total_advance_payment += $reservation->advance_amount;
-                                        // }
-
                                     @endphp
                                     <input class="form-control discount_percentage" type="text" placeholder="0" value="{{$discount}}" onkeyup="calculate()">
                                 </div>
@@ -144,7 +167,7 @@
                                     </div>
                                     <div class="mb-2">
                                         <label>GST (%)</label>
-                                        <input class="form-control tax_value" type="text" placeholder="0" value="{{$default_tax}}" onkeyup="calculate()">
+                                        <input class="form-control tax_value" type="text" placeholder="0" value="{{$default_tax}}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-2">
@@ -359,10 +382,18 @@
                         random_number: random_number,number_of_days: total_days,total_amount: total_amount,discount_percentage: discount_percentage,dicount_amount: dicount_amount,tax_type:tax_type,tax_value:tax_value,total_cgst:total_cgst,total_sgst:total_sgst,total_igst:total_igst,round_off:round_off,remaining_amount:remaining_amount,advance_amount:advance_amount,payment_mode:payment_mode,cheque_number:cheque_number,reference_code:reference_code,notes:notes,guest_name:guest_name,company_gst:company_gst
                     },
                     success: function(data){
-                        // console.log(data);
+                        console.log(data);
                         if(data.success){
-                            showPreview();
-                            window.location.href='../reservation-new';
+                            //showPreview();
+                            const url = `../../checkedout/${data.invoice_id}`;
+                            window.location.href = url;
+                        }else if(data.pending){
+                            Swal.fire({ icon: "error", title: data.pending });
+                             setTimeout(() => {
+                                let res = 'reservation='+data.reservation_id+'&reservation_room_id='+data.room_id;
+                                let url = '../../reservation/edit-reservation/'+res;
+                                window.location.href = url;
+                            },3000);
                         }
                     },
                     error: function() {

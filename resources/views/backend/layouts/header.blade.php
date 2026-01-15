@@ -34,6 +34,7 @@
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/vendors/animate.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/vendors/datatables.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/vendors/datatable/select.dataTables.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/vendors/datatable-extension.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/vendors/date-picker.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/vendors/prism.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/vendors/jsgrid.css')}}">
@@ -66,10 +67,9 @@
     <!-- Date Range Picker CSS -->
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/plugins/daterangepicker.css')}}">
     {{-- ----datatable css added for data loaders--- --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"> --}}
+    <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/vendors/datatables.css')}}">
      {{-- For Datatable Data responsivnes --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
     @yield('extra-css')
   </head>
   <body id="fullscreen-table">
@@ -113,8 +113,8 @@
                 </a>
               </li>
               @if(in_array('Reservation View', $permission_allow))
-              <li @if($path == '/reservation-new') class="active active-page-link" @endif> 
-                <a href="{{route('reservation.reservationLayout')}}" class="">
+              <li class="more-menu @if($path == '/reservation-new') active @endif">
+                <a href="#" class="moreMenuBtn">
                   
                   <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 400 400">
                     <path d="M368.06,57.86c-20.99-18.5-45.02-19.47-71.87-18.36V12.88c0-.48-3.56-4.32-4.49-4.88h-6.74c-1.86,1.17-5.24,5-5.24,7.12v24.38H121.03V15.12c0-2.13-3.38-5.95-5.24-7.12h-6.74c-1.04.9-4.49,3.65-4.49,4.88v26.62c-17.92-.07-35.32-1.21-52.16,5.86-23.86,10.03-40.84,33.25-43.64,59.02l-.05,222.02c3.07,33.84,28.97,60.14,62.16,65.59h258.99c9.32-2.04,17.89-4.63,26.21-9.36,19.81-11.26,31.8-30.63,35.92-52.89V102.5c-2.99-17.08-10.86-33.1-23.94-44.64ZM366.77,324.67c0,20.36-27.43,45.7-47.97,45.28l-238.88-.12c-19.79-.68-45.95-25.41-45.95-45.16v-167.08h332.8v167.08ZM366.77,133.51H33.97v-29.57c0-19.56,25.02-43.95,44.53-45.16,81.32-1.26,163.04-1.47,244.34.11,19.31,1.42,43.93,25.74,43.93,45.05v29.57Z"/>
@@ -122,6 +122,66 @@
                   </svg>
                   <span class="menu-text">Reservation</span>
                 </a> 
+                <div class="morePanel sidebar-popover" style="display:none;">
+                  <div class="popover-header bg-white text-dark">
+                    <div class="d-flex justify-content-between border-bottom">
+                      <h4>Reservation</h4>
+                      <div class="popover-close text-muted fw-normal"><i class="ri-close-line"></i></div>
+                    </div>
+                  </div>
+                  <div class="popover-item">
+                    <ul class="w-100">
+                      <li class="py-1 px-1">
+                        <a href="{{route('reservation.reservationLayout')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Room View
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('create-reservation.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            New Reservation
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('reservationReport.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Checkin & Checkout
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('reservationCancel.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            No Show Reservation
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('room.roomOccupancy-chart')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Occupancy Chart
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('guestHistory.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Guest History
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </li>
               @endif
               @if(in_array('Kot View', $permission_allow))
@@ -142,6 +202,14 @@
                   </div>
                   <div class="popover-item">
                     <ul class="w-100">
+                      <li class="py-1 px-1">
+                        <a href="{{route('dashboard-kot.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Dashboard
+                          </div>
+                        </a>
+                      </li>
                       @if(in_array('Kot Generate', $permission_allow))
                       <li class="py-1 px-1">
                         <a href="{{route('generate-kot.index',0)}}">
@@ -157,6 +225,14 @@
                           <div class="d-flex align-items-center">
                             <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
                             View KOT
+                          </div>
+                        </a>
+                      </li>
+                       <li class="py-1 px-1">
+                        <a href="{{route('kot.runningKot')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Running KOT
                           </div>
                         </a>
                       </li>
@@ -177,10 +253,34 @@
                         </a>
                       </li>
                       <li class="py-1 px-1">
+                        <a href="{{route('kot-generate-bill.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Generate Bill
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('kot-generated-bill.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Bill Paid
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
                         <a href="{{route('restaurant-breakfast-chart.index')}}">
                           <div class="d-flex align-items-center">
                             <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
                             Breakfast Chart
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('kotReport.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            KOT
                           </div>
                         </a>
                       </li>
@@ -429,34 +529,90 @@
                   <div class="popover-item">
                     <ul class="w-100">
                       <li class="py-1 px-1">
+                        <a href="{{route('stayReport.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Stay
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('roomRevenueReport.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Room Revenue
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('singleBookingSaleReport.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Single Booking Sales
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('bulkBookingSale.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Bulk Booking Sales
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('roomStatus.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Room Status Summary
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('kotListReport.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            KOT List Report
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('restaurantSaleReport.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Restaurant Sales Report
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('kotItemReport.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            KOT Item Level
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('itemWiseSale.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Item-wise Sales
+                          </div>
+                        </a>
+                      </li>
+                      <li class="py-1 px-1">
+                        <a href="{{route('paymentSummary.index')}}">
+                          <div class="d-flex align-items-center">
+                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
+                            Payment Summary
+                          </div>
+                        </a>
+                      </li>
+                      {{-- <li class="py-1 px-1">
                         <a href="{{route('roomReport.index')}}">
                           <div class="d-flex align-items-center">
                             <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
                             Rooms
-                          </div>
-                        </a>
-                      </li>
-                      <li class="py-1 px-1">
-                        <a href="{{route('guestHistory.index')}}">
-                          <div class="d-flex align-items-center">
-                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
-                            Guest History
-                          </div>
-                        </a>
-                      </li>
-                      <li class="py-1 px-1">
-                        <a href="{{route('reservationReport.index')}}">
-                          <div class="d-flex align-items-center">
-                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
-                            Reservation
-                          </div>
-                        </a>
-                      </li>
-                      <li class="py-1 px-1">
-                        <a href="{{route('kotReport.index')}}">
-                          <div class="d-flex align-items-center">
-                            <span class="me-2 icon"><i class="ri-file-chart-line"></i></span> 
-                            KOT
                           </div>
                         </a>
                       </li>
@@ -515,8 +671,7 @@
                             Outstanding Payments
                           </div>
                         </a>
-                      </li>
-                      
+                      </li> --}}
                     </ul>
                   </div>
                 </div>

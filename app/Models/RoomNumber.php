@@ -20,4 +20,8 @@ class RoomNumber extends Model
     function roomBedConfiguration(){
         return $this->hasMany('App\Models\RoomBedConfiguration', 'roomtype_id', 'id');
     }
+
+    function closerReasonDetail(){
+        return $this->hasOne('App\Models\CloserReason', 'id', 'current_status');
+    }
 }

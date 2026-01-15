@@ -39,7 +39,7 @@ class ReservationController extends Controller
         $getResViewCount = $request->session()->get('reservaionViewCount',7); // Default to 7 if not set
         $roomNumber = RoomNumber::get();
         $roomtype = RoomType::get();
-        $closerReasons = CloserReason::get(['id','name']);
+        $closerReasons = CloserReason::where('status',1)->get(['id','name']);
         $roomCategoryNumber = [];
         $roomTypeDetail = [];
         
@@ -93,7 +93,7 @@ class ReservationController extends Controller
     }
 
     public function add_reservation(Request $request){ 
-       
+        // dd($request->all());
         if ($request->ajax()) {
             $validator = Validator::make($request->all(), [
                 'checkin_resvn' => ['required'],
@@ -101,6 +101,7 @@ class ReservationController extends Controller
                 'roomtype_resvn' => ['required', 'array'],
                 'adults_resvn' => ['required', 'array'],
                 'amount_resvn' => ['required', 'array'],
+                'amount_resvn.*' => ['required', 'numeric', 'min:1'],
                 'first_name_resvn' => ['required'],
                 'mobile_resvn' => ['required'],
                 'room_total_amount' => ['nullable'],
@@ -158,8 +159,95 @@ class ReservationController extends Controller
                 $company_name = $request->gstTradeName;
                 $company_addr = $request->gstAddr;
                 $company_pincode = $request->gstAddrPncd;
-                $state = State::where('gst_code',$request->gstStateCode).value('name');
-                $company_state = $state;
+                //$state = State::where('gst_code',$request->gstStateCode)->value('name');
+                $company_state = $request->gstStateCode;
+            }
+
+            if($request->last_company_id == ''){
+                
+                $company_id = '';
+                if($company_gst != ''){
+    
+                    $chk_company = Company::where('Gstin',$company_gst)->count();
+                    if($chk_company > 0){
+        
+                        $companies = Company::where('Gstin',$company_gst)->value('id');
+                        $company_id = $companies;
+                        
+                    }else{
+        
+                        $company = new Company();
+                        $company->name = $company_name;
+                        $company->mobile = $request->mobile_resvn;
+                        $company->email = $request->email_resvn;
+                        $company->Gstin = $company_gst;
+                        $company->address = $company_addr;
+                        $company->addrBnm = $request->gstAddrBnm;
+                        $company->addrBno = $request->gstAddrBno;
+                        $company->addrFlno = $request->gstAddrFlno;
+                        $company->addrLoc = $request->gstAddrLoc;
+                        $company->addrPncd = $company_pincode;
+                        $company->addrSt = $request->gstAddrSt;
+                        $company->BlkStatus = $request->gstBlkStatus;
+                        $company->DtDReg = $request->gstDtDReg;
+                        $company->DtReg = $request->gstDtReg;
+                        $company->LegalName = $request->gstLegalName;
+                        $company->StateCode = $company_state;
+                        $company->TradeName = $request->gstTradeName;
+                        $company->TxpType = $request->gstTxpType;
+                        $company->gstStatus = $request->gstStatus;
+                        $company->state = $request->state;
+                        $company->save();
+    
+                        $company_id = $company->id;
+                    }
+                }else{
+                    $chk_company = Company::where('name',$company_name)->count();
+                    if($chk_company > 0){
+        
+                        $companies = Company::where('name',$company_name)->value('id');
+                        $update_company = Company::where('id',$companies)->update([
+                            'name' => $company_name,
+                            'address' => $company_addr,
+                            'StateCode' =>$request->state,
+                        ]);
+
+                        $company_id = $companies;
+                        
+                    }else{
+        
+                        $company = new Company();
+                        $company->name = $company_name;
+                        $company->mobile = $request->mobile_resvn;
+                        $company->email = $request->email_resvn;
+                        $company->Gstin = $company_gst;
+                        $company->address = $company_addr;
+                        $company->StateCode = $company_state;
+                        $company->state = $request->state;
+                        $company->save();
+    
+                        $company_id = $company->id;
+                    }
+                }
+            }else{
+
+                $update_company = Company::where('id',$request->last_company_id)->update([
+                    'mobile' => $request->mobile_resvn,
+                    'email' => $request->email_resvn,
+                    'name' => $company_name,
+                    'address' => $company_addr,
+                    'Gstin' => $company_gst,
+                    'addrPncd' => $company_pincode,
+                    'StateCode' =>$request->state,
+                ]);
+
+                $company_db = Company::where('id',$request->last_company_id)->first();
+                $company_id = $request->last_company_id;
+                $company_name = $company_db->name;
+                $company_gst = $company_db->Gstin;
+                $company_addr = $company_db->address;
+                $company_pincode = $company_db->addrPncd;
+                $company_state = $company_db->StateCode;
             }
 
             $guest_id = '';
@@ -167,13 +255,21 @@ class ReservationController extends Controller
             if($chk_customer > 0){
 
                 $customers = Customer::where('mobile',$request->mobile_resvn)->value('id');
+                $update_cust = Customer::where('id',$customers)->update([
+                    'company_id' => $company_id,
+                    'company_name' => $company_name,
+                    'gst_number' => $company_gst,
+                    'company_address' => $company_addr,
+                    'company_pincode' => $company_pincode,
+                    'company_state' => $company_state,
+                ]);
                 $guest_id = $customers;
 
             }else{
 
                 $registration_customer = new Customer();
                 $registration_customer->guest_id = time();
-                $registration_customer->first_name = $request->first_name_resvn;
+                $registration_customer->first_name = ucfirst($request->first_name_resvn);
                 $registration_customer->last_name = $request->last_name_resvn;
                 $registration_customer->email = $request->email_resvn;
                 $registration_customer->mobile = $request->mobile_resvn;
@@ -184,6 +280,7 @@ class ReservationController extends Controller
                 $registration_customer->state = $request->state_resvn;
                 $registration_customer->country = $request->country_resvn;
                 $registration_customer->pincode = $request->pin_resvn;
+                $registration_customer->company_id = $company_id;
                 $registration_customer->company_name = $company_name;
                 $registration_customer->gst_number = $company_gst;
                 $registration_customer->company_address = $company_addr;
@@ -199,51 +296,12 @@ class ReservationController extends Controller
                 $registration_customer->save();
                 
                 $guest_id = $registration_customer->id;
-
-            }
-
-            $company_id = '';
-            if($company_gst != ''){
-
-                $chk_company = Company::where('Gstin',$company_gst)->count();
-                if($chk_company > 0){
-    
-                    $companies = Company::where('Gstin',$company_gst)->value('id');
-                    $company_id = $companies;
-                    
-                }else{
-    
-                    $company = new Company();
-                    $company->name = $company_name;
-                    $company->mobile = $request->mobile_resvn;
-                    $company->email = $request->email_resvn;
-                    $company->Gstin = $company_gst;
-                    $company->address = $company_addr;
-                    $company->addrBnm = $request->gstAddrBnm;
-                    $company->addrBno = $request->gstAddrBno;
-                    $company->addrFlno = $request->gstAddrFlno;
-                    $company->addrLoc = $request->gstAddrLoc;
-                    $company->addrPncd = $company_pincode;
-                    $company->addrSt = $request->gstAddrSt;
-                    $company->BlkStatus = $request->gstBlkStatus;
-                    $company->DtDReg = $request->gstDtDReg;
-                    $company->DtReg = $request->gstDtReg;
-                    $company->LegalName = $request->gstLegalName;
-                    $company->StateCode = $company_state;
-                    $company->TradeName = $request->gstTradeName;
-                    $company->TxpType = $request->gstTxpType;
-                    $company->gstStatus = $request->gstStatus;
-                    $company->state = $request->state;
-                    $company->save();
-
-                    $company_id = $company->id;
-                }
             }
 
             $reservation = new Reservation();
             $reservation->reservation_id = $reservation_id;
-            $reservation->first_name = $request->first_name_resvn;
-            $reservation->last_name = $request->last_name_resvn;
+            $reservation->first_name = ucfirst($request->first_name_resvn);
+            $reservation->last_name = $request->last_name_resvn ?? '';
             $reservation->mobile = $request->mobile_resvn;
             $reservation->email = $request->email_resvn;
             $reservation->gender = $request->gender_resvn;
@@ -277,6 +335,14 @@ class ReservationController extends Controller
             $reservation->company_name = $company_name;
             $reservation->company_gst = $company_gst;
             $reservation->company_address = $company_addr;
+            $reservation->company_pincode = $company_pincode;
+            $reservation->company_state = $company_state;
+            $reservation->booking_madeby = $request->bookingBy;
+            $reservation->booker_name = $request->reservation_booked_by_name;
+            $reservation->booker_email = $request->reservation_booked_by_email;
+            $reservation->booker_mobile = $request->reservation_booked_by_mobile;
+            $reservation->remark = $request->reservation_booked_by_remark;
+            $reservation->booking_type = $request->bookingType;
             $reservation->created_by = Auth::user()->id;
             if ($request->hasFile('photo_resvn')) {
                 $reservation->id_proof = $filename;
@@ -289,13 +355,16 @@ class ReservationController extends Controller
                     $reservation_amount->reservation_id = $reservation_id;
                     $reservation_amount->amount = $request->total_advance_amount;
                     $reservation_amount->type = 'Reservation';
+                    $reservation_amount->mode = $request->reservation_mode;
+                    $reservation_amount->reference = $request->reservation_reference_code;
+                    $reservation_amount->recorded_by =Auth::user()->id;
                     $reservation_amount->save();
                 }
 
                 $activity_log = new ActivityLog();
                 $activity_log->reservation_id = $reservation_id;
                 $activity_log->room_id = NULL;
-                $activity_log->activity = 'New Reservation Done';
+                $activity_log->activity = 'New Reservation Created';
                 $activity_log->activity_by = Auth::user()->id;
                 $activity_log->save();
 
@@ -315,9 +384,9 @@ class ReservationController extends Controller
                         $reservation_rooms = new ReservationRoom();
                         $reservation_rooms->reservation_id = $reservation_id;
                         $reservation_rooms->primary_name = $primary_name;
-                        if($roomnumber[$z][$i] === 'NA'){
+                        if($roomnumber[$z][$i] == ''){
                             $reservation_rooms->status = 'Reserved';
-                            $reservation_rooms->room_alloted = 'NA';
+                            $reservation_rooms->room_alloted = '';
                         }else{
 
                             $room_numbers = RoomNumber::where('id',$roomnumber[$z][$i])->value('room_number');
@@ -343,7 +412,7 @@ class ReservationController extends Controller
                         $reservation_rooms->extra_person_amount = $extra_person_amount[$z][$i] ?? 0;
                         $reservation_rooms->save();
 
-                        if($roomnumber[$z][$i] != 'NA'){
+                        if($roomnumber[$z][$i] != ''){
 
                             $update_rooms = RoomNumber::where('id',$roomnumber[$z][$i])->update([
                                 'current_status' => '0'
@@ -370,8 +439,25 @@ class ReservationController extends Controller
                             $reservation_room_tariff->extra_pax_amount = $extra_person_amount[$z][$i] ?? 0;
                             $reservation_room_tariff->save();                            
                         }
+
+                        $roomguest = new RoomGuest();
+                        $roomguest->room_id = $reservation_rooms->id;
+                        $roomguest->reservation_id = $reservation_id;
+                        $roomguest->first_name = ucfirst($request->first_name_resvn);
+                        $roomguest->last_name = $request->last_name_resvn ?? '';
+                        $roomguest->mobile = $request->mobile_resvn;
+                        $roomguest->email = $request->email_resvn;
+                        $roomguest->gender = $request->gender_resvn ?? '';
+                        $roomguest->document_type = $request->documenttype_resvn;
+                        $roomguest->id_number =  $request->idnumber_resvn;
+                        $roomguest->isPrimary = 1;
+                        if ($request->hasFile('photo_resvn')) {
+                            $roomguest->id_proof = $filename;
+                        }
+                        $roomguestsave = $roomguest->save();
                     }
                 }
+
             }
             
             DB::commit(); // data saved in both the table successfullt.
@@ -382,8 +468,6 @@ class ReservationController extends Controller
             DB::rollBack(); // if date not saved in both table then both table rollback as before.
             return response()->json(['error_success' => 'Error! Data not added', 'message' => $e->getMessage()], 500);
         }
-
-        dd($request->all());
     }
 
     public function reservationCountView(Request $request){
@@ -403,17 +487,6 @@ class ReservationController extends Controller
         $roomCategoryNum = [];
         foreach($roomType as $roomCate){
             $rooms = [];
-            // $room_types = RoomType::where('room_category_id',$roomCate['id'])->get(['id']);
-            // foreach($room_types as $type){
-            //     $room_numbers = RoomNumber::where('room_specification_id',$type->id)->where('status','active')->get();
-            //     foreach($room_numbers as $number){
-            //         $rooms[] = [
-            //             'id' => $number->id,
-            //             'room_number' => $number->room_number,
-            //             'current_status' => $number->current_status,
-            //         ];
-            //     }
-            // }
             $room_numbers = RoomNumber::where('category_id',$roomCate['id'])->where('status','active')->get();
             foreach($room_numbers as $number){
                 $rooms[] = [
@@ -574,7 +647,7 @@ class ReservationController extends Controller
             $closer_color = '';
             if($rnum->current_status == 0){
                 $closer_name = 'Occupied';
-                $closer_color = '#feb858';
+                $closer_color = '#ca4c3b';
             }else if($rnum->current_status > 0){
                 $closer_reasons = CloserReason::where('id',$rnum->current_status)->get(['name','color']);
                 $closer_name = $closer_reasons[0]->name;
@@ -585,7 +658,7 @@ class ReservationController extends Controller
                 }
             }else{
                 $closer_name = 'Vacant';
-                $closer_color = '#9560DD';
+                $closer_color = '#3cc895';
             }
 
             $roomEachDetails[] = [
@@ -596,7 +669,7 @@ class ReservationController extends Controller
                 'closer_name' => $closer_name,
                 'closer_color' => $closer_color,
                 'closer_name_vacant' => 'Vacant',
-                'closer_color_vacant' => '#9560DD',
+                'closer_color_vacant' => '#3cc895',
             ];
             
             if (array_search($closer_name, array_column($statusNameColor, 'name')) === FALSE) {
@@ -609,37 +682,13 @@ class ReservationController extends Controller
         }
 
         $roomDetails = [];
-        // foreach($roomType as $roomCate){
-        //     $roomtypes = RoomType::where('room_category_id',$roomCate['id'])->get(['id','roomtype_name_id']);
-        //     $types = [];
-            
-        // }
-        // foreach($roomType as $type){
-        //     $roomAvailable = [];
-        //     $roomNumbers = RoomNumber::where('category_id',$type['id'])->where('status','active')->where('current_status','-1')->get(['category_id','id','room_number','current_status']);
-        //     $roomtypesData = RoomType::where('id',$type['id'])->get();
-        //     if(count($roomNumbers) > 0){
-        //         $roomtypename = RoomTypeName::where('id',$type['roomtype_name_id'])->where('status','active')->get(['id','room_name']);
-        //         $types[] = [
-        //             'id'=> $roomtypename[0]->id,
-        //             'name'=>$roomtypename[0]->room_name,
-        //             'roomNumbers' => $roomNumbers,
-        //             'type_detail' => $roomtypesData,
-        //         ];
-        //     }
-        // }
-        // if(count($types) > 0){
-        //     $data = [
-        //         'id'=> $roomCate['id'],
-        //         'name'=>$roomCate['room_category'],
-        //         'types' => $types
-        //     ];
-        //     array_push($roomDetails,$data);
-        // }
-
-
+        
         $tariffs = Tariff::where('status','active')->get(['id','room_category_id','tariff_type','room_tariff','extra_person_tariff']);
-
+        $reservation_cancel = 0;
+        $permission_allow = explode(',',auth()->user()->permission);
+        if(in_array('Reservation Cancel', $permission_allow)){
+            $reservation_cancel = 1;
+        }
         return response()->json([
             'success' => 'Data added successfully',
             // 'dateCollect' => $dateCollect,
@@ -656,7 +705,8 @@ class ReservationController extends Controller
             'roomeachDetail'=>$roomEachDetails,
             'statusNameColor' => $statusNameColor,
             'roomDetails' => $roomDetails,
-            'tariffs' => $tariffs
+            'tariffs' => $tariffs,
+            'reservation_cancel' => $reservation_cancel
         ], 200);
     }
 
@@ -873,14 +923,11 @@ class ReservationController extends Controller
             }
         }
 
-        if($reservation['checkout'] <= date('Y-m-d')){
+        if(date('Y-m-d',strtotime($checkout_date)) <= date('Y-m-d')){
             $checkout_date = date('Y-m-d'); 
-        }else{
-            $checkout_date = $reservation['checkout'];
         }
 
-       
-        $checkin = date('Y-m-d',strtotime($reservation['checkin']));
+        $checkin = date('Y-m-d',strtotime($checkin_date));
         $checkout = date('Y-m-d',strtotime($checkout_date));
         // Kot detail
         $kotList = [];
@@ -893,6 +940,7 @@ class ReservationController extends Controller
                 'grand_total' => $detail->grand_total,
                 'order_time' => date('d-m-Y h:i A',strtotime($detail->order_time)),
                 'payment_type' => $detail->payment_type,
+                'kot_id' => $reservation_id,
             ];
         }
 
@@ -907,7 +955,35 @@ class ReservationController extends Controller
             ];
         }
        
-        return response()->json(['success'=>'Reservation And Room Details Found','reservationDetails'=>$resrvationdetails,'resrvationpaymentdetails'=>$payment_log,'reservationroomAll'=>$reservationroomAll,'reservationroomtariffs' => $reservationroomtariffs,'reservationTariffHistory' => $reservationTariffHistory, 'disRoom'=>$disRoom,'guest_count'=>$guest_count,'guestRoom'=>$guestRoom,'checkin_date'=>$checkin_date,'checkout_date'=>$checkout_date,'kot_detail'=>$kotList,'activity_logs' => $logs,'checkin' => $checkin,'checkout' => $checkout,'checkedin_at' => $checkin_at],200);
+        $roomCategoryNum = [];
+        $roomType = RoomType::get();
+        foreach($roomType as $roomCate){
+            $rooms = [];
+            $room_numbers = RoomNumber::where('category_id',$roomCate['id'])->where('status','active')->get();
+            foreach($room_numbers as $number){
+                $rooms[] = [
+                    'id' => $number->id,
+                    'room_number' => $number->room_number,
+                    'current_status' => $number->current_status,
+                ];
+            }
+            if(count($rooms) > 0){
+               $data = [
+                'id'=> $roomCate['id'],
+                'name'=>$roomCate['room_category'],
+                'max_occupancy'=>$roomCate['max_occupancy'],
+                'max_adult'=>$roomCate['max_adult'],
+                'max_child'=>$roomCate['max_child'],
+                'max_infant'=>$roomCate['max_infant'],
+                'rooms'=>$rooms
+               ];
+                array_push($roomCategoryNum,$data);
+            }
+        }
+
+        $tariffs = Tariff::where('status','active')->get(['id','room_category_id','tariff_type','room_tariff','extra_person_tariff']);
+
+        return response()->json(['success'=>'Reservation And Room Details Found','reservationDetails'=>$resrvationdetails,'resrvationpaymentdetails'=>$payment_log,'reservationroomAll'=>$reservationroomAll,'reservationTariffHistory' => $reservationTariffHistory, 'disRoom'=>$disRoom,'guest_count'=>$guest_count,'guestRoom'=>$guestRoom,'checkin_date'=>$checkin_date,'checkout_date'=>$checkout_date,'kot_detail'=>$kotList,'activity_logs' => $logs,'checkin' => $checkin,'checkout' => $checkout,'checkedin_at' => $checkin_at, 'roomCategoryNum' => $roomCategoryNum, 'tariffs' => $tariffs],200);
     }
 
     // calender View
@@ -1078,7 +1154,6 @@ class ReservationController extends Controller
             }
         }
         
-        $name = $request->name_g_rsv_add;
         $mobile = $request->mobile_g_rsv_add;
         $doctype = $request->doc_g_rsv_add;
         $idnum = $request->idnum_g_rsv_add;
@@ -1098,14 +1173,6 @@ class ReservationController extends Controller
             if($chkReservation > 0){
                 $isPrimary = 1;
             }
-
-            // $proofFile = null;
-            // if (!empty($idProofs[$i])) {
-            //     $proof = $idProofs[$i];
-            //     $fileName = time().'_'.$i.'.'.$proof->getClientOriginalExtension();
-            //     $proof->move(public_path('/backend/uploads/reservation'), $fileName);
-            //     $proofFile = $fileName;
-            // }
 
             $proofFile = null;
             if (!empty($idProofs[$i])) {
@@ -1160,7 +1227,7 @@ class ReservationController extends Controller
         }
     
         if($roomguestsave) {
-            return response()->json(['success' => 'Data submitted successfully'], 200);
+            return response()->json(['success' => 'Guest detail updated successfully'], 200);
         } else {
             return response()->json(['error_success' => 'Data not submitted'], 400);
         }
@@ -1248,11 +1315,6 @@ class ReservationController extends Controller
                 'document_type' => $request->document_type,
                 'other_document_type' => $request->other_detail,
                 'id_number' => $request->id_number,
-                'company_name' => $request->company_name,
-                'company_gst' => $request->company_gst,
-                'company_address' => $request->company_address,
-                'company_pincode' => $request->company_pincode,
-                'company_state' => $request->company_state,
             ]);
 
             DB::commit(); // data saved in both the table successfullt.
@@ -1306,12 +1368,7 @@ class ReservationController extends Controller
                 'purpose_for_visit' => $request->purpose_of_visit,
                 'document_type' => $request->document_type,
                 'other_document_type' => $request->other_detail,
-                'id_number' => $request->id_number,
-                'company_name' => $request->company_name,
-                'company_gst' => $request->company_gst,
-                'company_address' => $request->company_address,
-                'company_pincode' => $request->company_pincode,
-                'company_state' => $request->company_state,
+                'id_number' => $request->id_number
             ]);
 
             $guest_id = Reservation::where('reservation_id',$reservation_id)->value('guest_id');
@@ -1364,7 +1421,7 @@ class ReservationController extends Controller
     }
 
     public function edit_add_reservation(Request $request){
-        // dd($request->all());
+        
         if ($request->ajax()) {
             $validator = Validator::make($request->all(), [
                 'checkin' => ['required'],
@@ -1417,7 +1474,7 @@ class ReservationController extends Controller
                         'extra_person_amount' => $extra_person_amount[$z][$i],
                     ]);
 
-                    if($roomNo[$z][$i] != 'NA'){
+                    if($roomNo[$z][$i] != ''){
 
                         $alloted = ReservationRoom::where('room_category_id', $room_type[$z][$i])->value('room_alloted_id');
                         
@@ -1433,7 +1490,7 @@ class ReservationController extends Controller
                                 'room_alloted' => $room_numbers,
                             ]);
 
-                            if($alloted != 'NA'){
+                            if($alloted != ''){
                                 $room_update_last = RoomNumber::where('id',$alloted)->update([
                                     'current_status' => -1
                                 ]);
@@ -1476,7 +1533,7 @@ class ReservationController extends Controller
                     $reservation_room->amount = $amount[$z][$i];
                     $reservation_room->extra_person = $extra_person[$z][$i];
                     $reservation_room->extra_person_amount = $extra_person_amount[$z][$i];
-                    if($room_type[$z][$i] != 'NA'){
+                    if($room_type[$z][$i] != ''){
                         $reservation_room->status = 'Alloted';
                         $reservation_room->room_alloted_id = $roomNo[$z][$i];
 
@@ -1504,87 +1561,126 @@ class ReservationController extends Controller
       
     public function editReservationUpdate(Request $request){
         // Retrieve all data from the request
-        $data = $request->all();
-        // dd($data);
+        // dd($request->all());
         DB::beginTransaction();
         
         try {
-            foreach ($data['roomEditID'] as $index => $roomId) {
-                $room_alloted = 'NA';
-                if($data['roomNumEdit'][$index] != 'NA'){
-                    $room_numbers = RoomNumber::where('id',$data['roomNumEdit'][$index])->value('room_number');
-                    $room_alloted = $room_numbers;
+            $room_ids[] = $request->room_idEdit;
+            $room_type[] = $request->roomtype_resvnEdit;
+            $roomnumber[] = $request->roomno_resvnEdit;
+            $tariff_value[] = $request->roomtariff_resvnEdit;
+            $adults[] = $request->adults_resvnEdit;
+            $childrens[] = $request->childrens_resvnEdit;
+            $infants[] = $request->infants_resvnEdit;
+            $amount[] = $request->amount_resvnEdit;
+            $extra_person[] = $request->extraperson_resvnEdit;
+            $extra_person_amount[] = $request->extrapersonAmount_resvnEdit;
+            
+            for ($z = 0; $z < count($room_ids); $z++) {
+                for ($i = 0; $i < count($room_ids[$z]); $i++) {
+                    $room_alloted = '';
+                    if($roomnumber[$z][$i] != ''){
 
-                    $alloted = ReservationRoom::where('id', $roomId)->value('room_alloted_id');
+                        $room_numbers = RoomNumber::where('id',$roomnumber[$z][$i])->value('room_number');
+                        $room_alloted = $room_numbers;
+
+                        $alloted = ReservationRoom::where('id', $room_ids[$z][$i])->value('room_alloted_id');
+                        
+                        if($roomnumber[$z][$i] != $alloted){
                             
-                    if($data['roomNumEdit'][$index] != $alloted){
-                        
-                        $room_update = RoomNumber::where('id',$data['roomNumEdit'][$index])->update([
-                            'current_status' => 0
-                        ]);
-
-                        if($alloted != 'NA'){
-                            $room_update_last = RoomNumber::where('id',$alloted)->update([
-                                'current_status' => -1
+                            $update_rooms = RoomNumber::where('id',$roomnumber[$z][$i])->update([
+                                'current_status' => '0'
                             ]);
+
+                            if($alloted != ''){
+                                $room_update_last = RoomNumber::where('id',$alloted)->update([
+                                    'current_status' => -1
+                                ]);
+                            }
                         }
-                    }
-                    
-                    ReservationRoom::where('id', $roomId)->update([
-                        'room_category_id' => $data['room_typeEdit'][$index],
-                        'room_alloted' => $room_alloted,
-                        'tariff_id' => $data['room_tariffEdit'][$index] ?? 0,
-                        'adults' => $data['adultsEdit'][$index] ?? 0,
-                        'childrens' => $data['childrensEdit'][$index] ?? 0,
-                        'infants' => $data['infantsEdit'][$index] ?? 0,
-                        'amount' => $data['amountEdit'][$index] ?? 0,
-                        'extra_person' => $data['extraPerEdit'][$index] ?? 0,
-                        'extra_person_amount' => $data['extraPerEditAmount'][$index] ?? 0,
-                    ]);
-
-                    $reservation_detail = Reservation::where('reservation_id',$request->reservation_id)->value('id');
-                    $reservation_room_detail =  ReservationRoom::where('id',$roomId)->get();
-                    $tariff = Tariff::where('id',$reservation_room_detail[0]->tariff_id)->value('tariff_type');
-
-                    //$chk_exits = ReservationRoomTariffLog::where('reservation',$request->reservation_id)->where('reservation_room_id',$roomId)->where('tariff_id',$reservation_room_detail[0]->tariff_id)->latest('id')->count();
-                    $chk_exits = ReservationRoomTariffLog::where('reservation',$request->reservation_id)->where('reservation_room_id',$roomId)->where('adults',$data['adultsEdit'][$index])->where('amount',$data['amountEdit'][$index])->where('extra_pax',$data['extraPerEdit'][$index])->where('extra_pax_amount',$data['extraPerEditAmount'][$index])->whereNull('end_date')->latest('id')->count();
-                    if($chk_exits == 0){
-                        
-                        $update_last = ReservationRoomTariffLog::where('reservation',$request->reservation_id)->where('reservation_room_id',$roomId)->whereNull('end_date')->update([
-                            'end_date' => date('Y-m-d H:i:s')
+                
+                        ReservationRoom::where('id', $room_ids[$z][$i])->update([
+                            'room_category_id' => $room_type[$z][$i],
+                            'room_alloted' => $room_alloted,
+                            'room_alloted_id' => $alloted,
+                            'tariff_id' => $tariff_value[$z][$i] ?? 0,
+                            'adults' => $adults[$z][$i] ?? 0,
+                            'childrens' => $childrens[$z][$i] ?? 0,
+                            'infants' => $infants[$z][$i] ?? 0,
+                            'amount' => $amount[$z][$i] ?? 0,
+                            'extra_person' => $extra_person[$z][$i] ?? 0,
+                            'extra_person_amount' => $extra_person_amount[$z][$i] ?? 0,
                         ]);
 
-                        $reservation_room_tariff = new ReservationRoomTariffLog();
-                        $reservation_room_tariff->date = date('Y-m-d H:i:s');
-                        $reservation_room_tariff->reservation_id = $reservation_detail;
-                        $reservation_room_tariff->reservation = $request->reservation_id;
-                        $reservation_room_tariff->reservation_room_id = $roomId;
-                        $reservation_room_tariff->room_type_id =  $data['room_typeEdit'][$index];
-                        $reservation_room_tariff->tariff_id = $reservation_room_detail[0]->tariff_id;
-                        $reservation_room_tariff->tariff = $tariff;
-                        $reservation_room_tariff->room_id = $data['roomNumEdit'][$index];
-                        $reservation_room_tariff->room = $room_alloted;
-                        $reservation_room_tariff->adults = $data['adultsEdit'][$index];
-                        $reservation_room_tariff->childrens = $data['childrensEdit'][$index];
-                        $reservation_room_tariff->infants = $data['infantsEdit'][$index];
-                        $reservation_room_tariff->amount = $data['amountEdit'][$index];
-                        $reservation_room_tariff->extra_pax = $data['extraPerEdit'][$index];
-                        $reservation_room_tariff->extra_pax_amount = $data['extraPerEditAmount'][$index];
-                        $reservation_room_tariff->save();
+                        $reservation_detail = Reservation::where('reservation_id',$request->reservation_id)->value('id');
+                        $reservation_room_detail =  ReservationRoom::where('id',$room_ids[$z][$i])->get();
+                        $tariff = Tariff::where('id',$reservation_room_detail[0]->tariff_id)->value('tariff_type');
+
+                        $chk_exits = ReservationRoomTariffLog::where('reservation',$request->reservation_id)->where('reservation_room_id',$room_ids[$z][$i])->where('adults',$adults[$z][$i])->where('amount',$amount[$z][$i])->where('extra_pax',$extra_person[$z][$i])->where('extra_pax_amount',$extra_person_amount[$z][$i])->whereNull('end_date')->latest('id')->count();
+                        if($chk_exits == 0){
+                            
+                            $chk_reservation = ReservationRoomTariffLog::where('reservation',$request->reservation_id)->where('reservation_room_id',$room_ids[$z][$i])->whereNull('end_date')->get(['date','id','amount','tariff_id']);
+                            $db_date = $chk_reservation[0]->date;
+                            if(date('Y-m-d',strtotime($db_date)) ==  date('Y-m-d')){
+                                if($chk_reservation[0]->tariff_id != $tariff_value[$z][$i]){
+
+                                    $update = ReservationRoomTariffLog::where('id',$chk_reservation[0]->id)->update([
+                                        'reservation_room_id' => $room_ids[$z][$i],
+                                        'room_type_id' =>  $room_type[$z][$i],
+                                        'tariff_id' => $tariff_value[$z][$i],
+                                        'tariff' => $tariff,
+                                        'room_id' => $roomnumber[$z][$i],
+                                        'room' => $room_alloted,
+                                        'adults' => $adults[$z][$i],
+                                        'childrens' => $childrens[$z][$i],
+                                        'infants' => $infants[$z][$i],
+                                        'amount' => $amount[$z][$i],
+                                        'extra_pax' => $extra_person[$z][$i],
+                                        'extra_pax_amount' => $extra_person_amount[$z][$i],
+                                    ]);
+                                }
+                            }else{
+
+                                $update_last = ReservationRoomTariffLog::where('reservation',$request->reservation_id)->where('reservation_room_id',$room_ids[$z][$i])->whereNull('end_date')->update([
+                                    'end_date' => date('Y-m-d H:i:s')
+                                ]);
+
+                                $reservation_room_tariff = new ReservationRoomTariffLog();
+                                $reservation_room_tariff->date = date('Y-m-d H:i:s');
+                                $reservation_room_tariff->reservation_id = $reservation_detail;
+                                $reservation_room_tariff->reservation = $request->reservation_id;
+                                $reservation_room_tariff->reservation_room_id = $room_ids[$z][$i];
+                                $reservation_room_tariff->room_type_id =  $room_type[$z][$i];
+                                $reservation_room_tariff->tariff_id = $tariff_value[$z][$i];
+                                $reservation_room_tariff->tariff = $tariff;
+                                $reservation_room_tariff->room_id = $roomnumber[$z][$i];
+                                $reservation_room_tariff->room = $room_alloted;
+                                $reservation_room_tariff->adults = $adults[$z][$i];
+                                $reservation_room_tariff->childrens = $childrens[$z][$i];
+                                $reservation_room_tariff->infants = $infants[$z][$i];
+                                $reservation_room_tariff->amount = $amount[$z][$i];
+                                $reservation_room_tariff->extra_pax = $extra_person[$z][$i];
+                                $reservation_room_tariff->extra_pax_amount = $extra_person_amount[$z][$i];
+                                $reservation_room_tariff->save();
+
+                            }
+                            
+                        }
+                    
+                    }else{
+                        ReservationRoom::where('id', $room_ids[$z][$i])->update([
+                            'room_category_id' => $room_type[$z][$i],
+                            'room_alloted' => $room_alloted,
+                            'tariff_id' => $tariff_value[$z][$i] ?? 0,
+                            'adults' => $adults[$z][$i] ?? 0,
+                            'childrens' => $childrens[$z][$i] ?? 0,
+                            'infants' => $infants[$z][$i] ?? 0,
+                            'amount' => $amount[$z][$i] ?? 0,
+                            'extra_person' => $extra_person[$z][$i] ?? 0,
+                            'extra_person_amount' => $extra_person_amount[$z][$i] ?? 0,
+                        ]);
                     }
                 }
-
-                ReservationRoom::where('id', $roomId)->update([
-                    'room_category_id' => $data['room_typeEdit'][$index],
-                    'room_alloted' => $room_alloted,
-                    'tariff_id' => $data['room_tariffEdit'][$index] ?? 0,
-                    'adults' => $data['adultsEdit'][$index] ?? 0,
-                    'childrens' => $data['childrensEdit'][$index] ?? 0,
-                    'infants' => $data['infantsEdit'][$index] ?? 0,
-                    'amount' => $data['amountEdit'][$index] ?? 0,
-                    'extra_person' => $data['extraPerEdit'][$index] ?? 0,
-                    'extra_person_amount' => $data['extraPerEditAmount'][$index] ?? 0,
-                ]);
             }
         
             $company_name = '';
@@ -1592,75 +1688,91 @@ class ReservationController extends Controller
             $company_address = '';
             $company_pincode = '';
             $company_state = '';
-            if($data['company_gst'] != '' && $data['gstLegalName'] != ''){
-                $company_name = $data['gstTradeName'];
-                $company_gst = $data['company_gst'];
-                $company_address = $data['gstAddr'];
-                $company_pincode = $data['gstAddrPncd'];
-                $state = State::where('gst_code',$data['gstStateCode']).value('name');
+            if($request->companygst_resvn_edit != '' && $request->gstLegalName != ''){
+                $company_name = $request->gstTradeName;
+                $company_gst = $request->companygst_resvn_edit;
+                $company_address = $request->gstAddr;
+                $company_pincode = $request->gstAddrPncd;
+                $state = State::where('gst_code',$request->gstStateCode).value('name');
                 $company_state = $state;
-            }else if($data['company_gst'] == '' && $data['company_name'] != ''){
-                $company_name = $data['company_name'];
-                $company_gst = $data['company_gst'];
-                $company_address = $data['company_address'];
-                $company_pincode = $data['company_pincode'];
-                $company_state = $data['company_state'];
+            }else if($request->companygst_resvn_edit == '' && $request->companyname_resvn_edit != ''){
+                $company_name = $request->company_name;
+                $company_gst = $request->companygst_resvn_edit;
+                $company_address = $request->companyaddress_resvn_edit;
+                $company_pincode = $request->companypincode_resvn_edit;
+                $company_state = $request->companystate_resvn;
             }
 
             $company_id = '';
-            if($company_gst != ''){
+            if($request->last_company_id == ''){
+                if($company_gst != ''){
 
-                $chk_company = Company::where('Gstin',$company_gst)->count();
-                if($chk_company > 0){ }
-                else{
-    
-                    $company = new Company();
-                    $company->name = $company_name;
-                    $company->mobile = $data['mobile'] ?? '';
-                    $company->email = $data['email'] ?? '';
-                    $company->Gstin = $company_gst;
-                    $company->address = $company_address;
-                    $company->addrBnm = $data['gstAddrBnm'];
-                    $company->addrBno = $data['gstAddrBno'];
-                    $company->addrFlno = $data['gstAddrFlno'];
-                    $company->addrLoc = $data['gstAddrLoc'];
-                    $company->addrPncd = $company_pincode;
-                    $company->addrSt = $data['gstAddrSt'];
-                    $company->BlkStatus = $data['gstBlkStatus'];
-                    $company->DtDReg = $data['gstDtDReg'];
-                    $company->DtReg = $data['gstDtReg'];
-                    $company->LegalName = $data['gstLegalName'];
-                    $company->StateCode = $data['gstStateCode'];
-                    $company->TradeName = $data['gstTradeName'];
-                    $company->TxpType = $data['gstTxpType'];
-                    $company->gstStatus = $data['gstStatus'];
-                    $company->state = $company_state;
-                    $company->save();
+                    $chk_company = Company::where('Gstin',$company_gst)->count();
+                    if($chk_company > 0){ }
+                    else{
+        
+                        $company = new Company();
+                        $company->name = $company_name;
+                        $company->mobile = $request->mobile_resvn_edit ?? '';
+                        $company->email = $request->email_resvn_edit ?? '';
+                        $company->Gstin = $company_gst;
+                        $company->address = $company_address;
+                        $company->addrBnm = $request->gstAddrBnm;
+                        $company->addrBno = $request->gstAddrBno;
+                        $company->addrFlno = $request->gstAddrFlno;
+                        $company->addrLoc = $request->gstAddrLoc;
+                        $company->addrPncd = $company_pincode;
+                        $company->addrSt = $request->gstAddrSt;
+                        $company->BlkStatus = $request->gstBlkStatus;
+                        $company->DtDReg = $request->gstDtDReg;
+                        $company->DtReg = $request->gstDtReg;
+                        $company->LegalName = $request->gstLegalName;
+                        $company->StateCode = $request->gstStateCode;
+                        $company->TradeName = $request->gstTradeName;
+                        $company->TxpType = $request->gstTxpType;
+                        $company->gstStatus = $request->gstStatus;
+                        $company->state = $company_state;
+                        $company->save();
 
-                    $company_id = $company->id;
+                        $company_id = $company->id;
+                    }
                 }
+
+            }else{
+                $company_db = Company::where('id',$request->last_company_id)->first(['name','address','StateCode','addrPncd','Gstin']);
+                $company_id = $request->last_company_id;
+                $company_name = $company_db->name;
+                $company_gst = $company_db->Gstin;
+                $company_address = $company_db->address;
+                $company_pincode = $company_db->addrPncd;
+                $company_state = $company_db->StateCode;
+
+                $update_company = Company::where('id',$request->last_company_id)->update([
+                    'mobile' => $request->mobile_resvn,
+                    'email' => $request->email_resvn
+                ]);
             }
 
             // Update the main reservation details
             $main_reservation_update = Reservation::where('reservation_id', $request->reservation_id)->update([
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'email' => $data['email'] ?? '',
-                'address' => $data['address'],
-                'city' => $data['city'],
-                'state' => $data['state'],
-                'pincode' => $data['pincode'],
-                'country' => $data['country'],
-                'gender' => $data['gender'],
-                'arrival_time' => $data['arrival_time'],
-                'document_type' => $data['document_type'],
-                'other_document_type' => $data['other_document_type'] ?? '',
-                'id_number' => $data['id_number'],
-                'guest_comment' => $data['comments'] ?? '',
-                'note' => $data['comments'] ?? '',
-                'coming_from' => $data['coming_from'] ?? '',
-                'going_to' => $data['going_to'] ?? '',
-                'purpose_for_visit' => $data['purpose_of_visit'] ?? '',
+                'first_name' => $request->first_name_resvn_edit,
+                'last_name' => $request->last_name_resvn_edit,
+                'email' => $request->email_resvn_edit ?? '',
+                'address' => $request->address_resvn_edit,
+                'city' => $request->city_resvn_edit,
+                'state' => $request->state_resvn_edit,
+                'pincode' => $request->pin_resvn_edit,
+                'country' => $request->country_resvn_edit,
+                'gender' => $request->gender_resvn_edit,
+                'arrival_time' => $request->arrivaltime_resvn_edit,
+                'document_type' => $request->documenttype_resvn_edit,
+                'other_document_type' => $request->otherdetail_resvn_edit ?? '',
+                'id_number' => $request->idnumber_resvn_edit,
+                'guest_comment' => $request->comments_resvn_edit ?? '',
+                'note' => $request->note_resvn_edit ?? '',
+                'coming_from' => $request->coming_from_resvn_edit ?? '',
+                'going_to' => $request->going_to_resvn_edit ?? '',
+                'purpose_for_visit' => $request->purpose_of_visit_resvn_edit ?? '',
                 'company_name' => $company_name ?? '',
                 'company_gst' => $company_gst ?? '',
                 'company_address' => $company_address ?? '',
@@ -1672,15 +1784,15 @@ class ReservationController extends Controller
             $guest_id = Reservation::where('reservation_id',$request->reservation_id)->value('guest_id');
 
             Customer::where('id',$guest_id)->update([
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'email' => $data['email'] ?? '',
-                'address' => $data['address'],
-                'city' => $data['city'],
-                'state' => $data['state'],
-                'pincode' => $data['pincode'],
-                'gender' => $data['gender'],
-                'country' => $data['country'],
+                'first_name' => $request->first_name_resvn_edit,
+                'last_name' => $request->last_name_resvn_edit,
+                'email' => $request->email_resvn_edit ?? '',
+                'address' => $request->address_resvn_edit,
+                'city' => $request->city_resvn_edit,
+                'state' => $request->state_resvn_edit,
+                'pincode' => $request->pin_resvn_edit,
+                'gender' => $request->gender_resvn_edit,
+                'country' => $request->country_resvn_edit,
                 'company_name' => $company_name ?? '',
                 'gst_number' => $company_gst ?? '',
                 'company_address' => $company_address ?? '',
@@ -1781,9 +1893,34 @@ class ReservationController extends Controller
     }
 
     public function addDataUsingPhone(Request $request){
-        $id = $request->id;
-        $data = Customer::where('guest_id',$id)->get();
-        return response()->json(['success'=>'Details fetched successfully','resDetails'=>$data],200);
+        $cust = Customer::where('mobile',$request->mobile)->get();
+        $last_reservation = [];
+        $last_room_category = '';
+        $last_room_tariff = '';
+        $data = [];
+        if(sizeOf($cust) > 0){
+            $data = Company::where('id',$cust[0]->company_id)->get();
+            $reservations = Reservation::where('guest_id',$cust[0]->id)->latest()->limit(5)->get();
+            foreach($reservations as $reser){
+                $reservation_rooms = ReservationRoom::where('reservation_id',$reser->reservation_id)->whereNotIn('status',['Cancel','Reserved'])->get(['reservation_id','room_alloted','checkedin_at','tariff_id','room_category_id','id']);
+                foreach($reservation_rooms as $room){
+                    $last_reservation[] = [
+                        'id' => $room->id,
+                        'reservation' => $room->reservation_id,
+                        'room' => $room->room_alloted,
+                        'category' => optional($room->room_type_detail)->room_category,
+                        'tariff' => optional($room->tariff_detail)->tariff_type,
+                        'checkin' => date('d-m-Y h:i A',strtotime($room->checkedin_at)),
+                        'category_id' => $room->room_category_id,
+                        'tariff_id' => $room->tariff_id,
+                    ];
+    
+                    $last_room_category = $room->room_category_id;
+                    $last_room_tariff = $room->tariff_id;
+                }
+            }
+        }
+        return response()->json(['success'=>'Details fetched successfully','resDetails'=>$cust,'company' => $data, 'last_reservation' => $last_reservation,'last_room_category' => $last_room_category, 'last_room_tariff' => $last_room_tariff],200);
     }
 
     public function reservationHistory(Request $request){
@@ -1883,29 +2020,37 @@ class ReservationController extends Controller
     }
 
     public function getPaymentDetail(Request $request){
-        
         $total_amount = 0;
         $room_id = array_unique($request->roomCheck_Ids);
-        $number_of_rooom = ReservationRoom::where('reservation_id',$request->reservation_id)->where('room_alloted','!=','NA')->count();
-        $reservation_rooms = ReservationRoom::where('reservation_id',$request->reservation_id)->whereIn('id',$room_id)->get(['checkin','checkout','amount','extra_person','extra_person_amount','checkedin_at','tariff_id']);
+        $number_of_rooom = ReservationRoom::where('reservation_id',$request->reservation_id)->where('room_alloted','!=','')->count();
+        $reservation_rooms = ReservationRoom::where('reservation_id',$request->reservation_id)->whereIn('id',$room_id)->get(['checkin','checkout','amount','extra_person','extra_person_amount','checkedin_at','tariff_id','amount','extra_person_amount','status']);
         
         foreach($reservation_rooms as $room){
-            $days = $this->daysCalculate($room->checkedin_at,$room->checkout);
-            $total_amount += $days * (($room->tariff_detail->room_tariff) + ($room->extra_person * $room->tariff_detail->extra_person_tariff));
+            if($room->status == 'Reserve'){
+                $days = $this->daysCalculate($room->checkin,$room->checkout);
+            }else{
+                $days = $this->daysCalculate($room->checkedin_at,$room->checkout);
+            }
+            $total_amount += intval($days) * (($room->amount) + ($room->extra_person * $room->extra_person_amount));
         }
 
         $discount_amount = 0;
         $reservation_discount = Reservation::where('reservation_id',$request->reservation_id)->value('discount');
-        if($reservation_discount > 0){
-            $discount_amount = (($reservation_discount/100)*$total_amount);
+        if($reservation_discount > 0 && $total_amount > 0){
+            $discount_amount = (($reservation_discount/100) * $total_amount);
         }
 
         $paid_amount = ReservationPayment::where('reservation_id',$request->reservation_id)->whereIn('reservation_room_id',$room_id)->sum('amount_paid');
         $advance_amount = AdvanceAmount::where('reservation_id',$request->reservation_id)->sum('amount');
-        if($number_of_rooom == count($request->roomCheck_Ids)){
-            $advance_amount_value = $advance_amount;
+        $advance_amount_value = 0;
+        if($number_of_rooom > 0){
+            if($number_of_rooom == count($request->roomCheck_Ids)){
+                $advance_amount_value = $advance_amount;
+            }else{
+                $advance_amount_value = $advance_amount/$number_of_rooom;
+            }
         }else{
-            $advance_amount_value = $advance_amount/$number_of_rooom;
+            $advance_amount_value = $advance_amount;
         }
 
         $total_cost = $total_amount - ($paid_amount + $discount_amount + $advance_amount_value);
@@ -2045,7 +2190,7 @@ class ReservationController extends Controller
             $closer_color = '';
             if($rnum->current_status == 0){
                 $closer_name = 'Occupied';
-                $closer_color = '#feb858';
+                $closer_color = '#ca4c3b';
             }else if($rnum->current_status > 0){
                 $closer_reasons = CloserReason::where('id',$rnum->current_status)->get(['name','color']);
                 $closer_name = $closer_reasons[0]->name;
@@ -2056,7 +2201,7 @@ class ReservationController extends Controller
                 }
             }else{
                 $closer_name = 'Vacant';
-                $closer_color = '#9560DD';
+                $closer_color = '#3cc895';
             }
 
             $roomEachDetails[] = [
@@ -2067,7 +2212,7 @@ class ReservationController extends Controller
                 'closer_name' => $closer_name,
                 'closer_color' => $closer_color,
                 'closer_name_vacant' => 'Vacant',
-                'closer_color_vacant' => '#9560DD',
+                'closer_color_vacant' => '#3cc895',
             ];
             
             if (array_search($closer_name, array_column($statusNameColor, 'name')) === FALSE) {
@@ -2103,7 +2248,7 @@ class ReservationController extends Controller
             }
         }
 
-        $closerReasons = CloserReason::get(['id','name']);
+        $closerReasons = CloserReason::where('status',1)->get(['id','name']);
         $states = State::get(['gst_code','name']);
         $payments = PaymentMethod::where('status',1)->get(['id','name']);
         $hotlr = HotlrConfiguration::get(['logo','name']);
@@ -2112,15 +2257,6 @@ class ReservationController extends Controller
 
     public function daysCalculate($checkin_date,$checkout,$cal = ''){
         
-        $hotlr = HotlrConfiguration::where('id',1)->value('time_configuration');
-        $hotrl_json = json_decode($hotlr,true);
-
-        $timeslot = $hotrl_json['timeslot'];
-        $time = $hotrl_json['checkout_time'];
-
-        $checkin_time_default = $hotrl_json['checkin_time'];
-        $checkout_time_default = date("H:i", strtotime($time . " +".$hotrl_json['checkout_buffer_time']." hours"));
-
         $checkin = Carbon::parse($checkin_date);
         $checkout = Carbon::parse($checkout);
         if($cal == ''){
@@ -2128,7 +2264,7 @@ class ReservationController extends Controller
             $checkout_time = $now->format('H:i:s');
             if($checkout > $now){
                 $now = $checkout;
-                $checkout_time = $now->format($checkout_time_default.':00');
+                $checkout_time = $now->format('12:00:00');
             }
         }else{
             $now = $checkout;
@@ -2136,38 +2272,34 @@ class ReservationController extends Controller
         }
         
         $days = $checkin->diffInDays($now);
+        $checkin_time = $checkin->format('H:i:s');
+        
 
-        if($timeslot == 1){
-            
-            $checkin_time = $checkin->format('H:i:s');
-            $checkin_seconds = strtotime($checkin_time);
-            $checkout_seconds = strtotime($checkout_time);
+        $checkin_seconds = strtotime($checkin_time);
+        $checkout_seconds = strtotime($checkout_time);
 
-            $before_12 = strtotime($checkin_time_default.':00');
-            $after_14 = strtotime($checkout_time_default.':00');
+        $before_12 = strtotime('12:00:00');
+        $after_14 = strtotime('14:00:00');
 
-            if ($days == 0) {
-                if ($checkin_seconds < $before_12 && $checkout_seconds > $after_14) {
-                    $days += 2;
-                } else {
-                    $days += 1;
-                }
+        if ($days == 0) {
+            if ($checkin_seconds < $before_12 && $checkout_seconds > $after_14) {
+                $days += 2;
             } else {
-                if ($checkin_seconds < $before_12 && $checkout_seconds > $after_14) {
-                    $days += 2;
-                } elseif (
-                    ($checkin_seconds < $before_12 && $checkout_seconds < $after_14) ||
-                    ($checkin_seconds > $before_12 && $checkout_seconds > $after_14)
-                ) {
-                    $days += 1;
-                }
+                $days += 1;
             }
-        }else{
-            if ($days == 0) {
-                $days = 1;
-            }else{
-                $days = $days;
-            }
+        } else {
+            if ($checkin_seconds < $before_12 && $checkout_seconds > $after_14) {
+                $days += 2;
+            } elseif (
+                ($checkin_seconds < $before_12 && $checkout_seconds < $after_14) ||
+                ($checkin_seconds > $before_12 && $checkout_seconds > $after_14)
+            ) {
+                $days += 1;
+            } 
+            // elseif (($checkin_seconds > $before_12 && $checkout_seconds < $after_14)){
+            //     $days += 1;
+            // }
+            // else case where checkin > 12 and checkout < 14: do not increment
         }
 
         return $days;

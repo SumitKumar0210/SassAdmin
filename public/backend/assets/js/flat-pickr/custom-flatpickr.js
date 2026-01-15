@@ -26,6 +26,18 @@ flatpickr("#checkout_resvn",{
  defaultDate: tomorrow,
  minDate: "today"
 });
+
+flatpickr("#res_checkin_Edit",{
+  dateFormat: "d-M-Y",
+ defaultDate: "today",
+ minDate: "today"
+});
+
+flatpickr("#res_checkout_Edit",{
+  dateFormat: "d-M-Y",
+ defaultDate: tomorrow,
+ minDate: "today"
+});
 flatpickr("#availability",{
   dateFormat: "d-M-Y",
  minDate: "today"

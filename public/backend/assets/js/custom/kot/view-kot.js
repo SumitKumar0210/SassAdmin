@@ -6,8 +6,10 @@ let allRoomsList = [];
 let allTablesList = [];
 let allRoomsListFilter = [];
 let allTablesListFilter = [];
-let kotItemList = [];
+var kotItemList = [];
 let tableCustomer = [];
+window.kotItemList = [];
+let checkCancelPer = 0;
 
 function getAllViewDetail(){
     
@@ -31,10 +33,14 @@ function runningKot(){
     let output ='';
     $.each(runningKotList[0], function(key,kot){
         let typeClass='';
+        let color_bg = '';
         if(kot['type'] == 'Table'){
             typeClass='roundedcircle';
         }
-        output +=`<div class="kot-item lg booked ${typeClass}" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight" onClick="getKotDetail(${kot['id']},'${kot['kot_id']}')">
+        if(kot['is_urgent'] == 1){
+            color_bg='bg-danger';
+        }
+        output +=`<div class="kot-item lg booked ${typeClass} ${color_bg}" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight" onClick="getKotDetail(${kot['id']},'${kot['kot_id']}')">
                     <div>
                         <p class="mb-0 text-center">${kot['diff']} mins</p>
                         <hr>
@@ -123,6 +129,7 @@ function getKotDetail(id,kot_id){
         type: "POST",
         success: function(response) {
             // console.log(response);
+            checkCancelPer = response.cancel_kot_per;
             $('.generated-kot-item-list').html('');
             $('.generated-table-room-number').html('');
             kotItemList.push(response.kotDetail);
@@ -156,13 +163,27 @@ function drawKotArea(){
     let total =0;
     let gst_total =0;
     let grand =0;
+    
+    const url = new URL(window.location.href);
+    const parts = url.pathname.split('/').filter(Boolean);
+    const lastPart = parts[parts.length - 1];
     $.each(kotItemList[0], function(key,kot){
         output +=`<tr>
-            <td colspan="4" class="py-1 kot-title">KOT - ${kot['id']}  <span class="ms-2">Time - ${kot['time']}</span><span class="ms-2" onclick="getPrintKot(${kot['id']})"><i class="ri-printer-line"></i></span></td>
+            <td colspan="4" class="py-1 kot-title">KOT - ${kot['id']}  <span class="ms-2">Time - ${kot['time']}</span><span class="ms-2" onclick="getPrintKot(${kot['id']})"><i class="ri-printer-line"></i></span>`;
+            if(kot['is_urgent'] == 1){
+                output +=`<span class="ms-2 badge badge-danger">URGENT</span>`;
+            }
+            output +=`</td>
         </tr>`;
         $.each(kot['items'], function(key,item){
             output +=`<tr>
-                <td><a href="#">${item['item_name']}</a></td>
+                <td>`;
+                if(checkCancelPer > 0){
+                    if(lastPart == 'running-kot'){
+                        output +=`<i class="fa fa-times text-danger me-2" style="cursor:pointer;" onClick="removeItem(this,'${item['id']}')"></i>`;
+                    }
+                }
+                output +=`<a href="#">${item['item_name']}</a></td>
                 <td class="text-center"></td>
                 <td class="text-center">
                     <div class="touchspin-wrapper"> 
@@ -184,6 +205,12 @@ function drawKotArea(){
     $('.generated-grand-total-amount').html(grand);
     $('#generated-subtotal-amount').val(grand);
     calculateTotal();
+}
+let deleteKotIds=[];
+function removeItem(row,id){
+    deleteKotIds.push(id);
+    $(row).closest('tr').remove();
+    console.log(deleteKotIds);
 }
 
 function calculateTotal(change = ''){
@@ -339,8 +366,9 @@ function updateKot(){
     $.ajax({
         url: updatekotDetail,
         type: "POST",
-        data : {cartItem:kotItemList[0],total_cost:total,discount_type:discount_type,discount_value:discount_value,adjustment:adjustment,grand_total:grand_total,person:tableCustomer,paymentType:paymentType,payment_card:payment_card,other_type:other_type,other_ref:other_ref,coupon_code:coupon_code,coupon_value:coupon_value,complimentary:is_complementry,apply_coupon:apply_coupon,gst_amount:gst_amount,total_paid:total_paid,subtotal:subtotal,narration:narration},
+        data : {deleteKotIds:deleteKotIds,cartItem:kotItemList[0],total_cost:total,discount_type:discount_type,discount_value:discount_value,adjustment:adjustment,grand_total:grand_total,person:tableCustomer,paymentType:paymentType,payment_card:payment_card,other_type:other_type,other_ref:other_ref,coupon_code:coupon_code,coupon_value:coupon_value,complimentary:is_complementry,apply_coupon:apply_coupon,gst_amount:gst_amount,total_paid:total_paid,subtotal:subtotal,narration:narration},
         success: function(response) {
+            console.log(response);
             if (response.success) {
                 $('#offcanvasRight').offcanvas('hide');
                 if(paymentType == 'Due'){
@@ -353,6 +381,8 @@ function updateKot(){
                 }
                 var toast = new bootstrap.Toast(document.getElementById('liveToast'));
                 toast.show();
+                deleteKotIds = [];
+                running_kot.ajax.reload();
             } else if(response.alreadyfound_error){
                 Swal.fire({
                     title: "Something Went Wrong",
@@ -373,7 +403,7 @@ function completeKot(){
         if(kot['type'] == 'Table'){
             typeClass='roundedcircle';
         }
-        output +=`<div class="kot-item lg completed ${typeClass}">
+        output +=`<div class="kot-item lg completed ${typeClass} mb-4">
                     <div>
                         <p class="mb-0 text-center">${kot['diff']} mins</p>
                         <hr>

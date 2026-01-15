@@ -47,14 +47,6 @@
         .alert-success {
             color:#0f5132;
         }
-        /* .submit1_btn:hover{
-            background-color:#005f3396 !important;
-        } */
-        .login-card {
-            background: url(https://app.staycot.diskounto.com/backend/assets/images/login/login_bg.svg);
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
     </style>
 </head>
 

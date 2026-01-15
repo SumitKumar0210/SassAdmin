@@ -225,8 +225,34 @@ class CompanyController extends Controller
                 'data' => $response->json(),
             ]);
         }else{
-            return response()->json(['alreadyfound' => 'Gst already exists in record!']);
+            $company_id = '';
+            $company_name = '';
+            $company_addr = '';
+            if($request->type == 'Company'){
+                $check_company_exist = Company::where('Gstin',$request->number)->first(['id','name','address']);
+                $company_id = $check_company_exist->id;
+                $company_name = $check_company_exist->name;
+                $company_addr = $check_company_exist->address;
+            }else if($request->type == 'Banquet'){
+                $check_company_exist = BanquetBooking::where('company_gst',$request->number)->first(['id','company_name','company_address']);
+                $company_id = $check_company_exist->id;
+                $company_name = $check_company_exist->company_name;
+                $company_addr = $check_company_exist->company_address;
+            }else{
+                $check_company_exist = Vendor::where('gst',$request->number)->first(['id','name','address']);
+                $company_id = $check_company_exist->id;
+                $company_name = $check_company_exist->name;
+                $company_addr = $check_company_exist->address;
+            }
+            
+            return response()->json(['alreadyfound' => 'Gst already exists in record!','company_name' => $company_name, 'company_addr' => $company_addr, 'company_id' => $company_id]);
         }
+    }
+
+    public function companyList(Request $request){
+
+        $list = Company::where('name', 'LIKE', '%' . $request->company_name . '%')->get(['id','name','address','Gstin']);
+        return response()->json($list);
     }
 
 }

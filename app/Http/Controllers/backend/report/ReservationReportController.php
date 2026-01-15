@@ -4,15 +4,14 @@ namespace App\Http\Controllers\backend\report;
 
 use App\Http\Controllers\Controller;
 use App\Models\HotlrConfiguration;
-use App\Models\Kot;
 use App\Models\Reservation;
 use App\Models\ReservationRoom;
-use App\Models\RoomBedConfiguration;
 use App\Models\RoomNumber;
 use App\Models\RoomType;
-use DateTime;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
+
 class ReservationReportController extends Controller
 {
     public function index(Request $request){
@@ -27,181 +26,62 @@ class ReservationReportController extends Controller
         if ($type != 'All') {
             $resRoom = ReservationRoom::where($type, $date)->where('room_alloted','!=','NA')->get();
         } else {
-            $resRoom = ReservationRoom::get();
+            $resRoom = ReservationRoom::where('status','!=','Cancel')->get();
         }
 
         if (sizeof($resRoom) > 0) {
-            // collect all reservation_ids
-            $reservationIds = $resRoom->pluck('reservation_id')->toArray();
-
-            $res = Reservation::whereIn('reservation_id', $reservationIds)->get();
-            return DataTables::of($res)
+            return DataTables::of($resRoom)
                 ->addIndexColumn()
                 ->addColumn('reservation', function ($row) {
                     return $row->reservation_id;
                 })
                 ->addColumn('booking_date', function ($row) {
-                    return date('d-m-Y', strtotime($row->created_at));
-                })
-                ->addColumn('booking_time', function ($row) {
-                    return date('h:i A', strtotime($row->created_at));
+                    return date('d-m-Y h:i A', strtotime($row->created_at));
                 })
                 ->addColumn('primary_guest', function ($row) {
-                    return $row->first_name . ' ' . $row->last_name;
-                })
-                ->addColumn('guest_type', function ($row) {
-                    return $row->guest_type;
+                    return $row->primary_name;
                 })
                 ->addColumn('contact_number', function ($row) {
-                    return $row->mobile;
-                })
-                ->addColumn('email_address', function ($row) {
-                    return $row->email;
-                })
-                ->addColumn('address', function ($row) {
-                    return $row->address . ', ' . $row->city . ', ' . $row->state . '-' . $row->pin;
-                })
-                ->addColumn('nationality', function ($row) {
-                    return 'Indian';
-                })
-                ->addColumn('id_type', function ($row) {
-                    return $row->document_type;
-                })
-                ->addColumn('id_number', function ($row) {
-                    return $row->id_number;
-                })
-                ->addColumn('company_name', function ($row) {
-                    return $row->company_name;
+                    $res = Reservation::where('reservation_id', $row->reservation_id)->value('mobile');
+                    return $res;
                 })
                 ->addColumn('check_in_date', function ($row) {
-                    $reservation_detail = ReservationRoom::where('reservation_id', $row->reservation_id)->value('checkin');
-                    return date('d-m-Y', strtotime($reservation_detail));
+                    if($row->checkedin_at != ''){
+                        return date('d-m-Y h:i A', strtotime($row->checkedin_at));
+                    }else{
+                        return '';
+                    }
                 })
                 ->addColumn('check_out_date', function ($row) {
-                    $reservation_detail = ReservationRoom::where('reservation_id', $row->reservation_id)->value('checkout');
-                    return date('d-m-Y', strtotime($reservation_detail));
-                })
-                ->addColumn('no_of_nights', function ($row) {
-                    $reservation_room = ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->get(['checkin', 'checkout']);
-                    foreach ($reservation_room as $room) {
-                        $datetime1 = new DateTime($room['checkin']);
-                        $datetime2 = new DateTime($room['checkout']);
-                        $interval = $datetime1->diff($datetime2);
-                        return $interval->days;
+                    if($row->checkedout_at != ''){
+                        return date('d-m-Y h:i A', strtotime($row->checkedout_at));
+                    }else{
+                        return '';
                     }
                 })
-                ->addColumn('no_of_room', function ($row) {
-                    return ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->count();
+                ->addColumn('action',function($row){
+                    $html ='<div class="dropdown icon-dropdown">
+                            <button class="btn dropdown-toggle" id="userdropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-2-fill"></i></button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown">';
+                                if($row->status == 'Reserved'){
+                                  $html .='<a class="dropdown-item" href="javascript:;" onclick="edit_reservation('.$row->id.',`'.$row->reservation_id.'`)"><i class="ri-login-box-line text-success"></i> Checkin</a>';  
+                                }else if($row->status == 'Alloted'){
+                                    $html .='<a class="dropdown-item" href="javascript:;" onclick="cancelCheckout(`'.$row->reservation_id.'`)"><i class="ri-close-fill text-danger"></i> Cancel Checkout</a>
+                                    <a class="dropdown-item" href="javascript:;" onclick="edit_reservation('.$row->id.',`'.$row->reservation_id.'`)"><i class="ri-logout-box-r-line text-danger"></i> Checkout</a>
+                                    <a class="dropdown-item" href="javascript:;" onclick="getReservationData('.$row->id.')"><i class="ri-logout-box-r-line text-danger"></i> Update Checkin & Checkout Time</a>';  
+                                }else if($row->status == 'Check-out') {
+                                    $html .='<a class="dropdown-item" href="javascript:;" onclick="cancelCheckout(`'.$row->reservation_id.'`)"><i class="ri-close-fill text-danger"></i> Cancel Checkout</a>
+                                    <a class="dropdown-item" href="javascript:;" onclick="getReservationData('.$row->id.')"><i class="ri-logout-box-r-line text-danger"></i> Update Checkin & Checkout Time</a>';
+                                }
+                            $html .='</div>
+                        </div>';
+                    return $html;
                 })
-                ->addColumn('room_type_requested', function ($row) {
-                    return 0;
-                })
-                ->addColumn('adult', function ($row) {
-                    return ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->sum('adults');
-                })
-                ->addColumn('children', function ($row) {
-                    return ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->sum('childrens');
-                })
-                ->addColumn('extra_bed_required', function ($row) {
-                    return ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->sum('extra_person');
-                })
-                ->addColumn('smoking', function ($row) {
-                    $smoking = 'No';
-                    $reservation_room = ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->get(['room_alloted_id']);
-                    foreach ($reservation_room as $room) {
-                        $room_types = RoomNumber::where('id', $room->room_alloted_id)->pluck('category_id');
-                        foreach ($room_types as $type) {
-                            $smok = RoomType::where('id', $type)->where('smoking_category', 'Smoking')->count();
-                            if ($smok > 0) {
-                                $smoking = 'Yes';
-                            }
-                        }
-                    }
-                    return $smoking;
-                })
-                ->addColumn('bed_type_preference', function ($row) {
-                    $bed_type = '';
-                    $reservation_room = ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->get(['room_alloted_id']);
-                    foreach ($reservation_room as $room) {
-                        $room_types = RoomNumber::where('id', $room->room_alloted_id)->pluck('category_id');
-                        foreach ($room_types as $type) {
-                            $config = RoomBedConfiguration::where('roomtype_id', $type)->get(['bed_type']);
-                            if (sizeof($config) > 0) {
-                                $bed_type = $config[0]->bed_type;
-                            }
-                        }
-                    }
-                    return $bed_type;
-                })
-                ->addColumn('rate_plan', function ($row) {
-                    $reservation_room = ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->get(['amount']);
-                    if (sizeof($reservation_room) > 0) {
-                        return $reservation_room[0]->amount;
-                    } else {
-                        return 0;
-                    }
-                })
-                ->addColumn('base_rate', function ($row) {
-                    $reservation_room = ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->get(['amount']);
-                    if (sizeof($reservation_room) > 0) {
-                        return $reservation_room[0]->amount;
-                    } else {
-                        return 0;
-                    }
-                })
-                ->addColumn('discount_apply', function ($row) {
-                    $reservation_room = ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->get(['discount']);
-                    if (sizeof($reservation_room) > 0) {
-                        return $reservation_room[0]->discount;
-                    } else {
-                        return 0;
-                    }
-                })
-                ->addColumn('total_room_charge', function ($row) {
-                    $tot = 0;
-                    $reservation_room = ReservationRoom::where('reservation_id', $row->reservation_id)->where('status', '!=', 'Cancel')->get(['amount', 'extra_person_amount']);
-                    if (sizeof($reservation_room) > 0) {
-                        foreach ($reservation_room as $room) {
-                            $tot += $room['amount'] + $room['extra_person_amount']; // fixed +=
-                        }
-                    }
-                    return $tot;
-                })
-                ->addColumn('tax_amount', function ($row) {
-                    return 0;
-                })
-                ->addColumn('total_amount', function ($row) {
-                    return 0;
-                })
-                ->addColumn('payment_status', function ($row) {
-                    return 'Pending';
-                })
-                ->addColumn('reservation_status', function ($row) {
-                    return $row->status;
-                })
-                ->addColumn('check_in_status', function ($row) {
-                    return 0;
-                })
-                ->addColumn('check_out_status', function ($row) {
-                    return 0;
-                })
-                ->addColumn('last_modified', function ($row) {
-                    return date('d-m-Y', strtotime($row->updated_at));
-                })
-                ->addColumn('cancellation_date', function ($row) {
-                    return 0;
-                })
-                ->addColumn('cancellation_reason', function ($row) {
-                    return 0;
-                })
-                ->addColumn('no_show_flag', function ($row) {
-                    return 0;
-                })
+                ->rawColumns(['status','action'])
                 ->make(true);
         } else {
             return DataTables::of(collect([]))->make(true);
         }
-
     }
 
     public function printReservation($para){
@@ -248,5 +128,91 @@ class ReservationReportController extends Controller
         $company = HotlrConfiguration::get(['logo']);
         $hotlr = HotlrConfiguration::get(['logo','name']);
         return view('backend.modules.report.reservation_checkin_checkout_report',compact('reservationList','company','hotlr'));
+    }
+
+    public function reservationCancelCheckout(Request $request){
+        
+        DB::beginTransaction();
+        try{
+            $reservations = ReservationRoom::where('reservation_id',$request->id)->update([
+                'status' => 'Alloted',
+                'random' => NULL,
+                'checkedout_at' => NULL
+            ]);
+
+            $reservation_rooms = ReservationRoom::where('reservation_id',$request->id)->get(['room_alloted_id']);
+            foreach($reservation_rooms as $room){
+                $room_number = RoomNumber::where('id',$room->room_alloted_id)->update([
+                    'current_status' => 0
+                ]);
+            }
+
+            DB::commit(); // data saved in both the table successfullt.
+            return response()->json(['success' => 'Data added successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack(); // if date not saved in both table then both table rollback as before.
+            return response()->json(['error_success' => 'Error! Data not added', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reservationGetDetail(Request $request){
+
+        DB::beginTransaction();
+        try{
+            $reservations = ReservationRoom::where('id',$request->id)->get(['checkin','checkedin_at','checkout','checkedout_at','status']);
+            $checkin_date = '';
+            $checkin_time = '';
+            $checkout_date = '';
+            $checkout_time = '';
+            if($reservations[0]->status == 'Alloted'){
+                $checkin_date = date('Y-m-d',strtotime($reservations[0]->checkedin_at));
+                $checkin_time = date('H:i:s',strtotime($reservations[0]->checkedin_at));
+                $checkout_date = date('Y-m-d',strtotime($reservations[0]->checkout));;
+                $checkout_time = date('H:i:s',strtotime($reservations[0]->checkout));
+            }else if($reservations[0]->status == 'Check-out'){
+                $checkin_date = date('Y-m-d',strtotime($reservations[0]->checkedin_at));
+                $checkin_time = date('H:i:s',strtotime($reservations[0]->checkedin_at));
+                $checkout_date = date('Y-m-d',strtotime($reservations[0]->checkedout_at));;
+                $checkout_time = date('H:i:s',strtotime($reservations[0]->checkedout_at));
+            }else{
+                $checkin_date = date('Y-m-d',strtotime($reservations[0]->checkin));
+                $checkin_time = date('H:i:s',strtotime($reservations[0]->checkin));
+                $checkout_date = date('Y-m-d',strtotime($reservations[0]->checkout));;
+                $checkout_time = date('H:i:s',strtotime($reservations[0]->checkout));
+            }
+            DB::commit(); // data saved in both the table successfullt.
+            return response()->json(['success' => 'Data added successfully','checkin_date' => $checkin_date, 'checkin_time' => $checkin_time, 'checkout_date' => $checkout_date, 'checkout_time' => $checkout_time], 200);
+        } catch (\Exception $e) {
+            DB::rollBack(); // if date not saved in both table then both table rollback as before.
+            return response()->json(['error_success' => 'Error! Data not added', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reservationUpdateCheckinCheckout(Request $request){
+       
+        DB::beginTransaction();
+        try{
+            $checkin = $request->reservation_checkin_date.' '.$request->reservation_checkin_time;
+            $checkout = $request->reservation_checkout_date.' '.$request->reservation_checkout_time;
+
+            $status = ReservationRoom::where('id',$request->id)->value('status');
+            if($status == 'Alloted'){
+                $update_reservation = ReservationRoom::where('id',$request->reservation_room_id)->updated([
+                    'checkedin_at' => $checkin,
+                    'checkout' => $checkout
+                ]);
+            }else if($status == 'Check-out'){
+                $update_reservation = ReservationRoom::where('id',$request->reservation_room_id)->updated([
+                    'checkedin_at' => $checkin,
+                    'checkedout_at' => $checkout
+                ]);
+            }
+            DB::commit(); // data saved in both the table successfullt.
+            return response()->json(['success' => 'Data updated successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack(); // if date not saved in both table then both table rollback as before.
+            return response()->json(['error_success' => 'Error! Data not added', 'message' => $e->getMessage()], 500);
+        }
+
     }
 }

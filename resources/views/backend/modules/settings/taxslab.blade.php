@@ -5,49 +5,51 @@
         <div class="container-fluid py-3">
             <div class="email-wrap bookmark-wrap">
                 <div class="row">
-                    <div class="col-xl-2 box-col-6">
-                        @include('backend.layouts.sidebar_master')
-                    </div>
-                    <div class="col-xl-10 col-md-12 box-col-12">
-                        <div class="container-fluid">
-                            <div class="page-title mt-2">
-                                <div class="row gx-0">
-                                    <div class="col-12 col-sm-6">
-                                        <h3 class="d-block">Tax Slab</h3>
-                                    </div>
-                                    @if(in_array('Setting Add', (explode(',',auth()->user()->permission))))
+                    <div class="col-xl-12 col-md-12 box-col-12">
+                        <div> 
+                            @include('backend.layouts.sidebar_master')
+                        </div>
+                        <div style=" padding-left:220px;">
+                            <div class="container-fluid">
+                                <div class="page-title mt-2">
+                                    <div class="row gx-0">
                                         <div class="col-12 col-sm-6">
-                                            <div class="float-end">
-                                                <button class="btn btn-primary px-2 taxslab_Add" type="button" data-bs-toggle="modal" onclick="resetmodel()"
-                                                    data-bs-target="#taxslabModel"><span class="btn-icon"><i class="ri-add-line"></i></span>
-                                                    Add Tax Slab</button>
-                                            </div>
+                                            <h3 class="d-block">Tax Slab</h3>
                                         </div>
-                                    @endif
+                                        @if(in_array('Setting Add', (explode(',',auth()->user()->permission))))
+                                            <div class="col-12 col-sm-6">
+                                                <div class="float-end">
+                                                    <button class="btn btn-primary px-2 taxslab_Add" type="button" data-bs-toggle="modal" onclick="resetmodel()"
+                                                        data-bs-target="#taxslabModel"><span class="btn-icon"><i class="ri-add-line"></i></span>
+                                                        Add Tax Slab</button>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="container-fluid">
-                            <div class="row">
-                                <!-- Zero Configuration  Starts-->
-                                <div class="col-lg-12 col-sm-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="hover row-border stripe" id="taxslab_table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>SL No.</th>
-                                                            <th>Category</th>
-                                                            <th>Name</th>
-                                                            <th>Rate (%)</th>
-                                                            <th>Mark As Default</th>
-                                                            <th>Status</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody></tbody>
-                                                </table>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <!-- Zero Configuration  Starts-->
+                                    <div class="col-lg-12 col-sm-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="hover row-border stripe" id="taxslab_table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>SL No.</th>
+                                                                <th>Category</th>
+                                                                <th>Name</th>
+                                                                <th>Rate (%)</th>
+                                                                <th>Mark As Default</th>
+                                                                <th>Status</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody></tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

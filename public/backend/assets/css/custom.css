@@ -802,7 +802,7 @@ ul {
     transition: background-color 0.3s ease;
 }
 .btn-primary:hover {
-    background-color: #c74617 !important; /* Darker shade */
+    background-color: #2f9293 !important; /* Darker shade */
 }
 /* .customer-details{
     position: absolute;
@@ -1380,20 +1380,7 @@ i.fa.fa-chevron-right.slick-arrow {
   .kot-item.roundedcircle {
     border-radius: 50%;
   }
-  .scroll-kots {
-    padding: 10px;
-    position: relative;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    overflow: auto;
-    height: calc(100vh - 700px);;
-  }
-  .scroll-kots-completed {
-    padding: 10px;
-    position: relative;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    overflow: auto;
-    height: calc(100vh - 367px);
-  }
+
   .ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
     width: 0px !important;
   }
@@ -1530,15 +1517,18 @@ i.fa.fa-chevron-right.slick-arrow {
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.125);
     overflow: auto;
-    height: calc(100vh - 659px);;
+    height: calc(100vh - 600px);
+    min-height: 500px;
   }
   .scroll-kots-completed {
     padding: 10px;
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.125);
     overflow: auto;
-    height: calc(100vh - 287px);
+    height: calc(100vh - 200px);
+    min-height: 1108px;
   }
+
   .ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
     width: 0px !important;
   }
@@ -1553,11 +1543,11 @@ i.fa.fa-chevron-right.slick-arrow {
     }
   }
 .book-item-wrapper {
-    height: calc(100vh - 146px);
+    height: calc(100vh - 81px);
     /* padding: 20px; */
 }
 .order-items {
-    height: calc(100vh - 319px);
+    height: calc(100vh - 242px);
     overflow-y: auto;
 }
 .kot-itemlist-wrapper {
@@ -1565,7 +1555,7 @@ i.fa.fa-chevron-right.slick-arrow {
     flex-wrap: wrap;
     gap: 10px 30px;
     background: #f3f3f3;
-    height: calc(100vh - 241px);
+    height: calc(100vh - 176px);
     overflow-x: hidden;
     align-content: flex-start;
     overflow-y: auto;
@@ -1759,7 +1749,7 @@ i.fa.fa-chevron-right.slick-arrow {
 }
 .kot-item-menu {
     width: 220px;
-    height: calc(100vh - 186px);
+    height: calc(100vh - 120px);
     overflow: hidden; /* hide by default */
     overflow-x: hidden;
     scrollbar-width: none; /* for Firefox */
@@ -2232,7 +2222,7 @@ i.fa.fa-chevron-right.slick-arrow {
     border-radius: 4px;
     position: relative;
     display: flex;
-    align-items: start;
+    align-items: center;
     justify-content: center;
     flex-direction: column;
     /* margin-bottom: 10px; */
@@ -2309,7 +2299,7 @@ i.fa.fa-chevron-right.slick-arrow {
 }
 
 .reservation-list .signal-table {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 228px);
 }
 
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape)  {
@@ -2435,4 +2425,119 @@ i.fa.fa-chevron-right.slick-arrow {
 input:read-only,
 textarea:read-only {
   background-color: #e9ecef; /* light grey */
+}
+
+.form-control-sm {
+    min-height: 30px;
+    padding: 0.15rem 0.5rem;
+    font-size: 12px;
+    border-radius: 0.25rem;
+}
+.form-select-sm {
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+    padding-left: 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    min-height: 30px;
+}
+.form-label {
+    margin-bottom: 4px;
+    font-weight: 600;
+    font-size: 12px;
+}
+.input-group-text{
+    font-size:12px;
+}
+
+
+.fixed-header-modal {
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh !important; /* ensures scrolling happens inside */
+}
+
+.fixed-header-modal .modal-header,
+.fixed-header-modal .modal-footer {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff;
+}
+
+.fixed-header-modal .modal-footer {
+  bottom: 0;
+}
+
+.email-app-sidebar {
+    background: #fcfcfc;
+    border-radius: 8px;
+    scrollbar-width: none;
+    position: fixed;
+    top: 30px; /* adjust based on your header height */
+    left: 90px;
+    width: 220px; /* or your sidebar width logic */
+}
+
+.main-menu.side-nav-links {
+    overflow-y: auto;
+    height: calc(100vh - 160px);
+    scrollbar-width: none;
+    
+}
+
+.setting-items {
+    background: #eff0f5;
+}
+
+.setting-items.active {
+    background: #f0f8f8;
+}
+
+.box-hotlr {
+    border: 1px solid black;
+    margin-top: 16px;
+}
+
+.custom-border-hotlr {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px; 
+
+}
+.custom-border-2-hotlr {
+    border-bottom:1px solid #ccc;
+    padding-bottom: 10px;
+    
+}
+
+@media (max-width: 767px) {
+    .company-hotlr {
+        padding-left: 12px !important;
+    }
+    .box-hotlr {
+        margin-top: 0px !important;
+    }
+}
+
+/* reservation page */
+.update_reservation_btn{
+    position: absolute;
+    top: -88px;
+    right: 534px;
+}
+
+.sticky-card {
+  position: sticky;
+ 
+  z-index: 1020;      /* stays above content */
+}
+.sticky-card .badge + .badge {
+    margin-left: 0 !important;
+}
+
+.main-menu.side-nav-links li {
+    width: 100%;
+  }
+.main-menu.side-nav-links li a{
+    padding: 10px 15px
 }

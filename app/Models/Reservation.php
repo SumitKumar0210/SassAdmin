@@ -13,4 +13,9 @@ class Reservation extends Model
     public function resRooms(){
         return $this->hasMany(ReservationRoom::class);
     }
+    public function reservationRoomData(){
+        return $this->belongsTo(ReservationRoom::class, 'reservation_id', 'reservation_id');
+    }
+  
+
 }

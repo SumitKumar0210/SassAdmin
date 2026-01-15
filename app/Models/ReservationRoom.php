@@ -13,7 +13,7 @@ class ReservationRoom extends Model
         return $this->belongsTo(Reservation::class);
     }
     public function reservation_data(){
-        return $this-> hasOne('App\Models\Reservation','reservation_id','reservation_id');
+        return $this->hasOne('App\Models\Reservation','reservation_id','reservation_id');
     }
 
     public function roomData(){

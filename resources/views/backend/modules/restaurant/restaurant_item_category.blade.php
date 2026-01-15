@@ -5,45 +5,47 @@
     <div class="container-fluid py-3">
         <div class="email-wrap bookmark-wrap">
             <div class="row">
-                <div class="col-xl-2 box-col-6">
-                    @include('backend.layouts.sidebar_master')
-                </div>
-                <div class="col-xl-10 col-md-12 box-col-12">
-                    <div class="container-fluid">
-                        <div class="page-title mt-2">
-                            <div class="row gx-0">
-                                <div class="col-12 col-sm-6">
-                                    <h3 class="d-block">Item Category</h3>
-                                </div>
-                                @if(in_array('Setting Add', (explode(',',auth()->user()->permission))))
+               <div class="col-xl-12 col-md-12 box-col-12">
+                    <div> 
+                        @include('backend.layouts.sidebar_master')
+                    </div>
+                    <div style=" padding-left:220px;">
+                        <div class="container-fluid">
+                            <div class="page-title mt-2">
+                                <div class="row gx-0">
                                     <div class="col-12 col-sm-6">
-                                        <div class="float-end">
-                                            <button class="btn btn-primary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#restaurantCategoryModal" onclick="resetmodel()"><span class="btn-icon"><i class="ri-add-line"></i></span> Add Category</button>
-                                        </div>
+                                        <h3 class="d-block">Item Category</h3>
                                     </div>
-                                @endif
+                                    @if(in_array('Setting Add', (explode(',',auth()->user()->permission))))
+                                        <div class="col-12 col-sm-6">
+                                            <div class="float-end">
+                                                <button class="btn btn-primary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#restaurantCategoryModal" onclick="resetmodel()"><span class="btn-icon"><i class="ri-add-line"></i></span> Add Category</button>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-lg-12 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="display" id="restaurant_item_category">
-                                                <thead>
-                                                    <tr>
-                                                        <th>SL No.</th>
-                                                        <th>Name</th>
-                                                        <th>Parent</th>
-                                                        <th>Type</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="display" id="restaurant_item_category">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>SL No.</th>
+                                                            <th>Name</th>
+                                                            <th>Parent</th>
+                                                            <th>Type</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

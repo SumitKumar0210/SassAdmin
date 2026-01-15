@@ -47,16 +47,11 @@
                   <div class="widget-content">
                     <div class="widget-round secondary">
                       <div class="bg-round">
-                        <svg class="svg-fill">
-                          <use href="../assets/svg/icon-sprite.svg#cart"> </use>
-                        </svg>
-                        <svg class="half-circle svg-fill">
-                          <use href="../assets/svg/icon-sprite.svg#halfcircle"></use>
-                        </svg>
+                        <i class="icofont icofont-close" ></i>
                       </div>
                     </div>
                     <div> 
-                      <h4>00</h4><span class="f-light">Canceled KOT</span>
+                      <h4>{{$cancelKot}}</h4><span class="f-light">Canceled KOT</span>
                     </div>
                   </div>
                 </div>
@@ -68,16 +63,12 @@
                   <div class="widget-content">
                     <div class="widget-round primary">
                       <div class="bg-round">
-                        <svg class="svg-fill">
-                          <use href="../assets/svg/icon-sprite.svg#tag"> </use>
-                        </svg>
-                        <svg class="half-circle svg-fill">
-                          <use href="../assets/svg/icon-sprite.svg#halfcircle"></use>
-                        </svg>
+                        <i class="icofont icofont-eye-alt" ></i>
+                        
                       </div>
                     </div>
                     <div> 
-                      <h4>00</h4><span class="f-light">Complimentry KOTs</span>
+                      <h4>{{$complimentaryKot}}</h4><span class="f-light">Complimentry KOTs</span>
                     </div>
                   </div>
                 </div>
@@ -85,7 +76,7 @@
             </div>
           </div>
           <div class="row">
-                <h3 class="d-block">Room KOT</h3>
+              <h3 class="d-block">Room KOT</h3>
               <!-- Zero Configuration  Starts-->
               <div class="col-lg-12 col-sm-12">
                   <div class="card">
@@ -102,9 +93,7 @@
                                           <th>Action</th>
                                       </tr>
                                   </thead>
-                                  <tbody>
-                                    
-                                  </tbody>
+                                  <tbody></tbody>
                               </table>
                           </div>
                       </div>
@@ -112,7 +101,7 @@
               </div>
           </div>
           <div class="row">
-                <h3 class="d-block">Table KOT</h3>
+              <h3 class="d-block">Table KOT</h3>
               <!-- Zero Configuration  Starts-->
               <div class="col-lg-12 col-sm-12">
                   <div class="card">
@@ -120,18 +109,16 @@
                           <div class="table-responsive">
                               <table class="hover row-border stripe" id="table-kot-table">
                                   <thead>
-                                      <tr>  
-                                          <th>Room No.</th>
-                                          <th>Guest Name</th>
-                                          <th>Status</th>
-                                          <th>Amount</th>
-                                          <th>Pending</th>
-                                          <th>Action</th>
-                                      </tr>
+                                    <tr>  
+                                      <th>Room No.</th>
+                                      <th>Guest Name</th>
+                                      <th>Status</th>
+                                      <th>Amount</th>
+                                      <th>Pending</th>
+                                      <th>Action</th>
+                                    </tr>
                                   </thead>
-                                  <tbody>
-                                    
-                                  </tbody>
+                                  <tbody></tbody>
                               </table>
                           </div>
                       </div>

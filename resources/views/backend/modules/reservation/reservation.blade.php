@@ -14,12 +14,12 @@ Reservation
                     <div class="col-12 col-sm-6 p-0">
                         <div class="d-flex justify-content-end align-items-center">
                             <div class="d-flex mx-2">
-                                <span class=" border rounded full-screen-icon" id="fullscreen"><i class="ri-fullscreen-fill"></i></span>
-                                <span class=" border rounded full-screen-icon" id="normalscreen"><i class="ri-fullscreen-exit-fill"></i></span>
+                                <span class=" border rounded full-screen-icon" id="fullscreen" title="Full Screen"><i class="ri-fullscreen-fill"></i></span>
+                                <span class=" border rounded full-screen-icon" id="normalscreen" title="Normal Screen"><i class="ri-fullscreen-exit-fill"></i></span>
                             </div>
                             {{-- -------------view change function working from reservation-row-view.js------------------------- --}}
-                            <div id="calender-view" class="btn-view border rounded active"><a href="{{route('reservation.reservation')}}"><i class="fa fa-calendar text-white"></i></a></div>
-                            <div id="row-view" class="btn-view border rounded mx-2"><a href="{{route('reservation.reservationLayout')}}"><i class="ri-layout-grid-2-fill text-dark"></i></a></div>
+                            <div id="calender-view" class="btn-view border rounded active" title="calender"><a href="{{route('reservation.reservation')}}"><i class="fa fa-calendar text-white"></i></a></div>
+                            <div id="row-view" class="btn-view border rounded mx-2" title="grid"><a href="{{route('reservation.reservationLayout')}}"><i class="ri-layout-grid-2-fill text-dark"></i></a></div>
                         </div>
                     </div>
                 </div>
@@ -183,7 +183,6 @@ Reservation
           }
         });
       });
-      
     </script>
 @endsection
 

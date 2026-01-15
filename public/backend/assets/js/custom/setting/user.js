@@ -33,6 +33,10 @@ let table = $('#user_table').DataTable({
             name: 'email'
         },
         {
+            data: 'password',
+            name: 'password'
+        },
+        {
             data: 'mobile',
             name: 'mobile'
         },

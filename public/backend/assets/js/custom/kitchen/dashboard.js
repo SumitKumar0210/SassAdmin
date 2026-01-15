@@ -83,11 +83,11 @@ let table_kot = $('#table-kot-table').DataTable({
 test();
 
 function test(){
-//alert('test');
-  //  nisha();
+  // alert('test');
+  // dashboardKot();
 }
 
-function nisha(){
+function dashboardKot(){
     alert('mi');
     (function ($) {
       "use strict";
@@ -191,4 +191,9 @@ function nisha(){
       chartcolumnchart.render();
     
     })(jQuery);
+}
+
+function printKot(x){
+  let url = '../kot/print-kot-invoice/'+x;
+  window.open(url,'_blank');
 }

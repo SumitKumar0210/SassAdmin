@@ -153,8 +153,15 @@ class RoomnumberController extends Controller
             //QR Code genetare starts
             $fileName = time() .'_' . $request->id . '.svg';
             $path = public_path('backend/uploads/room-qr-code/' . $fileName);
-            // Generate PNG data
-            $qrCode = QrCode::format('svg')->size(300)->margin(2)->generate($request->room_num);
+            if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+                $protocol = "https://";
+            } else {
+                $protocol = "http://";
+            }
+            $host = $_SERVER['HTTP_HOST'];
+            $rand = md5(md5($request->id));
+            $full_url = $protocol . $host.'/index/R'.$rand;
+            $qrCode = QrCode::format('svg')->size(300)->margin(2)->generate($full_url);
             // Save to file
             File::put($path, $qrCode);
             //QR Code generate ends

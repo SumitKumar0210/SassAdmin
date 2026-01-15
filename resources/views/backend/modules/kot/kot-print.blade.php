@@ -198,7 +198,7 @@
         padding: 12px 0;
         /* border-bottom: 1px dashed #666; */
         line-height: 1.6em;
-        color: #9c9c9c;
+        color: #000;
     }
 
     .tm_pos_sample_text p {
@@ -206,12 +206,12 @@
         margin-top: 10px;
         margin-bottom: 0px;
         font-weight: 500;
-        color: #111;
+        color: #000;
         font-size: 16px;
     }
     .tm_pos_company_name {
         font-weight: 500;
-        color: #111;
+        color: #000;
         font-size: 13px;
         line-height: 1.4em;
     }

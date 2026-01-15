@@ -14,7 +14,7 @@ use Yajra\DataTables\Facades\DataTables;
 class HallController extends Controller
 {
     public function index(){
-        $features = Feature::where('status',1)->get(['id','name']);
+        $features = Feature::where('status',1)->get(['id','name','icon']);
         $hotlr = HotlrConfiguration::get(['logo','name']);
         return view('backend.modules.banquet.hall',compact('features','hotlr'));
     }
