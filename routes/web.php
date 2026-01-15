@@ -85,6 +85,7 @@ use App\Http\Controllers\backend\store\ReportController;
 use App\Http\Controllers\backend\store\StockController;
 use Illuminate\Support\Facades\Artisan;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

@@ -93,6 +93,23 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'admin' => [
+            'driver' => env('ADMIN_DB_CONNECTION', 'mysql'),
+            'host' => env('ADMIN_DB_HOST', '127.0.0.1'),
+            'port' => env('ADMIN_DB_PORT', '3306'),
+            'database' => env('ADMIN_DB_DATABASE'),
+            'username' => env('ADMIN_DB_USERNAME'),
+            'password' => env('ADMIN_DB_PASSWORD'),
+        ],
+
+        'tenant' => [
+            'driver' => 'mysql',
+            'host' => '',
+            'database' => '',
+            'username' => '',
+            'password' => '',
+        ],
+
     ],
 
     /*

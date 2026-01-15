@@ -1,0 +1,46 @@
+/**=====================
+    5.1 Footer CSS Start
+==========================**/
+.footer {
+  background-color: $sub-header;
+  padding: 15px calc(11rem + 0 * (100vw - 20rem) / 100);
+  bottom: 0;
+  font-family: $font-secular;
+  left: 0;
+  z-index: 7;
+  transition: 0.5s;
+  [class="dark-only"] & {
+    background-color: $dark-card-background;
+  }
+  &.footer-dark {
+    background-color: $header-dark;
+    p {
+      color: $white  !important;
+    }
+  }
+  .footer-icon {
+    width: 22px;
+    height: 22px;
+    stroke: none;
+    vertical-align: -6px;
+  }
+  .footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    p {
+      font-family: $font-secular;
+      color: $dark-body-background;
+      [class="dark-only"] & {
+        color: rgba($white, 0.8);
+      }
+    }
+  }
+}
+.footer-fix {
+  width: calc(100% - 0px);
+  position: fixed;
+}
+/**=====================
+    5.1 Footer CSS Ends
+==========================**/
