@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="{{ url('backend/assets/images/favicon.png') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ url('backend/assets/images/favicon.png') }}" type="image/x-icon">
-    <title>{{$hotlr[0]->name}} - Admin</title>
+    <title>Admin Login</title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -207,14 +207,13 @@
                         method: "POST",
                         data: {
                             email: email,
-                            password: password,
-                            _token: '{{ csrf_token() }}'
+                            password: password
                         },
                         success: function(data) {
                             $('.spinn_btn').hide();
                             $('.submit_btn').show();
                             if (data.success) {
-                                window.location.href = "{{ route('backend.dashboard') }}";
+                                window.location.href = "{{ route('admin.tenant.list') }}";
                             } else if (data.errors_validation) {
                                 $('.credentialError_msg').html(data.errors_validation).css("color","#dc3545").removeClass('d-none');
                             } else if(data.error_success) {

@@ -104,10 +104,10 @@ return [
 
         'tenant' => [
             'driver' => 'mysql',
-            'host' => '',
-            'database' => '',
-            'username' => '',
-            'password' => '',
+            'host' => env('TENANT_DB_HOST', '127.0.0.1'),
+            'database' => env('TENANT_DB_DATABASE'),
+            'username' => env('TENANT_DB_USERNAME'),
+            'password' => env('TENANT_DB_PASSWORD'),
         ],
 
     ],

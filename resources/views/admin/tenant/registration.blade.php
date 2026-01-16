@@ -44,7 +44,7 @@
                         <h4>Create New Tenant</h4>
                     </div>
 
-                    <form id="tenantForm" method="POST" action="{{route('register.tenant')}}" class="needs-validation custom-input" novalidate="">
+                    <form id="tenantForm" method="POST" action="{{route('admin.register.tenant')}}" class="needs-validation custom-input" novalidate="">
                         @csrf
 
                         <div class="card-body">

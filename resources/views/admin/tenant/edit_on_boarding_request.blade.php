@@ -333,7 +333,7 @@
                         <i class="fa fa-check-double"></i> Update & Approve
                     </button>
 
-                    <a href="{{ route('tenant.onBoardingList') }}" 
+                    <a href="{{ route('admin.tenant.onBoardingList') }}" 
                        class="btn btn-light">
                         <i class="fa fa-times"></i> Cancel
                     </a>

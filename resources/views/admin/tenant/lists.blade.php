@@ -18,7 +18,7 @@
                     <h3>Tenant Lists</h3>
                 </div>
                 <div class="col-12 col-sm-6 p-0 text-end">
-                    <a href="{{route('add.tenant')}}" class="btn btn-primary">
+                    <a href="{{route('admin.add.tenant')}}" class="btn btn-primary">
                         <i class="fa fa-plus"></i> Add New Tenant
                     </a>
                 </div>
@@ -77,7 +77,7 @@
                                         <td>{{$list->plan?->name ?? '-'}}</td>
                                         <td>
                                             <ul class="action">
-                                                <li class="edit"> <a href="{{ route('edit.tenant', ['id'=>$list->uuid]) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Edit"><i class="icon-pencil-alt"></i></a></li>
+                                                <li class="edit"> <a href="{{ route('admin.edit.tenant', ['uuid'=>$list->uuid]) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Edit"><i class="icon-pencil-alt"></i></a></li>
                                                 <li class="delete">
                                                     <a href="javascript:void(0)"
                                                         class="open-delete-modal"
