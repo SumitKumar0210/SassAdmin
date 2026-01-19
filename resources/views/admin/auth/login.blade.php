@@ -99,8 +99,8 @@
                                                     <span role="status">Please wait...</span>
                                                 </button>
                                                 <br>
-                                                <button class="btn btn-light m-t-10 w-100 magic_btn_link"
-                                                onclick="email_link()" type="button">Log in with email</button>
+                                                <!-- <button class="btn btn-light m-t-10 w-100 magic_btn_link"
+                                                onclick="email_link()" type="button">Log in with email</button> -->
                                         </div>
                                     </div>
                             </form>
@@ -203,7 +203,7 @@
                 $('.submit_btn').hide();
                 $('.spinn_btn').show();
                     $.ajax({
-                        url: "{{ route('backend.login') }}",
+                        url: "{{ route('admin.backend.login') }}",
                         method: "POST",
                         data: {
                             email: email,
@@ -245,7 +245,7 @@
                 $('.magic_btn').hide();
                 $('.magic_spinn').show();
                 $.ajax({
-                    url: "{{ route('backend.magiclink') }}",
+                    url: "{{ route('admin.magiclink') }}",
                     method: "POST",
                     data: {
                         email: email

@@ -17,31 +17,44 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-   public function index(){
-      $hotlr = AdminConfiguration::get(['logo','name']);
-      return view('admin.auth.login',compact('hotlr'));
+   public function index()
+   {
+      $hotlr = AdminConfiguration::get(['logo', 'name']);
+      return view('admin.auth.login', compact('hotlr'));
    }
 
-   public function forget(){
-      $hotlr = AdminConfiguration::get(['logo','name']);
-      return view('admin.auth.forgot-password',compact('hotlr'));
+   public function forget()
+   {
+      $hotlr = AdminConfiguration::get(['logo', 'name']);
+      return view('admin.auth.forgot-password', compact('hotlr'));
    }
-   
-   public function forgetpass(){
-      $hotlr = AdminConfiguration::get(['logo','name']);
-      return view('admin.auth.forget-password',compact('hotlr'));
+
+   public function forgetpass()
+   {
+      $hotlr = AdminConfiguration::get(['logo', 'name']);
+      return view('admin.auth.forget-password', compact('hotlr'));
    }
    public function authenticate(Request $request)
    {
-      $auth = Auth::attempt(
-         [
-            'email' => strtolower($request->email),
-            'password' => $request->password
-         ],
-         true
-      );
+      // $auth = Auth::attempt(
+      //    [
+      //       'email' => strtolower($request->email),
+      //       'password' => $request->password
+      //    ],
+      //    true
+      // );
+      $auth = false;
+      $user = User::where('email', strtolower($request->email))->first();
+
+      if ($user && Hash::check($request->password, $user->password)) {
+         Auth::guard('super_admin')->login($user, true);
+         $auth = true;
+      }
+      \Log::info('Admin login attempt', [
+         'user' => $user
+      ]);
       if ($auth) {
-         $response = response()->json(['success' => true, 'user_id' => auth()->user()->id, 'user_name' => auth()->user()->name], 200);
+         $response = response()->json(['success' => true, 'user_id' => auth()->guard('super_admin')->id(), 'user_name' => auth()->guard('super_admin')->user()->name], 200);
       } else {
          $response = response()->json(['error_success' => 'credentials do not matched !'], 200);
       }
@@ -169,7 +182,6 @@ class AuthController extends Controller
          $response = response()->json(['error_success' => 'Email id not found!']);
       }
       return $response;
-
    }
 
    public function magicLinkVerify($token)
@@ -189,7 +201,7 @@ class AuthController extends Controller
             'email' => $user_email,
             'password' => $user_pass, // Assuming this is the plain text password, otherwise you'll need to handle this differently
          ]);
-         $response = $this->authenticate($request);// Call the authenticate method
+         $response = $this->authenticate($request); // Call the authenticate method
          $response_data = json_decode($response->getContent(), true); // Decode the JSON response
 
          // Ensure success key exists before accessing it
@@ -207,16 +219,16 @@ class AuthController extends Controller
    }
    public function tokenError()
    {
-      $hotlr = AdminConfiguration::get(['logo','name']);
-      return view('backend.auth.token_error',compact('hotlr'));
+      $hotlr = AdminConfiguration::get(['logo', 'name']);
+      return view('backend.auth.token_error', compact('hotlr'));
    }
    public function destroy(Request $request)
    {
       Auth::guard('web')->logout();
       $request->session()->invalidate();
       $request->session()->regenerateToken();
-      return redirect("/");
-    //   return view('backend.auth.logout');
-    
+      return redirect()->route('admin.index');
+      //   return view('backend.auth.logout');
+
    }
 }

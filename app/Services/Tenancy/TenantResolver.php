@@ -11,7 +11,9 @@ class TenantResolver
 {
     public static function resolve(Request $request): ?Tenant
     {
-        $host = $request->getHost();
+        // $host = $request->getHost();
+        $host = 'abc.google.com';
+       
         $subdomain = explode('.', $host)[0];
 
         Log::info('Resolving tenant', ['host' => $host]);
@@ -22,8 +24,8 @@ class TenantResolver
             now()->addMinutes(30),
             function () use ($host, $subdomain) {
                 $tenant = Tenant::on('admin')
-                    ->where('subdomain', $subdomain) // or subdomain column if you prefer
-                    ->where('status', 'active')
+                    ->where('subdomain', $subdomain) 
+                    // ->where('status', 'active')
                     ->first();
 
                 if ($tenant) {

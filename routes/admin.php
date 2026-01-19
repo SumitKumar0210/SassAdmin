@@ -22,12 +22,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/admin-forgetPassword', [AuthController::class, 'forgetpass'])->name('backend.forgetpass');
     Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('backend.sendOtp');
     Route::post('/admin-otpVerify', [AuthController::class, 'verifyotp'])->name('backend.verify_otp');
+    Route::post('send-magic-link', [AuthController::class, 'magiclink'])->name('magiclink');
+
     Route::post('/admin-passwordChange', [AuthController::class, 'updatepass'])->name('backend.update_pass');
     Route::post('/tenant/register-by-self', [TenantRegistrationController::class, 'registerBySelf']);
     Route::get('/logout', [AuthController::class, 'destroy'])->name('logout');
 });
 
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('auth:super_admin')->group(function () {
     Route::get('/admin', function () {
         return view('/admin/index');
     })->name('admin.dashboard');
@@ -46,7 +48,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::get('/create', [PlanController::class, 'create'])->name('create');
         Route::post('/store', [PlanController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [PlanController::class, 'edit'])->name('edit');
-        Route::post('/update/{id}', [PlanController::class, 'update'])->name('update');
+        Route::put('/update/{id}', [PlanController::class, 'update'])->name('update');
         Route::post('/delete/{id}', [PlanController::class, 'destroy'])->name('destroy');
     });
 

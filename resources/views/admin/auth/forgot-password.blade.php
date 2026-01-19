@@ -118,7 +118,7 @@
                                             </div>
                                         </div>
                                         <p class="mt-2 mb-0 text-center already_cls">Already have an password?<a
-                                                class="ms-2" href="/">Sign in</a></p>
+                                                class="ms-2" href="{{route('admin.index')}}">Sign in</a></p>
                                     </form>
                                     {{-- -------------- Input OTP and verify------------------ --}}
                                     <div class="mt-4 mb-4"><span class="reset-password-link">If don't receive OTP?  <a

@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
 use App\Services\Tenancy\TenantResolver;
 use App\Helpers\Admin\DatabaseHelper;
+use Illuminate\Support\Facades\Log;
 
 class SetTenantDatabase
 {
@@ -21,7 +22,18 @@ class SetTenantDatabase
         // Resolve tenant
         $tenant = TenantResolver::resolve($request);
 
-        \Log::info('Setting tenant database', ['tenant_id' => $tenant ??  null]);
+        if(!$tenant) {
+            Log::info('No tenant found for request', ['host' => $request->getHost()]);
+            return redirect()->to('/subdomain/404');
+        }
+
+        if($tenant->status !== 'active') {
+            Log::info('Inactive tenant access attempt', ['tenant_id' => $tenant->id]);
+            abort(403, 'Tenant is inactive');
+        }
+
+
+        Log::info('Setting tenant database', ['tenant_id' => $tenant ??  null]);
         $credentials = [
             "host" => $tenant->db_host,
             "database" => $tenant->db_name,
@@ -29,7 +41,7 @@ class SetTenantDatabase
             "password" => $tenant->db_password ? decrypt($tenant->db_password) : '',
         ];
         $isConnected = DatabaseHelper::checkWithUserCredentials($credentials);
-        \Log::info('Database connection status', ['is_connected' => $isConnected]);
+        Log::info('Database connection status', ['is_connected' => $isConnected]);
 
         // Inject tenant DB credentials
         config([
