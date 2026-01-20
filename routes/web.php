@@ -102,6 +102,11 @@ Route::get('/subdomain/404', function (Request $request) {
     return view('errors.subdomain-404', ['host' => $request->route('host')]);
 })->name('subDomain404');
 Route::group(['middleware' => ['tenant'],], function () {
+    // php artisan config:clear
+    // php artisan cache:clear
+    // php artisan view:clear
+    // php artisan route:clear
+    // php artisan optimize:clear
     Route::get('/clear-all-cache', function () {
         Artisan::call('cache:clear');
         Artisan::call('view:clear');

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin\Tenant;
 use App\Models\Admin\State;
 use App\Models\Admin\TenantApplication;
+use App\Models\HotlrConfiguration;
 use App\Models\Admin\Plan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -343,6 +344,234 @@ class TenantRegistrationController extends Controller
         }
     }
 
+    public function dbUpdate(Request $request)
+    {
+        try {
+
+            $validated = $request->validate(
+                [
+                    'subdomain' => [
+                        'required',
+                        'string',
+                        'min:3',
+                        'max:100',
+                        'unique:tenants,subdomain',
+                        'regex:/^[a-z0-9][a-z0-9\-.]*[a-z0-9]$/',
+                    ],
+
+                    'db_name'     => 'required|string|unique:tenants,db_name',
+                    'db_host'     => 'required|string',
+                    'db_username' => 'required|string|min:3|max:32',
+                    'db_password' => 'nullable|string|min:6',
+
+                ],
+                [
+                    'subdomain.required' => 'Subdomain is required.',
+                    'subdomain.string'   => 'Subdomain must be a valid text.',
+                    'subdomain.min'      => 'Subdomain must be at least :min characters.',
+                    'subdomain.max'      => 'Subdomain may not be greater than :max characters.',
+                    'subdomain.unique'   => 'This subdomain is already taken.',
+                    'subdomain.regex'    => 'Subdomain may contain only lowercase letters, numbers, hyphens, and dots and must not start or end with a special character.',
+
+                    'db_name.required' => 'Database name is required.',
+                    'db_name.string'   => 'Database name must be a valid text.',
+                    'db_name.unique'   => 'This database name is already in use.',
+
+                    'db_host.required' => 'Database host is required.',
+                    'db_host.string'   => 'Database host must be a valid text.',
+
+                    'db_username.required' => 'Database username is required.',
+                    'db_username.string'   => 'Database username must be a valid text.',
+                    'db_username.min'      => 'Database username must be at least :min characters.',
+                    'db_username.max'      => 'Database username may not be greater than :max characters.',
+
+                    'db_password.string' => 'Database password must be a valid text.',
+                    'db_password.min'    => 'Database password must be at least :min characters.',
+
+                ]
+            );
+
+            DB::beginTransaction();
+
+            $tenant = Tenant::where('uuid', $request->uuid)->update([
+
+                'db_name'           => $validated['db_name'],
+                'db_host'           => $validated['db_host'],
+                'db_username'       => $validated['db_username'],
+                'db_password'       => encrypt($validated['db_password'] ?? ''),
+            ]);
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Update tenant DB credentials successfully!');
+        } catch (ValidationException $e) {
+
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            Log::error('Update tenant DB credentials failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Failed to update tenant DB credentials. Please try again.')
+                ->withInput();
+        }
+    }
+
+    public function setupUpdate(Request $request, string $uuid)
+    {
+        try {
+            // Find tenant once
+            $tenant = Tenant::where('uuid', $uuid)->firstOrFail();
+
+            // Validate request
+            $validated = $this->validateSetupRequest($request, $tenant);
+
+            // Verify DB credentials BEFORE transaction
+            $this->verifyDatabaseConnection($tenant);
+
+            DB::transaction(function () use ($tenant, $validated) {
+                $this->updateApplicationConfiguration($tenant, $validated);
+            });
+
+            Log::info('Tenant setup updated successfully', [
+                'tenant_id' => $tenant->id,
+                'uuid'      => $tenant->uuid,
+            ]);
+
+            return back()->with('success', 'Tenant setup updated successfully!');
+        } catch (ValidationException $e) {
+            return back()
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (ModelNotFoundException $e) {
+            Log::warning('Tenant not found', ['uuid' => $uuid]);
+
+            return back()->with('error', 'Tenant not found.');
+        } catch (\Throwable $e) {
+            Log::error('Tenant setup update failed', [
+                'uuid'  => $uuid,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()
+                ->with('error', 'Failed to update tenant setup.')
+                ->withInput();
+        }
+    }
+
+
+    private function validateSetupRequest(Request $request, Tenant $tenant): array
+    {
+        $request->merge(['name'   => $request->company_name]);
+        return $request->validate([
+            'name'    => 'nullable|string|max:255',
+            'gst'             => [
+                'nullable',
+                'string',
+                'size:15',
+                'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',
+            ],
+            'email'   => 'nullable|email|max:255',
+            'mobile'  => 'nullable|digits:10',
+            'address'         => 'nullable|string|max:500',
+            'city'            => 'nullable|string|max:100',
+            'state'           => 'nullable|string|max:100',
+            'pincode'        => 'nullable|digits:6',
+            'country'         => 'nullable|string|max:100',
+            'website'         => 'nullable|url|max:255',
+        ], [
+            'gst.size'        => 'GST number must be exactly 15 characters.',
+            'gst.regex'      => 'Invalid GST format.',
+            'zip_code.digits' => 'ZIP code must be exactly 6 digits.',
+        ]);
+    }
+
+
+    private function verifyDatabaseConnection(Tenant $tenant): void
+    {
+        $credentials = [
+            'host'     => $tenant->db_host,
+            'database' => $tenant->db_name,
+            'username' => $tenant->db_username,
+            'password' => $tenant->db_password ? decrypt($tenant->db_password) : null,
+        ];
+
+        if (!DatabaseHelper::checkWithUserCredentials($credentials)) {
+            throw new \RuntimeException('Unable to connect to tenant database.');
+        }
+    }
+
+
+    private function updateApplicationConfiguration(Tenant $tenant, array $validated): void
+    {
+        $this->configureTenantConnection($tenant);
+
+        // 🔍 FINAL SAFETY CHECK (OPTIONAL BUT STRONG)
+        if (DB::connection('tenant')->getDatabaseName() !== $tenant->db_name) {
+            throw new \RuntimeException('Tenant DB mismatch detected');
+        }
+
+        $config = HotlrConfiguration::firstOrNew([]);
+
+        foreach ($validated as $key => $value) {
+            $config->$key = $value;
+        }
+
+        $config->name = $validated['name'];
+        $config->address = $validated['address'];
+        $config->state = $validated['state'];
+        $config->pincode = $validated['pincode'];
+        $config->gst = $validated['gst'];
+        $config->mobile = $validated['mobile'];
+        $config->email = $validated['email'];
+        $config->country = $validated['country'];
+        $config->city = $validated['city'];
+        $config->website = $validated['website'];
+
+        $config->save();
+
+        app()->instance('currentTenant', $tenant);
+    }
+
+
+
+    private function configureTenantConnection(Tenant $tenant): void
+    {
+        $centralDb = config('database.connections.mysql.database');
+        Log::info("Central DB: {$centralDb}, Tenant DB: {$tenant->db_name}");
+
+        // 🚨 SAFETY CHECK (DO NOT REMOVE)
+        if ($tenant->db_name === $centralDb) {
+            throw new \RuntimeException(
+                "Invalid tenant DB configuration. Tenant DB cannot be central DB ({$centralDb})"
+            );
+        }
+
+        config([
+            'database.connections.tenant' => [
+                'driver'    => 'mysql',
+                'host'      => $tenant->db_host,
+                'database'  => $tenant->db_name, // ✅ must be tenant DB
+                'username'  => $tenant->db_username,
+                'password'  => $tenant->db_password ? decrypt($tenant->db_password) : null,
+                'charset'   => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'strict'    => true,
+            ],
+        ]);
+
+        DB::purge('tenant');
+        DB::reconnect('tenant');
+    }
+
+
+
     public function tenantList(Request $request)
     {
         try {
@@ -356,18 +585,50 @@ class TenantRegistrationController extends Controller
                 ->withInput();
         }
     }
-    public function edit(Request $request, $uuid)
+
+
+    public function edit(Request $request, string $uuid)
     {
         try {
-            $tenant = Tenant::with('plan')->where('uuid', $uuid)->firstOrFail();
-            $plans  = Plan::get();
+            $tenant = Tenant::with('plan')
+                ->where('uuid', $uuid)
+                ->firstOrFail();
 
-            return view('admin.tenant.edit_tenant', compact('tenant', 'plans'));
-        } catch (\Exception $e) {
-            return redirect()->back()
+            $plans = Plan::all();
+
+            $this->configureTenantConnection($tenant);
+
+            $hotelDetails = HotlrConfiguration::firstOrNew([]);
+
+            return view('admin.tenant.edit_tenant', compact(
+                'tenant',
+                'plans',
+                'hotelDetails'
+            ));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return redirect()
+                ->route('admin.tenant.list')
                 ->with('error', 'Tenant not found.');
+        } catch (\RuntimeException $e) {
+
+            return redirect()
+                ->route('admin.tenant.list')
+                ->with('error', $e->getMessage());
+        } catch (\Throwable $e) {
+
+            Log::critical('Unexpected error in tenant edit', [
+                'uuid' => $uuid,
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()
+                ->route('admin.tenant.list')
+                ->with('error', 'Unexpected error occurred.');
         }
     }
+
+
 
     public function update(Request $request, $uuid)
     {
@@ -431,7 +692,7 @@ class TenantRegistrationController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('tenant.list')
+                ->route('admin.tenant.list')
                 ->with('success', 'Tenant updated successfully!');
         } catch (ValidationException $e) {
             return redirect()->back()

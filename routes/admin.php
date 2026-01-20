@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Tenant\TenantRegistrationController;
 
@@ -39,6 +40,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth:super_admin')->group(fu
     Route::get('/tenant/lists', [TenantRegistrationController::class, 'tenantList'])->name('tenant.list');
     Route::get('/tenant/{id}/edit', [TenantRegistrationController::class, 'edit'])->name('edit.tenant');
     Route::post('/tenant/{uuid}/edit', [TenantRegistrationController::class, 'update'])->name('edit.tenant');
+    Route::post('/tenant/{uuid}/dbUpdate', [TenantRegistrationController::class, 'dbUpdate'])->name('update.tenant.dbUpdate');
+    Route::post('/tenant/{uuid}/setupUpdate', [TenantRegistrationController::class, 'setupUpdate'])->name('update.tenant.setupUpdate');
     Route::get('/tenant/on-boarding-request-list', [TenantRegistrationController::class, 'onBoardingList'])->name('tenant.onBoardingList');
     Route::get('/tenant/edit/on-boarding-request/{id}', [TenantRegistrationController::class, 'editOnBoardingRequest'])->name('tenant.editOnBoardingRequest');
     Route::post('/tenant/edit/on-boarding-request/{id}', [TenantRegistrationController::class, 'approveAndUpdate'])->name('tenant.approveAndUpdate');
@@ -50,6 +53,11 @@ Route::prefix('admin')->name('admin.')->middleware('auth:super_admin')->group(fu
         Route::get('/edit/{id}', [PlanController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [PlanController::class, 'update'])->name('update');
         Route::post('/delete/{id}', [PlanController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingController::class, 'showConfiguration'])->name('show');
+        Route::post('/update', [SettingController::class, 'updateConfiguration'])->name('update');
     });
 
     Route::prefix('features')->name('features.')->group(function () {

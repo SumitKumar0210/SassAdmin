@@ -1,7 +1,7 @@
 <div class="page-header">
             <div class="header-wrapper row m-0 gap-0">
               <div class="header-logo-wrapper col-auto p-0">
-                <!-- <div class="logo-wrapper"><a href="index.html"><img class="img-fluid" src="../assets/images/logo/logo-w.png" alt=""></a></div> -->
+                <!-- <div class="logo-wrapper"><a href="index.html"><img class="img-fluid" src="{{asset('admin/assets/images/logo/logo-w.png')}}" alt=""></a></div> -->
                 <div class="toggle-sidebar"><i data-feather="align-center"></i>
                   <div class="status_toggle middle sidebar-toggle">
                     <div class="header-left">
@@ -170,7 +170,7 @@
                       <h3 class="f-18 mb-0 dropdown-title">Cart</h3>
                       <ul>
                         <li>
-                          <div class="d-flex"><img class="img-fluid b-r-5 me-3 img-60" src="../assets/images/dashboard-2/product/1.png" alt="">
+                          <div class="d-flex"><img class="img-fluid b-r-5 me-3 img-60" src="{{asset('admin/assets/images/dashboard-2/product/1.png')}}" alt="">
                             <div class="flex-grow-1"><a href="../template/product.html"> <span>Furniture Chair for Home</span></a>
                               <div class="qty-box">
                                 <div class="input-group"><span class="input-group-prepend">
@@ -185,7 +185,7 @@
                           </div>
                         </li>
                         <li>
-                          <div class="d-flex"><img class="img-fluid b-r-5 me-3 img-60" src="../assets/images/dashboard-2/product/2.png" alt="">
+                          <div class="d-flex"><img class="img-fluid b-r-5 me-3 img-60" src="{{asset('admin/assets/images/dashboard-2/product/2.png')}}" alt="">
                             <div class="flex-grow-1"><a href="../template/product.html"> <span>The best office table</span></a>
                               <div class="qty-box">
                                 <div class="input-group"> <span class="input-group-prepend">
@@ -224,7 +224,7 @@
                     </div>
                   </li>
                   <li class="profile-nav onhover-dropdown pe-0 py-0">
-                    <div class="d-flex profile-media"><img src="../assets/images/profile.png" alt="">
+                    <div class="d-flex profile-media"><img src="{{asset('admin/assets/images/profile.png')}}" alt="">
                       <div class="flex-grow-1"><span>Helen Walter</span>
                         <p class="mb-0 font-roboto">Admin <i class="middle fa fa-angle-down"></i></p>
                       </div>

@@ -10,7 +10,7 @@ class Tenant extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $connection = 'admin';
+    protected $connection = 'mysql';
     protected $table = 'tenants';
     protected $fillable = [
         'id',

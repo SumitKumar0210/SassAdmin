@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class HotlrConfiguration extends Model
 {
-    protected $connection = 'tenant';
+     protected $connection = 'tenant'; // ✅ REQUIRED
+    protected $table = 'hotlr_configurations';
+
     use HasFactory;
 }
