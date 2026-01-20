@@ -20,6 +20,8 @@ use App\Mail\TenantWelcomeMail;
 use App\Mail\TenantLiveMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
+use App\Events\TenantStatusChanged;
+
 
 
 class TenantRegistrationController extends Controller
@@ -88,6 +90,13 @@ class TenantRegistrationController extends Controller
                 'plan_id'             => $validated['plan_id'],
                 'status'              => $validated['status'] ?? 1,
             ]);
+            $oldStatus = null;
+            event(new TenantStatusChanged(
+                $tenant,
+                $oldStatus,
+                'suspended',
+                'admin'
+            ));
 
             DB::commit();
             SendWelcomeMailJob::dispatch($tenant->id);
@@ -319,9 +328,15 @@ class TenantRegistrationController extends Controller
 
                 'status'            => $validated['status'],
             ]);
-
-            SendWelcomeMailByAdminJob::dispatch($tenant->uuid);
+            $oldStatus = null;
+            event(new TenantStatusChanged(
+                $tenant,
+                $oldStatus,
+                'suspended',
+                'admin'
+            ));
             DB::commit();
+            SendWelcomeMailByAdminJob::dispatch($tenant->uuid);
 
             return redirect('/')->with('success', 'Tenant created successfully!');
         } catch (ValidationException $e) {
@@ -685,9 +700,26 @@ class TenantRegistrationController extends Controller
                 'reseller_id' => $validated['reseller_id'] ?? null,
                 'go_live_date' => $validated['go_live_date'] ?? null,
                 'expiry_date' => $validated['expiry_date'] ?? null,
-                'status' => $validated['status'],
                 'onboarding_status' => $request->onboarding_status,
             ]);
+
+            $oldStatus = $tenant->status;
+
+            $tenant->update([
+                'status' => $validated['status'],
+            ]);
+
+            // dd($oldStatus, $validated['status'], $tenant);
+            if ($oldStatus !== $validated['status']) {
+
+                event(new TenantStatusChanged(
+                    $tenant,
+                    $oldStatus,
+                    $validated['status'],
+                    'admin'
+                ));
+            }
+
 
             DB::commit();
 
