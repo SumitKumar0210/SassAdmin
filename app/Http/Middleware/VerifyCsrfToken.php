@@ -12,7 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        'tenant/register-by-self',
-        'tenants/check-db',
+        '/admin/tenant/register-by-self',
+        '/admin/tenants/check-db',
     ];
 }

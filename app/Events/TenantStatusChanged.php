@@ -21,8 +21,10 @@ class TenantStatusChanged
      public function __construct(
         public Tenant $tenant,
         public ?string $oldStatus,
+        public string $event,
         public string $newStatus,
-        public string $source = 'system'
+        public string $source = 'system',
+        public array $meta = []
     ) {}
 
     /**

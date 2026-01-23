@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\AdminConfiguration;
+use App\Services\AdminAuditService;
 
 class SettingController extends Controller
 {
@@ -75,6 +76,7 @@ class SettingController extends Controller
 
       
         $configuration->save();
+        AdminAuditService::log('application_configuration_updated', $configuration, ['request_data' => $request->all()]);
 
         return redirect()->back()->with('success', 'Configuration updated successfully.');
         } catch (\Exception $e) {

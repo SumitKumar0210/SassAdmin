@@ -88,7 +88,7 @@
                 <label class="form-label">Database Password</label>
                 <input type="password" 
                        name="db_password"
-                       class="form-control db-field @error('db_password') is-invalid @enderror"
+                       class="form-control @error('db_password') is-invalid @enderror"
                        placeholder="Leave blank to keep existing"
                        minlength="8"
                        disabled>

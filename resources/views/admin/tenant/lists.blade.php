@@ -81,7 +81,7 @@
                                                 <li class="delete">
                                                     <a href="javascript:void(0)"
                                                         class="open-delete-modal"
-                                                        data-id="{{ $list->id }}"
+                                                        data-uuid="{{ $list->uuid }}"
                                                         data-name="{{ $list->hotel_name }}"
                                                         data-bs-toggle="tooltip"
                                                         data-bs-placement="bottom"
@@ -114,12 +114,11 @@
                         Are you sure you want to delete
                         <strong id="tenantName"></strong>?
                         <br>
-                        This action cannot be undone.
+                        This action cannot be undone.cfghfg
                     </p>
 
-                    <form id="deleteTenantForm" method="POST">
+                    <form id="deleteTenantForm" method="POST" action="">
                         @csrf
-                        @method('DELETE')
 
                         <div class="d-flex justify-content-center gap-3">
                             <button type="button" class="btn btn-secondary"
@@ -166,27 +165,31 @@
 <script src="{{asset('admin/assets/js/datatable/datatable-extension/custom.js')}}"></script>
 <script src="{{asset('admin/assets/js/tooltip-init.js')}}"></script>
 <script>
-    $(document).ready(function() {
+    const deleteTenantBaseUrl = "{{ route('admin.destroy.tenant', ['uuid' => '__UUID__']) }}";
+</script>
+<script>
+    $(document).ready(function () {
 
-        $('.open-delete-modal').on('click', function() {
+    $('.open-delete-modal').on('click', function () {
 
-            let tenantId = $(this).data('id');
-            let tenantName = $(this).data('name');
+        let tenantId = $(this).data('uuid');
+        let tenantName = $(this).data('name');
 
-            // Set tenant name
-            $('#tenantName').text(tenantName);
+        // Set tenant name
+        $('#tenantName').text(tenantName);
 
-            // Set form action
-            $('#deleteTenantForm').attr(
-                'action',
-                "{{ url('admin/tenants') }}/" + tenantId
-            );
+        // Build action URL
+        let actionUrl = deleteTenantBaseUrl.replace('__UUID__', tenantId);
 
-            // Show modal
-            $('#deleteTenantModal').modal('show');
-        });
+        // Set form action
+        $('#deleteTenantForm').attr('action', actionUrl);
 
+        // Show modal
+        $('#deleteTenantModal').modal('show');
     });
+
+});
+
 </script>
 
 @endsection

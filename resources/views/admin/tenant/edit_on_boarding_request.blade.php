@@ -166,7 +166,7 @@
                             <select name="status" 
                                     class="form-select @error('status') is-invalid @enderror" 
                                     required>
-                                @foreach(['pending','active','suspended','terminated'] as $st)
+                                @foreach(['pending','approved', 'rejected'] as $st)
                                     <option value="{{ $st }}"
                                         {{ old('status', $tenant->status) === $st ? 'selected' : '' }}>
                                         {{ ucfirst($st) }}
@@ -231,15 +231,19 @@
 
                         <div class="col-md-3 mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" 
+                                <input class="form-check-input @error('changeDbToggle') is-invalid @enderror" 
                                        type="checkbox" 
                                        id="changeDbToggle"
                                        name="changeDbToggle"
                                        value="1"
-                                       {{ old('changeDbToggle') ? 'checked' : '' }}>
+                                       {{ old('changeDbToggle') ? 'checked' : '' }}
+                                       required>
                                 <label class="form-check-label" for="changeDbToggle">
                                     Update Database Credentials
                                 </label>
+                                @error('changeDbToggle')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                             </div>
                         </div>
 
@@ -248,7 +252,7 @@
                             <input type="text" 
                                    name="db_name" 
                                    class="form-control db-field @error('db_name') is-invalid @enderror"
-                                   value="{{ old('db_name', $tenant->db_name ?? 'tenant_db_' . strtolower($tenant->preferred_subdomain)) }}" 
+                                   value="{{ old('db_name', $tenant->db_name ?? '') }}" 
                                    pattern="[a-zA-Z0-9_]+"
                                    maxlength="64"
                                    disabled>

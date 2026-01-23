@@ -39,6 +39,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:super_admin')->group(fu
     Route::post('/tenant/register-by-admin', [TenantRegistrationController::class, 'storeTenantByAdmin'])->name('register.tenant');
     Route::get('/tenant/lists', [TenantRegistrationController::class, 'tenantList'])->name('tenant.list');
     Route::get('/tenant/{id}/edit', [TenantRegistrationController::class, 'edit'])->name('edit.tenant');
+    Route::post('/tenant/{uuid}/destroy', [TenantRegistrationController::class, 'destroy'])->name('destroy.tenant');
     Route::post('/tenant/{uuid}/edit', [TenantRegistrationController::class, 'update'])->name('edit.tenant');
     Route::post('/tenant/{uuid}/dbUpdate', [TenantRegistrationController::class, 'dbUpdate'])->name('update.tenant.dbUpdate');
     Route::post('/tenant/{uuid}/setupUpdate', [TenantRegistrationController::class, 'setupUpdate'])->name('update.tenant.setupUpdate');

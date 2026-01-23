@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Feature;
+use App\Services\AdminAuditService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,7 @@ use Illuminate\Validation\ValidationException;
 class FeatureController extends Controller
 {
     public function index()
-    { 
+    {
         $features = Feature::latest()->get();
         return view('admin.features.lists', compact('features'));
     }
@@ -27,13 +28,14 @@ class FeatureController extends Controller
             ]);
 
             $feature = Feature::create($validated);
+            AdminAuditService::log('feature_created', $feature, ['request_data' => $validated]);
+
 
             return response()->json([
                 'success' => true,
                 'message' => 'Feature created successfully',
                 'data'    => $feature,
             ]);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -59,14 +61,13 @@ class FeatureController extends Controller
             ]);
 
             $feature->update($validated);
+            AdminAuditService::log('feature_updated', $feature, ['request_data' => $validated]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Feature updated successfully',
                 'data'    => $feature,
             ]);
-
-        
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -79,6 +80,7 @@ class FeatureController extends Controller
     {
         try {
             $feature = Feature::findOrFail($id);
+            AdminAuditService::log('feature_deleted', $feature);
             $feature->delete(); // soft delete
 
             return response()->json([

@@ -21,6 +21,8 @@ use App\Mail\TenantLiveMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use App\Events\TenantStatusChanged;
+use App\Services\AdminAuditService;
+
 
 
 
@@ -90,15 +92,9 @@ class TenantRegistrationController extends Controller
                 'plan_id'             => $validated['plan_id'],
                 'status'              => $validated['status'] ?? 1,
             ]);
-            $oldStatus = null;
-            event(new TenantStatusChanged(
-                $tenant,
-                $oldStatus,
-                'suspended',
-                'admin'
-            ));
 
             DB::commit();
+
             SendWelcomeMailJob::dispatch($tenant->id);
 
 
@@ -328,14 +324,20 @@ class TenantRegistrationController extends Controller
 
                 'status'            => $validated['status'],
             ]);
-            $oldStatus = null;
-            event(new TenantStatusChanged(
-                $tenant,
-                $oldStatus,
-                'suspended',
-                'admin'
-            ));
             DB::commit();
+            event(new TenantStatusChanged(
+                tenant: $tenant,
+                event: 'created',
+                oldStatus: null,
+                newStatus: 'created',
+                source: 'admin',
+                meta: [
+                    'registration_type' => 'by_admin',
+                    'plan_id' => $validated['plan_id'],
+                    'source' => 'portal',
+                ]
+            ));
+            AdminAuditService::log('tenant created', $tenant, ['new_tenant_data' => $tenant]);
             SendWelcomeMailByAdminJob::dispatch($tenant->uuid);
 
             return redirect('/')->with('success', 'Tenant created successfully!');
@@ -365,14 +367,14 @@ class TenantRegistrationController extends Controller
 
             $validated = $request->validate(
                 [
-                    'subdomain' => [
-                        'required',
-                        'string',
-                        'min:3',
-                        'max:100',
-                        'unique:tenants,subdomain',
-                        'regex:/^[a-z0-9][a-z0-9\-.]*[a-z0-9]$/',
-                    ],
+                    // 'subdomain' => [
+                    //     'required',
+                    //     'string',
+                    //     'min:3',
+                    //     'max:100',
+                    //     'unique:tenants,subdomain',
+                    //     'regex:/^[a-z0-9][a-z0-9\-.]*[a-z0-9]$/',
+                    // ],
 
                     'db_name'     => 'required|string|unique:tenants,db_name',
                     'db_host'     => 'required|string',
@@ -416,6 +418,17 @@ class TenantRegistrationController extends Controller
                 'db_password'       => encrypt($validated['db_password'] ?? ''),
             ]);
             DB::commit();
+            event(new TenantStatusChanged(
+                tenant: $tenant,
+                event: 'updated_db_credentials',
+                oldStatus: $tenant->status,
+                newStatus: '',
+                source: 'admin',
+                meta: [
+                    'requested_data' => $request->all(),
+                ]
+            ));
+            AdminAuditService::log('tenant updated_db_credentials', $tenant, ['requested_data' => $request->all()]);
 
             return redirect()->back()->with('success', 'Update tenant DB credentials successfully!');
         } catch (ValidationException $e) {
@@ -441,13 +454,11 @@ class TenantRegistrationController extends Controller
     public function setupUpdate(Request $request, string $uuid)
     {
         try {
-            // Find tenant once
+
             $tenant = Tenant::where('uuid', $uuid)->firstOrFail();
 
-            // Validate request
             $validated = $this->validateSetupRequest($request, $tenant);
 
-            // Verify DB credentials BEFORE transaction
             $this->verifyDatabaseConnection($tenant);
 
             DB::transaction(function () use ($tenant, $validated) {
@@ -550,6 +561,7 @@ class TenantRegistrationController extends Controller
         $config->website = $validated['website'];
 
         $config->save();
+        AdminAuditService::log('tenant setup updated', $tenant, ['requested_data' => $validated]);
 
         app()->instance('currentTenant', $tenant);
     }
@@ -713,12 +725,15 @@ class TenantRegistrationController extends Controller
             if ($oldStatus !== $validated['status']) {
 
                 event(new TenantStatusChanged(
-                    $tenant,
-                    $oldStatus,
-                    $validated['status'],
-                    'admin'
+                    tenant: $tenant,
+                    event: 'status_updated',
+                    oldStatus: $oldStatus,
+                    newStatus: $validated['status'],
+                    source: 'admin'
                 ));
             }
+
+            AdminAuditService::log('tenant updated', $tenant, ['requested_data' => $request->all()]);
 
 
             DB::commit();
@@ -839,7 +854,7 @@ class TenantRegistrationController extends Controller
             'mobile' => 'required|digits_between:10,15',
             'preferred_subdomain' => 'required|string|min:3|max:100',
             'plan_id' => 'required|exists:plans,id',
-            'changeDbToggle' => 'nullable|boolean',
+            'changeDbToggle' => 'required|boolean',
             'db_name' => 'required_if:changeDbToggle,1|string|max:64',
             'db_host' => 'required_if:changeDbToggle,1|string',
             'db_username' => 'required_if:changeDbToggle,1|string|max:32',
@@ -914,16 +929,38 @@ class TenantRegistrationController extends Controller
                     $tenantData
                 );
 
+
                 // Update tenant request with approval metadata
                 $tenantRequest->update([
                     'status' => 'approved',
                     // 'approved_at' => now(),
                     // 'approved_by' => auth()->id(),
                 ]);
+                $tenantRequest->delete();
             }
 
             DB::commit();
-
+            event(new TenantStatusChanged(
+                tenant: $tenant,
+                event: 'created',
+                oldStatus: null,
+                newStatus: 'created',
+                source: 'admin',
+                meta: [
+                    'registration_type' => 'by_admin',
+                    'application_id' => $id,
+                    'plan_id' => $validated['plan_id'],
+                    'source' => 'portal',
+                    'requested_data' => $validated,
+                ]
+            ));
+            AdminAuditService::log('tenant approve', $tenant, [
+                'registration_type' => 'by_admin',
+                'application_id' => $id,
+                'plan_id' => $validated['plan_id'],
+                'source' => 'portal',
+                'requested_data' => $request->all(),
+            ]);
             // Send welcome email only if tenant was approved and created
             if ($tenant) {
                 // SendWelcomeMailByAdminJob::dispatch($tenant->uuid)
@@ -931,15 +968,16 @@ class TenantRegistrationController extends Controller
                 Mail::to('sumitkrtechie@gmail.com')->send(
                     new TenantLiveMail($tenant)
                 );
-                \Log::info('Tenant live email sent to ' . $tenant->email);
+
+                Log::info('Tenant live email sent to ' . $tenant->email);
             }
 
             $message = $validated['status'] === 'approved'
                 ? 'Tenant approved and onboarded successfully.'
                 : 'Tenant application updated.';
-
             return redirect()
-                ->back()
+                // ->back()
+                ->intended('/admin/tenant/lists')
                 ->with('success', $message);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             DB::rollBack();
@@ -959,6 +997,50 @@ class TenantRegistrationController extends Controller
             return redirect()
                 ->back()
                 ->with('error', 'Failed to process the request: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy(Request $request, $uuid)
+    {
+        try {
+            $tenant = Tenant::where('uuid', $uuid)->firstOrFail();
+
+            DB::beginTransaction();
+
+
+            event(new TenantStatusChanged(
+                tenant: $tenant,
+                event: 'deleted',
+                oldStatus: $tenant->status,
+                newStatus: '',
+                source: 'admin',
+                meta: [
+                    'requested_data' => $request->all(),
+                ]
+            ));
+            AdminAuditService::log('tenant deleted', $tenant, [
+                'registration_type' => 'by_admin',
+                'source' => 'portal',
+                'tenant' => $tenant,
+            ]);
+            $tenant->delete();
+            DB::commit();
+
+
+            return redirect()
+                ->route('admin.tenant.list')
+                ->with('success', 'Tenant deleted successfully!');
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            Log::error('Tenant deletion failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()
+                ->route('admin.tenant.list')
+                ->with('error', 'Failed to delete tenant.');
         }
     }
 }

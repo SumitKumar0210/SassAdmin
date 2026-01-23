@@ -12,9 +12,9 @@ class AdminAuditService
         array $meta = []
     ): void {
         SuperAdminAuditLog::create([
-            'admin_id'   => auth('admin')->id(),
+            'admin_id'   => auth('super_admin')->id()?? 0,
             'action'     => $action,
-            'target_type'=> $target ? class_basename($target) : null,
+            'target_type' => $target ? class_basename($target) : null,
             'target_id'  => $target?->id,
             'meta'       => $meta,
             'ip_address' => request()->ip(),

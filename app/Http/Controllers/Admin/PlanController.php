@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\Plan;
+use App\Services\AdminAuditService;
 use Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -175,13 +176,9 @@ class PlanController extends Controller
                 'modules' => json_encode($modules)
             ]);
 
-            DB::commit();
+            AdminAuditService::log('plan_created', $plan, ['request_data' => $validated]);
 
-            Log::info('Plan created successfully', [
-                'plan_id' => $plan->id,
-                'name' => $plan->name,
-                'created_by' => auth()->id()
-            ]);
+            DB::commit();
 
             return redirect()
                 ->route('admin.plans.index')
@@ -279,6 +276,8 @@ class PlanController extends Controller
                 'billing_cycle' => $validated['billing_cycle'],
                 'modules'       => $modules, // stored as JSON
             ]);
+
+            AdminAuditService::log('plan_updated', $plan, ['request_data' => $validated]);
 
             DB::commit();
 
@@ -395,6 +394,7 @@ class PlanController extends Controller
     {
         try {
             $plan = Plan::find($id);
+            AdminAuditService::log('plan_deleted', $plan);
             $plan->delete();
 
             return response()->json([

@@ -24,11 +24,12 @@ class LogTenantLifecycle
     {
         TenantLifecycleAuditLog::create([
             'tenant_id' => $event->tenant->id,
-            'event' => 'status_changed',
+            'event' => $event->event?? null,
             'old_status' => $event->oldStatus,
             'new_status' => $event->newStatus,
             'performed_by' => auth()->id(),
             'source' => $event->source,
+            'meta'         => $event->meta,
         ]);
     }
 }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Services\AdminAuditService;
 
 class AuthController extends Controller
 {
@@ -54,6 +55,7 @@ class AuthController extends Controller
          'user' => $user
       ]);
       if ($auth) {
+         AdminAuditService::log('admin_logged_in', $user);
          $response = response()->json(['success' => true, 'user_id' => auth()->guard('super_admin')->id(), 'user_name' => auth()->guard('super_admin')->user()->name], 200);
       } else {
          $response = response()->json(['error_success' => 'credentials do not matched !'], 200);
@@ -76,8 +78,8 @@ class AuthController extends Controller
 
       $otp = random_int(100000, 999999);
       $emails = $request->email;
-      $check_email = User::where('email', $emails)->get(['email']); // checking email ID found in db.
-      $check_email = $check_email[0]->email ?? '';
+      $user = User::where('email', $emails)->first(['id','email']); // checking email ID found in db.
+      $check_email = $user->email ?? '';
       if ($check_email == $emails) {  // checking entered email and db email are same or not.
          $check_emailotp = EmailOtp::where('email', $emails)->get(['email']);
          $check_emailotp = $check_emailotp[0]->email ?? '';
@@ -96,6 +98,7 @@ class AuthController extends Controller
          Mail::send('backend.email.otp', ['otp' => $otp], function ($message) use ($request) {
             $message->to($request->input('email'))->subject('OTP For Password Reset');
          }); //OTP send on mail function
+         AdminAuditService::log('otp_sent', $user, ['email' => $user->email]);
          return response()->json(['success' => 'OTP sent successfully']);
       } else {
          $response = response()->json(['errors_success' => 'Email id not found'], 200);
@@ -115,6 +118,7 @@ class AuthController extends Controller
       $otp = $check_otp[0]->otp ?? '';
       $email = $check_otp[0]->email ?? '';
       if ($user_email == $email && $user_otp == $otp && $otpduration <= 15) {
+         AdminAuditService::log('otp_verified', $check_otp[0]);
          $response = response()->json(['success' => 'OTP Verified successfully'], 200);
       } else {
          $response = response()->json(['errors_success' => 'Error in OTP Verification !'], 200);
@@ -126,13 +130,15 @@ class AuthController extends Controller
       $user_email = $request->email;
       $pass = $request->pass;
       $cpass = $request->cpass;
+      $update = User::where('email', $user_email)->first();
       if ($pass == $cpass) {
          $pass1 = Hash::make($pass);
-         $update = User::where('email', $user_email)->update(
+         $update->update(
             [
                'password' => $pass1,
             ]
          );
+         AdminAuditService::log('password_changed', $update);
          $response = response()->json(['success' => 'Password changed successfully'], 200);
       } else {
          $response = response()->json(['errors_success' => 'Error in changing password !'], 200);
@@ -224,7 +230,8 @@ class AuthController extends Controller
    }
    public function destroy(Request $request)
    {
-      Auth::guard('web')->logout();
+      AdminAuditService::log('admin_logged_out',Auth::guard('super_admin')->user());
+      Auth::guard('super_admin')->logout();
       $request->session()->invalidate();
       $request->session()->regenerateToken();
       return redirect()->route('admin.index');
