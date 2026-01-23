@@ -152,8 +152,8 @@ Route::group(['middleware' => ['tenant'],], function () {
     Route::post('/admin-passwordChange', [LoginController::class, 'updatepass'])->name('backend.update_pass');
     Route::get('/m-l/{token}', [LoginController::class, 'magicLinkVerify']);
     Route::get('/tokenInvalid', [LoginController::class, 'tokenError'])->name('backend.token_error');
-
-    Route::group(['middleware' => ['auth'],], function () {
+    });
+    Route::group(['middleware' => ['auth', 'tenant']], function () {
 
         // Route::get('/profile', function () { return view('backend/pages/profile'); });
         // Route::get('/setting', function () { return view('backend/pages/setting'); });
@@ -719,4 +719,4 @@ Route::group(['middleware' => ['tenant'],], function () {
         });
     });
     Route::get('/logout', [LoginController::class, 'destroy'])->name('logout');
-});
+

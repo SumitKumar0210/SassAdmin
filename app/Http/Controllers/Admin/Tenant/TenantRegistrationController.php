@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use App\Events\TenantStatusChanged;
 use App\Services\AdminAuditService;
+use Illuminate\Support\Facades\Cache;
+
 
 
 
@@ -602,7 +604,17 @@ class TenantRegistrationController extends Controller
     public function tenantList(Request $request)
     {
         try {
-            $lists = Tenant::with('plan')->orderBy('id', 'desc')->get();
+            // $lists = Tenant::with('plan')->orderBy('id', 'desc')->get();
+
+            $lists = Cache::tags(['tenants'])->remember(
+            'admin:tenant:list',
+            now()->addMinutes(30),
+            function () {
+                return Tenant::with('plan')
+                    ->orderBy('id', 'desc')
+                    ->get();
+            }
+        );
 
 
             return view('admin.tenant.lists', compact('lists'));
@@ -754,7 +766,7 @@ class TenantRegistrationController extends Controller
             ]);
 
             return redirect()->back()
-                ->with('error', 'Failed to update tenant.')
+                ->with('error', 'Failed to update tenant.'. $e->getMessage())
                 ->withInput();
         }
     }
