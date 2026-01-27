@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Tenant\TenantRegistrationController;
+use App\Http\Controllers\backend\ImpersonationController;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 Route::get('/test', function () {
     return view('test');
@@ -31,6 +33,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 Route::prefix('admin')->name('admin.')->middleware('auth:super_admin')->group(function () {
+
+    // Start impersonation (works for both level 1 and level 2)
+    // Route::post('/impersonate/{user}', function(Request $request){ dd($request->all());})
+    //     ->name('impersonate.start');
+    Route::post('/impersonate/{uuid}', [ImpersonationController::class, 'start'])
+        ->name('impersonate.start');
+
     Route::get('/admin', function () {
         return view('/admin/index');
     })->name('admin.dashboard');

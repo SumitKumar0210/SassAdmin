@@ -25,22 +25,34 @@
             </div>
         </div>
     </div>
-    {{-- Errors --}}
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-    @if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show text-danger" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
+    {{-- Display Errors --}}
+        @if ($errors->any())
+        <div class="alert alert-light-danger alert-dismissible fade show" role="alert">
+            <strong>Please fix the following errors:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
+        {{-- Success Message --}}
+        @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show text-success" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
+        {{-- Error Message --}}
+        @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show text-danger" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
     <!-- Container-fluid starts-->
     <div class="container-fluid">
         <div class="row">
@@ -87,6 +99,17 @@
                                                         data-bs-placement="bottom"
                                                         title="Delete">
                                                         <i class="icon-trash"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="impersonate">
+                                                    <a href="javascript:void(0)"
+                                                    class="open-impersonate-modal"
+                                                    data-uuid="{{ $list->uuid }}"
+                                                    data-name="{{ $list->hotel_name }}"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    title="Impersonate">
+                                                        <i class="icon-user"></i>
                                                     </a>
                                                 </li>
                                         </td>
@@ -138,6 +161,37 @@
         </div>
     </div>
 
+    <div class="modal fade" id="impersonateModel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <form id="ImpersonateForm" method="POST">
+                    @csrf
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Impersonate (<strong id="impersonateUser"></strong>)</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label>Reason <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="reason" id="feature_name" required>
+                            <div class="invalid-feedback">Please select status</div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
     <!-- Container-fluid Ends-->
 </div>
 @endsection
@@ -166,6 +220,7 @@
 <script src="{{asset('admin/assets/js/tooltip-init.js')}}"></script>
 <script>
     const deleteTenantBaseUrl = "{{ route('admin.destroy.tenant', ['uuid' => '__UUID__']) }}";
+    const impersonateTenantBaseUrl = "{{ route('admin.impersonate.start', ['uuid' => '__UUID__']) }}";
 </script>
 <script>
     $(document).ready(function () {
@@ -186,6 +241,23 @@
 
         // Show modal
         $('#deleteTenantModal').modal('show');
+    });
+    $('.open-impersonate-modal').on('click', function () {
+
+        let tenantId = $(this).data('uuid');
+        let tenantName = $(this).data('name');
+
+        // Set tenant name
+        $('#impersonateUser').text(tenantName);
+
+        // Build action URL
+        let actionUrl = impersonateTenantBaseUrl.replace('__UUID__', tenantId);
+
+        // Set form action
+        $('#ImpersonateForm').attr('action', actionUrl);
+
+        // Show modal
+        $('#impersonateModel').modal('show');
     });
 
 });

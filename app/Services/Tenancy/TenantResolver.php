@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use App\Models\Admin\Tenant;
+use App\Services\Tenancy\TenantDatabaseManager;
+
 
 class TenantResolver
 {
@@ -13,7 +15,7 @@ class TenantResolver
     {
         // $host = $request->getHost();
         $host = 'abc.google.com';
-       
+
         $subdomain = explode('.', $host)[0];
 
         Log::info('Resolving tenant', ['host' => $host]);
@@ -24,7 +26,7 @@ class TenantResolver
             now()->addMinutes(30),
             function () use ($host, $subdomain) {
                 $tenant = Tenant::on('admin')
-                    ->where('subdomain', $subdomain) 
+                    ->where('subdomain', $subdomain)
                     // ->where('status', 'active')
                     ->first();
 
@@ -40,15 +42,19 @@ class TenantResolver
         );
 
 
-                if ($tenant) {
-                    Log::info('Tenant resolved', [
-                        'id' => $tenant->id,
-                        'domain' => $tenant->subdomain,
-                    ]);
-                }
+        if ($tenant) {
+            Log::info('Tenant resolved', [
+                'id' => $tenant->id,
+                'domain' => $tenant->subdomain,
+            ]);
+        }
 
-                return $tenant;
-            
-        
+        $dbManager = app(TenantDatabaseManager::class);
+
+        if (! $dbManager->boot($tenant)) {
+            abort(500, 'Unable to connect to tenant database');
+        }
+
+        return $tenant;
     }
 }

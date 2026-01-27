@@ -17,6 +17,7 @@ use App\Http\Controllers\backend\auth\LoginController;
 use App\Http\Controllers\backend\banquet\BanquetDashboardController;
 use App\Http\Controllers\backend\banquet\BookingController;
 use App\Http\Controllers\backend\banquet\HallController;
+use App\Http\Controllers\backend\ImpersonationController;
 use App\Http\Controllers\backend\kitchen\KitchenController;
 use App\Http\Controllers\backend\kot\GeneratedBillController;
 use App\Http\Controllers\backend\kot\QrMenuController;
@@ -102,6 +103,28 @@ Route::get('/subdomain/404', function (Request $request) {
     return view('errors.subdomain-404', ['host' => $request->route('host')]);
 })->name('subDomain404');
 Route::group(['middleware' => ['tenant'],], function () {
+
+
+    // Stop current level impersonation (or specific level)
+    Route::post('/impersonate/stop', [ImpersonationController::class, 'stop'])
+        ->name('impersonate.stop');
+
+    // Stop all impersonation levels at once
+    Route::post('/impersonate/stop-all', [ImpersonationController::class, 'stopAll'])
+        ->name('impersonate.stop-all');
+
+    // View impersonation logs (admin only)
+    Route::get('/admin/impersonation/logs', [ImpersonationController::class, 'logs'])
+        ->name('impersonate.logs');
+
+    // View specific log details
+    Route::get('/admin/impersonation/logs/{log}', [ImpersonationController::class, 'show'])
+        ->name('impersonate.show');
+
+    // View impersonation chain
+    Route::get('/admin/impersonation/logs/{log}/chain', [ImpersonationController::class, 'chain'])
+        ->name('impersonate.chain');
+
     // php artisan config:clear
     // php artisan cache:clear
     // php artisan view:clear
